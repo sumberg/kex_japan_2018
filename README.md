@@ -1,4 +1,6 @@
-# Bachelor thesis work, KTH, Sweden/SIT, Japan, 2018
+# Bachelor thesis work, 
+KTH Sweden/SIT Japan 2018  
+
 ## Comparison of methods for controlling legacy hardware from a modern micro-controller
 
 ### Abstract
