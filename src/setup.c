@@ -7,7 +7,8 @@ void setup_ports(void)
 	/* Using entire 8 bits of register as output */
 	DDRD = PORTD_ALL_OUTPUT;
 	/* PORTB - External clock and slave reset control */
-	/* PB6 = 0 for clock input, and PB0 = 1 for reset control output */
+	/* PB6 = 0 for clock input, PB1 = 0 for slave R/W scanning
+	 * and PB0 = 1 for reset control output */
 	DDRB = PORTB_SLAVE_RESET;
 }
 
