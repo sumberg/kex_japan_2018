@@ -1,5 +1,5 @@
 # Target name:
-TARGET = nesizer_fw
+TARGET = emulated_rom_fw
 
 # Target type
 MCU=atmega328p
