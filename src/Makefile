@@ -15,7 +15,7 @@ CFLAGS = -mmcu=$(MCU) -Wall -O3 -std=gnu11 -funsigned-char -funsigned-bitfields 
 LDFLAGS = -mmcu=$(MCU) -Wl,-Map=$(TARGET).map
 
 # Fuses (All fuses except lfuse should be default)
-LFUSE = 0x60
+LFUSE = 0xE0
 
 ###################################
 
