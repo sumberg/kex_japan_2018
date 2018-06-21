@@ -172,5 +172,46 @@ DATA = 0x0B ;; PORTD
 .endm
 
 ;;; Pass argument 4 for padding (2A03 divides input clock by 16)
-register_set:
-	REGISTER_SET 4
+slave_memory_write:
+	MEMORY_WRITE 4
+
+
+;;; ----------------------------------------------------------------------------
+;;; DISABLE_INTERRUPTS
+;;;
+;;; Parameters: none
+;;; Return: 	none
+;;;
+;;; Sends an SEI instruction followed by the idling STA_zp
+
+.macro DISABLE_INTERRUPTS fill
+	SYNC
+
+	ldi r18, SEI
+	.rept \fill
+	nop
+	.endr
+	out DATA, r18
+
+	;; Write STA_zp
+	ldi r18, STA_zp
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	.rept \fill
+	nop
+	.endr
+	out DATA, r18
+
+	ret
+.endm
+
+slave_disable_interrupts:
+	DISABLE_INTERRUPTS 4
