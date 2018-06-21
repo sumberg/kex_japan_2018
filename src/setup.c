@@ -1,4 +1,5 @@
 #include "setup.h"
+#include "2a03.h"
 
 /* Set up the gpio pins for input/output etc. */
 void setup_ports(void)
@@ -29,4 +30,15 @@ void setup(void)
 {
 	setup_ports();
 	reset_slave();
+
+	/* Keep slave on reset until stable */
+	volatile uint64_t i = 0;
+	while(i++ < 10000);
+	release_slave();
+
+	/* Disable interrupts on RP2A03 */
+	disable_slave_interrupts();
+
+	/* reset_slave_pc(); */
+
 }
