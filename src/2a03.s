@@ -34,7 +34,8 @@ RWPORT = 0x03 ;; PORTB
 DATA = 0x0B ;; PORTD
 
 ;; Global function declarations here
-.global register_set
+.global slave_memory_write
+.global slave_disable_interrupts
 
 .section .text
 
@@ -55,7 +56,7 @@ DATA = 0x0B ;; PORTD
 
 ;;; ----------------------------------------------------------------------------
 
-;;; REGISTER_SET
+;;; MEMORY_WRITE
 ;;;
 ;;; Parameters:
 ;;;		r24: Address high byte
@@ -71,16 +72,16 @@ DATA = 0x0B ;; PORTD
 ;;;
 ;;; The write is followed by an STA_zp to keep the 6502 running.
 
-.macro REGISTER_SET fill
+.macro MEMORY_WRITE fill
 	;; Sync before writing
 	SYNC
 
 	;; Put LDA_imm opcode on data bus
+	ldi r18, LDA_imm
 	.rept \fill
 	nop
 	.endr
-	out DATA, LDA_imm
-	nop
+	out DATA, r18
 
 	;; Put LDA_imm value on data bus
 	nop
@@ -100,7 +101,7 @@ DATA = 0x0B ;; PORTD
 	out DATA, r20
 
 	;; Put STA_abs opcode on data bus
-	nop
+	ldi r18, STA_abs
 	nop
 	nop
 	nop
@@ -114,7 +115,7 @@ DATA = 0x0B ;; PORTD
 	.rept \fill
 	nop
 	.endr
-	out DATA, STA_abs
+	out DATA, r18
 
 	;; Put low byte on data bus
 	nop
@@ -151,7 +152,7 @@ DATA = 0x0B ;; PORTD
 	out DATA, r24
 
 	;; Write STA_zp
-	nop
+	ldi r18, STA_zp
 	nop
 	nop
 	nop
@@ -165,7 +166,7 @@ DATA = 0x0B ;; PORTD
 	.rept \fill
 	nop
 	.endr
-	out DATA, STA_zp
+	out DATA, r18
 
 	ret
 .endm
