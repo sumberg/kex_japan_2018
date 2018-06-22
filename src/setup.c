@@ -1,3 +1,5 @@
+#define F_CPU 20000000
+#include <util/delay.h>
 #include "setup.h"
 #include "2a03.h"
 
@@ -29,16 +31,13 @@ void release_slave(void)
 void setup(void)
 {
 	setup_ports();
+
+	/* Perform slave reset cycle */
 	reset_slave();
-
-	/* Keep slave on reset until stable */
-	volatile uint64_t i = 0;
-	while(i++ < 10000);
+	_delay_us(1000000);
 	release_slave();
+	_delay_us(1000);
 
-	/* Disable interrupts on RP2A03 */
-	disable_slave_interrupts();
-
-	/* reset_slave_pc(); */
+	setup_slave_timing();
 
 }

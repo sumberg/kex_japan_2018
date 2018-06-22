@@ -32,11 +32,17 @@ RWBIT = 0x01
 ;; I/O ports
 RWPORT = 0x03 ;; PORTB
 DATA = 0x0B ;; PORTD
+TCCR0B = 0x25
+TCNT0 = 0x26
 
 ;; Global function declarations here
-.global slave_memory_write
-.global slave_disable_interrupts
-
+.global slave_memory_write12
+.global slave_memory_write15
+.global slave_memory_write16
+.global slave_disable_interrupts12
+.global slave_disable_interrupts15
+.global slave_disable_interrupts16
+.global detect
 .section .text
 
 ;;; ----------------------------------------------------------------------------
@@ -162,17 +168,23 @@ DATA = 0x0B ;; PORTD
 	nop
 	nop
 	nop
-	nop
 	.rept \fill
 	nop
 	.endr
+	out DATA, r18
 	out DATA, r18
 
 	ret
 .endm
 
 ;;; Pass argument 4 for padding (2A03 divides input clock by 16)
-slave_memory_write:
+slave_memory_write12:
+	MEMORY_WRITE 0
+
+slave_memory_write15:
+	MEMORY_WRITE 3
+
+slave_memory_write16:
 	MEMORY_WRITE 4
 
 
@@ -213,5 +225,52 @@ slave_memory_write:
 	ret
 .endm
 
-slave_disable_interrupts:
+slave_disable_interrupts12:
+	DISABLE_INTERRUPTS 0
+
+slave_disable_interrupts15:
+	DISABLE_INTERRUPTS 3
+
+slave_disable_interrupts16:
 	DISABLE_INTERRUPTS 4
+
+;;; detect -- 2A03 type auto detection
+;;;
+;;; Parameters: none
+;;; Return:	r24: number of Atmega clock cycles per 6502 clock cycle
+;;;
+;;; When this function is run, the 6502 is being fed the STA instruction with
+;;; absolute addressing, which takes four cycles. At its fourth cycle, it pulls
+;;; the R/W line down. This can be used to measure how many clock cycles the
+;;; Atmega has done for each cycle the 6502 has done by counting how many cycles
+;;; it takes between each time R/W transitions from low to high. In this
+;;; function the numer of Atmega cycles is counted for two such transitions to
+;;; ensure that the timer is started and stopped at the exact same phase of the
+;;; R/W transition. The counted number of cycles is divided by 8 to get the
+;;; number of Atmega cycles per one 6502 cycle.
+
+detect:
+	ldi r18, 1
+	ldi r19, 0
+	out TCNT0, r19
+
+	;; Wait for R/W to tranisiton from low to high
+	SYNC
+
+	;; Start timer 0
+	out TCCR0B, r18
+
+	;; Wait for R/W to transition from low to high twice
+	SYNC
+	SYNC
+
+	;; Stop timer 0
+	out TCCR0B, r19
+
+	;; Read timer count and divide by 8
+	in r24, TCNT0
+	lsr r24
+	lsr r24
+	lsr r24
+
+	ret
