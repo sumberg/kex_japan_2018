@@ -27,6 +27,31 @@ void release_slave(void)
 	PORTB |= SLAVE_RELEASE_MASK;
 }
 
+/* Set up all interrupts that will be used on the Atmega328 */
+void setup_master_interrupts(void)
+{
+
+	/* Enable global interrupts */
+	sei();
+
+	/* TC0 in CTC mode */
+	TCCR0A = 0b10 << WGM00;
+
+	/* Set period */
+	OCR0A = 244;
+
+	/* Enable compare match interrupt */
+	TIMSK0 = 1 << OCIE0A;
+
+	/* Start timer as CTC, prescaler 1024 */
+	TCCR0B = (1 << FOC0A) | (0b101 << CS00);
+}
+
+ISR(TIMER0_COMPA_vect)
+{
+	reset_slave_pc();
+}
+
 /* Run entire setup routine */
 void setup(void)
 {
@@ -40,4 +65,6 @@ void setup(void)
 
 	setup_slave_timing();
 
+	/* Master interrupt timing and routines */
+	setup_master_interrupts();
 }
