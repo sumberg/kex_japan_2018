@@ -27,7 +27,7 @@ void release_slave(void)
 	PORTB |= SLAVE_RELEASE_MASK;
 }
 
-/* Run entire setup routine, and leave slave in reset mode */
+/* Run entire setup routine */
 void setup(void)
 {
 	setup_ports();

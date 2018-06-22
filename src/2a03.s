@@ -74,23 +74,26 @@ TCNT0 = 0x26
 ;;; instructions:
 ;;;
 ;;; LDA #<val>
-;;; STA <address high> <address low>
+;;; STA <address high><address low> (addr. high and low must be fed in the inverse order)
 ;;;
 ;;; The write is followed by an STA_zp to keep the 6502 running.
 
 .macro MEMORY_WRITE fill
+	;; Put LDA_imm opcode in register
+	ldi r18, LDA_imm
+
 	;; Sync before writing
 	SYNC
 
 	;; Put LDA_imm opcode on data bus
-	ldi r18, LDA_imm
+	;; Finish with double out to keep original NESizer instruction count
 	.rept \fill
 	nop
 	.endr
 	out DATA, r18
+	out DATA, r18
 
 	;; Put LDA_imm value on data bus
-	nop
 	nop
 	nop
 	nop
@@ -105,10 +108,10 @@ TCNT0 = 0x26
 	nop
 	.endr
 	out DATA, r20
+	out DATA, r20
 
 	;; Put STA_abs opcode on data bus
 	ldi r18, STA_abs
-	nop
 	nop
 	nop
 	nop
@@ -122,9 +125,9 @@ TCNT0 = 0x26
 	nop
 	.endr
 	out DATA, r18
+	out DATA, r18
 
 	;; Put low byte on data bus
-	nop
 	nop
 	nop
 	nop
@@ -139,9 +142,9 @@ TCNT0 = 0x26
 	nop
 	.endr
 	out DATA, r22
+	out DATA, r22
 
 	;; Write high byte
-	nop
 	nop
 	nop
 	nop
@@ -155,6 +158,7 @@ TCNT0 = 0x26
 	.rept \fill
 	nop
 	.endr
+	out DATA, r24
 	out DATA, r24
 
 	;; Write STA_zp
@@ -197,12 +201,17 @@ slave_memory_write16:
 ;;; Sends an SEI instruction followed by the idling STA_zp
 
 .macro DISABLE_INTERRUPTS fill
+	;; Put SEI instruction in r18
+	ldi r18, SEI
+
+	;; Sync before writing
 	SYNC
 
-	ldi r18, SEI
+	;; Put SEI instruction on data bus
 	.rept \fill
 	nop
 	.endr
+	out DATA, r18
 	out DATA, r18
 
 	;; Write STA_zp
@@ -216,10 +225,10 @@ slave_memory_write16:
 	nop
 	nop
 	nop
-	nop
 	.rept \fill
 	nop
 	.endr
+	out DATA, r18
 	out DATA, r18
 
 	ret
