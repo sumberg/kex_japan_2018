@@ -6,6 +6,9 @@ extern void slave_memory_write16(uint8_t, uint8_t, uint8_t);
 extern void slave_disable_interrupts12(void);
 extern void slave_disable_interrupts15(void);
 extern void slave_disable_interrupts16(void);
+extern void slave_reset_pc12(void);
+extern void slave_reset_pc15(void);
+extern void slave_reset_pc16(void);
 extern uint8_t detect(void);
 
 /* The 6502 opcodes needed */
@@ -16,6 +19,7 @@ extern uint8_t detect(void);
 
 /* match io functions with correct timing */
 void (*slave_memory_write)(uint8_t, uint8_t, uint8_t);
+void (*slave_reset_pc)(void);
 void (*slave_disable_interrupts)(void);
 
 /* Check divider on slave */
@@ -31,6 +35,11 @@ void slave_write(uint8_t addr_hi, uint8_t addr_lo, uint8_t val)
 void disable_slave_interrupts(void)
 {
 	slave_disable_interrupts();
+}
+
+void reset_slave_pc(void)
+{
+	slave_reset_pc();
 }
 
 void setup_slave_timing(void)
@@ -55,21 +64,25 @@ void setup_slave_timing(void)
     switch (io_clockdiv) {
 	    case 12:
 	        slave_memory_write= &slave_memory_write12;
+	        slave_reset_pc = &slave_reset_pc12;
 	        slave_disable_interrupts = &slave_disable_interrupts12;
 			PORTC = (1 << offset);
 	        break;
 	    case 15:
 	        slave_memory_write = &slave_memory_write15;
+	        slave_reset_pc = &slave_reset_pc15;
 	        slave_disable_interrupts = &slave_disable_interrupts15;
 			PORTC = (2 << offset);
 	        break;
 	    case 16:
 	        slave_memory_write = &slave_memory_write16;
+	        slave_reset_pc = &slave_reset_pc16;
 	        slave_disable_interrupts = &slave_disable_interrupts16;
 			PORTC = (4 << offset);
 	        break;
 		default:
 	        slave_memory_write = &slave_memory_write16;
+	        slave_reset_pc = &slave_reset_pc16;
 	        slave_disable_interrupts = &slave_disable_interrupts16;
 			PORTC = (8 << offset);
 	        break;
@@ -77,4 +90,5 @@ void setup_slave_timing(void)
 
 	/* Disable interrupts on RP2A03 */
 	disable_slave_interrupts();
+	reset_slave_pc();
 }

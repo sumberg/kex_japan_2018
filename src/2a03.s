@@ -42,6 +42,9 @@ TCNT0 = 0x26
 .global slave_disable_interrupts12
 .global slave_disable_interrupts15
 .global slave_disable_interrupts16
+.global slave_reset_pc12
+.global slave_reset_pc15
+.global slave_reset_pc16
 .global detect
 .section .text
 
@@ -242,6 +245,56 @@ slave_disable_interrupts15:
 
 slave_disable_interrupts16:
 	DISABLE_INTERRUPTS 4
+
+;;; ----------------------------------------------------------------------------
+;;; RESET_PC
+;;;
+;;; Parameters: none
+;;; Return:	none
+;;;
+;;; Resets the program counter by sending a JMP_abs opcode followed by just
+;;; STA_zp. This makes the 6502 jump to address $8585 and continue 'storing' to
+;;; $85.
+
+.macro RESET_PC fill
+	ldi r21, JMP_abs
+
+	SYNC
+
+	.rept \fill
+	nop
+	.endr
+	out DATA, r21
+	out DATA, r21
+
+	;; Write STA_zp
+	ldi r21, STA_zp
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	.rept \fill
+	nop
+	.endr
+	out DATA, r21
+	out DATA, r21
+
+	ret
+.endm
+
+slave_reset_pc12:
+	RESET_PC 0
+
+slave_reset_pc15:
+	RESET_PC 3
+
+slave_reset_pc16:
+	RESET_PC 4
 
 ;;; detect -- 2A03 type auto detection
 ;;;
