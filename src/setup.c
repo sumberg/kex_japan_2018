@@ -6,13 +6,14 @@
 /* Set up the gpio pins for input/output etc. */
 void setup_ports(void)
 {
-	/* PORTD - Data pins */
+	/* PORTD - Data output pins */
 	/* Using entire 8 bits of register as output */
 	DDRD = PORTD_ALL_OUTPUT;
 	/* PORTB - External clock and slave reset control */
-	/* PB6 = 0 for clock input, PB1 = 0 for slave R/W scanning
-	 * and PB0 = 1 for reset control output */
-	DDRB = PORTB_SLAVE_RESET;
+	DDRB =
+		PORTB_SLAVE_RESET
+		| PORTB_LATCH_OE
+		| PORTB_CLOCK_IN;
 }
 
 /* Sends (and holds) reset signal to slave */
@@ -25,6 +26,20 @@ void reset_slave(void)
 void release_slave(void)
 {
 	PORTB |= SLAVE_RELEASE_MASK;
+}
+
+/* Enable latch output */
+void latch_output_enable(void)
+{
+	/* Latch OE is inverted, make low to enable */
+	PORTB &= LATCH_OUTPUT_ENABLE_MASK;
+}
+
+/* Disable latch output (tri-state) */
+void latch_output_disable(void)
+{
+	/* Latch OE is inverted, make high to disable */
+	PORTB |= LATCH_OUTPUT_DISABLE_MASK;
 }
 
 /* Set up all interrupts that will be used on the Atmega328 */
@@ -57,9 +72,10 @@ void setup(void)
 {
 	setup_ports();
 
+	latch_output_enable();
 	/* Perform slave reset cycle */
 	reset_slave();
-	_delay_us(1000000);
+	_delay_ms(1000);
 	release_slave();
 	_delay_us(1000);
 
