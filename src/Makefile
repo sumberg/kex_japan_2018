@@ -19,16 +19,18 @@ LFUSE = 0xE0
 
 ###################################
 
-.PHONY: compile flash clean
+.PHONY: compile flash clean fuse
 
 compile: $(TARGET).hex
 
 flash: compile
-	avrdude -c $(PROGRAMMER) -P usb -p $(MCU) -B 1 -U lfuse:w:$(LFUSE):m
 	avrdude -c $(PROGRAMMER) -P usb -p $(MCU) -B 1 -U flash:w:$(TARGET).hex
 
 clean:
 	rm -f $(OBJ) $(TARGET).{hex,map,elf}
+
+fuse:
+	avrdude -c $(PROGRAMMER) -P usb -p $(MCU) -B 1 -U lfuse:w:$(LFUSE):m
 
 .SECONDARY: $(OBJS)
 
