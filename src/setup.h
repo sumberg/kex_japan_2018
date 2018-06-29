@@ -1,7 +1,10 @@
 #include <avr/io.h>
 
-#define PORTD_ALL_OUTPUT 0xFF
+/* PORT direction bitmasks */
 #define PORTB_SLAVE_RESET 0x01
+#define PORTB_CLOCK_IN 0x00; // added for readability, should be zero on PB6
+#define PORTC_ALL_OUTPUT 0xFF
+#define PORTD_ALL_OUTPUT 0xFF
 
 #define SLAVE_RESET_MASK 0xFE;
 #define SLAVE_RELEASE_MASK 0x01;

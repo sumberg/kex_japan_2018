@@ -25,13 +25,23 @@ STA_abs = 0x8D
 STA_zp = 0x85
 JMP_abs = 0x4C
 SEI = 0x78
+EOR_imm = 0x49
 
 ;; R/W bit position on RWPORT
 RWBIT = 0x01
 
 ;; I/O ports
-RWPORT = 0x03 ;; PORTB
-DATA = 0x0B ;; PORTD
+RWPORT = 0x03			;; PORTB
+DATA_OUT = 0x0B			;; PORTD
+DATA_IN = 0x06			;; PINC
+PORTC = 0x08			;; PORTC
+
+;; Masks
+DATA_IN_3_LO_BITS = 0x07 ;; Take the lowest 4 bits
+OE_DISABLE_MASK = 0x08 ;; HIGH for disable
+OE_ENABLE_MASK = 0xF7 ;; LOW for enable
+
+/* Timer used for detect */
 TCCR0B = 0x25
 TCNT0 = 0x26
 
@@ -46,6 +56,11 @@ TCNT0 = 0x26
 .global slave_reset_pc15
 .global slave_reset_pc16
 .global detect
+.global slave_fetch_data
+.global slave_write_accumulator12
+.global slave_write_accumulator15
+.global slave_write_accumulator16
+
 .section .text
 
 ;;; ----------------------------------------------------------------------------
@@ -93,8 +108,8 @@ TCNT0 = 0x26
 	.rept \fill
 	nop
 	.endr
-	out DATA, r18
-	out DATA, r18
+	out DATA_OUT, r18
+	out DATA_OUT, r18
 
 	;; Put LDA_imm value on data bus
 	nop
@@ -110,8 +125,8 @@ TCNT0 = 0x26
 	.rept \fill
 	nop
 	.endr
-	out DATA, r20
-	out DATA, r20
+	out DATA_OUT, r20
+	out DATA_OUT, r20
 
 	;; Put STA_abs opcode on data bus
 	ldi r18, STA_abs
@@ -127,8 +142,8 @@ TCNT0 = 0x26
 	.rept \fill
 	nop
 	.endr
-	out DATA, r18
-	out DATA, r18
+	out DATA_OUT, r18
+	out DATA_OUT, r18
 
 	;; Put low byte on data bus
 	nop
@@ -144,8 +159,8 @@ TCNT0 = 0x26
 	.rept \fill
 	nop
 	.endr
-	out DATA, r22
-	out DATA, r22
+	out DATA_OUT, r22
+	out DATA_OUT, r22
 
 	;; Write high byte
 	nop
@@ -161,8 +176,8 @@ TCNT0 = 0x26
 	.rept \fill
 	nop
 	.endr
-	out DATA, r24
-	out DATA, r24
+	out DATA_OUT, r24
+	out DATA_OUT, r24
 
 	;; Write STA_zp
 	ldi r18, STA_zp
@@ -178,8 +193,8 @@ TCNT0 = 0x26
 	.rept \fill
 	nop
 	.endr
-	out DATA, r18
-	out DATA, r18
+	out DATA_OUT, r18
+	out DATA_OUT, r18
 
 	ret
 .endm
@@ -214,8 +229,8 @@ slave_memory_write16:
 	.rept \fill
 	nop
 	.endr
-	out DATA, r18
-	out DATA, r18
+	out DATA_OUT, r18
+	out DATA_OUT, r18
 
 	;; Write STA_zp
 	ldi r18, STA_zp
@@ -231,8 +246,8 @@ slave_memory_write16:
 	.rept \fill
 	nop
 	.endr
-	out DATA, r18
-	out DATA, r18
+	out DATA_OUT, r18
+	out DATA_OUT, r18
 
 	ret
 .endm
@@ -264,8 +279,8 @@ slave_disable_interrupts16:
 	.rept \fill
 	nop
 	.endr
-	out DATA, r21
-	out DATA, r21
+	out DATA_OUT, r21
+	out DATA_OUT, r21
 
 	;; Write STA_zp
 	ldi r21, STA_zp
@@ -281,8 +296,8 @@ slave_disable_interrupts16:
 	.rept \fill
 	nop
 	.endr
-	out DATA, r21
-	out DATA, r21
+	out DATA_OUT, r21
+	out DATA_OUT, r21
 
 	ret
 .endm
@@ -296,6 +311,7 @@ slave_reset_pc15:
 slave_reset_pc16:
 	RESET_PC 4
 
+;;; ----------------------------------------------------------------------------
 ;;; detect -- 2A03 type auto detection
 ;;;
 ;;; Parameters: none
@@ -316,7 +332,7 @@ detect:
 	ldi r19, 0
 	out TCNT0, r19
 
-	;; Wait for R/W to tranisiton from low to high
+	;; Wait for R/W to transition from low to high
 	SYNC
 
 	;; Start timer 0
@@ -336,3 +352,116 @@ detect:
 	lsr r24
 
 	ret
+
+;;; ----------------------------------------------------------------------------
+;;; slave_fetch_data
+;;;
+;;; parameters: none
+;;; returns: r24 - fetched value
+;;;
+;;; Assuming the slave is running STA_zp instruction, the contents of the
+;;; accumulator will be written to zero page memory every third cycle.
+;;; When the slave is in its third cycle (write), the R/W pin will go low,
+;;; tri-stating the latch, and at this time we can read the value of the data
+;;; pins.
+
+
+slave_fetch_data:
+
+	;; Prepare latch output enable/disable masks, needed for reading from
+	;; data pins
+	in r18, PORTC
+	mov r19, r18
+	ori r18, OE_DISABLE_MASK
+ 	andi r19, OE_ENABLE_MASK
+
+	;; Wait for write signal, and then perform read within a few cycles (1/2 - 3/4 6502 cycle)
+3:	sbic RWPORT, RWBIT
+	rjmp 3b
+
+	;; disable latch
+	out PORTC, r18
+
+	;; read data into r16 continuosly while RW pin is LOW
+4:	in r16, DATA_IN
+	sbis RWPORT, RWBIT
+	rjmp 4b
+
+	;; enable latch
+	out PORTC, r19
+
+	;; place value in return register
+	andi r16, DATA_IN_3_LO_BITS
+	mov r24, r16
+
+	ret
+
+;;;----------------------------------------------------------------------------
+;;;	SLAVE_WRITE_ACCUMULATOR
+;;;
+;;;	Parameters: r24 - 1 Byte value to write to accumulator
+;;; Returns: none
+;;;
+;;; Use this to put a value in accumulator. This value will continuously be
+;;; held in accumulator until other routines using accumulator are called.
+;;;
+
+.macro SLAVE_WRITE_ACCUMULATOR fill
+	;; Prepare LDA_imm instruction
+	ldi r20, LDA_imm
+
+	;; Sync before writing opcode
+	SYNC
+
+	nop
+	.rept \fill
+	nop
+	.endr
+	out DATA_OUT, r20
+
+	;; Write value on bus
+	;; TODO test with nops instead
+	mov r18, r24
+	andi r18, 0xFF
+	ori r18, 0x00
+	mov r18, r24
+	andi r18, 0xFF
+	ori r18, 0x00
+	nop
+	nop
+	nop
+	nop
+	nop
+	.rept \fill
+	nop
+	.endr
+	out DATA_OUT, r18
+
+	ldi r20, STA_zp
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	.rept \fill
+	nop
+	.endr
+	out DATA_OUT, r20
+
+	ret
+.endm
+
+slave_write_accumulator12:
+	SLAVE_WRITE_ACCUMULATOR 0
+
+slave_write_accumulator15:
+	SLAVE_WRITE_ACCUMULATOR 3
+
+slave_write_accumulator16:
+	SLAVE_WRITE_ACCUMULATOR 4

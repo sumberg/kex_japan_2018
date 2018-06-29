@@ -1,4 +1,4 @@
-#define F_CPU 20000000
+#define F_CPU 20000000UL
 #include <util/delay.h>
 #include "setup.h"
 #include "2a03.h"
@@ -6,13 +6,15 @@
 /* Set up the gpio pins for input/output etc. */
 void setup_ports(void)
 {
-	/* PORTD - Data pins */
+	/* PORTD - Data output pins */
 	/* Using entire 8 bits of register as output */
 	DDRD = PORTD_ALL_OUTPUT;
 	/* PORTB - External clock and slave reset control */
-	/* PB6 = 0 for clock input, PB1 = 0 for slave R/W scanning
-	 * and PB0 = 1 for reset control output */
-	DDRB = PORTB_SLAVE_RESET;
+	DDRB =
+		PORTB_SLAVE_RESET
+		| PORTB_CLOCK_IN;
+	/* PC0-PC2 Data input, PC3 Latch OE, PC4-PC5 debug leds */
+	DDRC = (7 << 3);
 }
 
 /* Sends (and holds) reset signal to slave */
@@ -59,10 +61,11 @@ void setup(void)
 
 	/* Perform slave reset cycle */
 	reset_slave();
-	_delay_us(1000000);
+	_delay_ms(1000);
 	release_slave();
 	_delay_us(1000);
 
+	/* Figure out slave divider, disable slave interrupts and reset slave pc */
 	setup_slave_timing();
 
 	/* Master interrupt timing and routines */
