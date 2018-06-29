@@ -15,3 +15,5 @@ void write_slave_accumulator(uint8_t val);
 uint8_t fetch_slave_data(void);
 /* Setup timing of slave unit, and functions to use for communicating */
 void setup_slave_timing(void);
+/* Inverts current value in slave accumulator */
+void invert_slave_accumulator(void);

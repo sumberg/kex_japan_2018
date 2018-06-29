@@ -12,6 +12,9 @@ extern void slave_reset_pc16(void);
 extern void slave_write_accumulator12(uint8_t);
 extern void slave_write_accumulator15(uint8_t);
 extern void slave_write_accumulator16(uint8_t);
+extern void slave_invert_accumulator12(void);
+extern void slave_invert_accumulator15(void);
+extern void slave_invert_accumulator16(void);
 extern uint8_t slave_fetch_data(void);
 extern uint8_t detect(void);
 
@@ -26,6 +29,7 @@ void (*slave_memory_write)(uint8_t, uint8_t, uint8_t);
 void (*slave_reset_pc)(void);
 void (*slave_disable_interrupts)(void);
 void (*slave_write_accumulator)(uint8_t);
+void (*slave_invert_accumulator)(void);
 
 /* Check divider on slave */
 uint8_t io_clockdiv = 0;
@@ -63,6 +67,12 @@ uint8_t fetch_slave_data(void)
 	return val;
 }
 
+void invert_slave_accumulator(void) {
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+		slave_invert_accumulator();
+	}
+}
+
 void setup_slave_timing(void)
 {
 	/* Output STA absolute addressing opcode on data bus to perform detect() */
@@ -84,12 +94,14 @@ void setup_slave_timing(void)
 	        slave_reset_pc = &slave_reset_pc12;
 	        slave_disable_interrupts = &slave_disable_interrupts12;
 			slave_write_accumulator = &slave_write_accumulator12;
+			slave_invert_accumulator = &slave_invert_accumulator12;
 	        break;
 	    case 15:
 	        slave_memory_write = &slave_memory_write15;
 	        slave_reset_pc = &slave_reset_pc15;
 	        slave_disable_interrupts = &slave_disable_interrupts15;
 			slave_write_accumulator = &slave_write_accumulator15;
+			slave_invert_accumulator = &slave_invert_accumulator15;
 	        break;
 	    case 16:
 		default:
@@ -97,6 +109,7 @@ void setup_slave_timing(void)
 	        slave_reset_pc = &slave_reset_pc16;
 	        slave_disable_interrupts = &slave_disable_interrupts16;
 			slave_write_accumulator = &slave_write_accumulator16;
+			slave_invert_accumulator = &slave_invert_accumulator16;
 	        break;
     }
 

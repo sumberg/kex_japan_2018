@@ -60,6 +60,9 @@ TCNT0 = 0x26
 .global slave_write_accumulator12
 .global slave_write_accumulator15
 .global slave_write_accumulator16
+.global slave_invert_accumulator12
+.global slave_invert_accumulator15
+.global slave_invert_accumulator16
 
 .section .text
 
@@ -464,3 +467,73 @@ slave_write_accumulator15:
 
 slave_write_accumulator16:
 	SLAVE_WRITE_ACCUMULATOR 4
+
+;;;----------------------------------------------------------------------------
+;;;	INVERT_ACCUMULATOR
+;;;
+;;;	Parameters: none
+;;; Returns: none
+;;;
+;;; Inverts current value in accumulator.
+;;;
+
+.macro INVERT_ACCUMULATOR fill
+
+	;; Prepare EOR_imm instruction
+	ldi r18, EOR_imm
+
+	;; Get in sync before sending commands
+	SYNC
+
+	;; Put EOR_imm on data bus
+	.rept \fill
+	nop
+	.endr
+	out DATA_OUT, r18
+	out DATA_OUT, r18
+
+	;; Put 0xFF on bus (XORs the entire register)
+	ldi r19, 0xFF
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	.rept \fill
+	nop
+	.endr
+	out DATA_OUT, r19
+
+	;; Put idle instruction STA_zp on data bus
+	ldi r20, STA_zp
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	.rept \fill
+	nop
+	.endr
+	out DATA_OUT, r20
+
+	ret
+.endm
+
+slave_invert_accumulator12:
+	INVERT_ACCUMULATOR 0
+
+slave_invert_accumulator15:
+	INVERT_ACCUMULATOR 3
+
+slave_invert_accumulator16:
+	INVERT_ACCUMULATOR 4
