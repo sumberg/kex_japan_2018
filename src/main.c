@@ -8,17 +8,29 @@ int main(void)
 	/* Setup system */
 	setup();
 
+	uint8_t val = 0x01;
+	uint8_t retVal;
+	//write_slave_accumulator(0x06);
+
 	/* Main loop */
-	uint8_t test = 0;
 	while(1) {
-		_delay_ms(1000);
-		PORTC &= ~(0x0F << 2);
-		_delay_ms(1000);
-		if (slave_test(test))
-			PORTC |= (0x07 << 2);
-		else
-			PORTC |= (0x08 << 2);
-		test++;
+		//slave_write(0x48, 0x01, val);
+		write_slave_accumulator(val);
+		_delay_ms(2000);
+		retVal = fetch_slave_data();
+		// retVal = detect64();
+		PORTC &= ~(1 << 5);
+		_delay_ms(500);
+
+		for (int i = retVal; i > 0; i--) {
+			PORTC |= (3 << 4);
+			_delay_ms(200);
+			PORTC &= ~(3 << 4);
+			_delay_ms(200);
+		}
+
+		_delay_ms(2000);
+		val = (val + 1) % 8;
 	}
 
 	return 0;

@@ -12,8 +12,9 @@ void setup_ports(void)
 	/* PORTB - External clock and slave reset control */
 	DDRB =
 		PORTB_SLAVE_RESET
-		| PORTB_LATCH_OE
 		| PORTB_CLOCK_IN;
+	/* PC0-PC2 Data input, PC3 Latch OE, PC4-PC5 debug leds */
+	DDRC = (7 << 3);
 }
 
 /* Sends (and holds) reset signal to slave */
@@ -26,20 +27,6 @@ void reset_slave(void)
 void release_slave(void)
 {
 	PORTB |= SLAVE_RELEASE_MASK;
-}
-
-/* Enable latch output */
-void latch_output_enable(void)
-{
-	/* Latch OE is inverted, make low to enable */
-	PORTB &= LATCH_OUTPUT_ENABLE_MASK;
-}
-
-/* Disable latch output (tri-state) */
-void latch_output_disable(void)
-{
-	/* Latch OE is inverted, make high to disable */
-	PORTB |= LATCH_OUTPUT_DISABLE_MASK;
 }
 
 /* Set up all interrupts that will be used on the Atmega328 */
@@ -72,7 +59,6 @@ void setup(void)
 {
 	setup_ports();
 
-	latch_output_enable();
 	/* Perform slave reset cycle */
 	reset_slave();
 	_delay_ms(1000);
@@ -80,6 +66,10 @@ void setup(void)
 	_delay_us(1000);
 
 	setup_slave_timing();
+	// use_div(16);
+	/* Disable interrupts on RP2A03 */
+	// disable_slave_interrupts();
+	// reset_slave_pc();
 
 	/* Master interrupt timing and routines */
 	setup_master_interrupts();
