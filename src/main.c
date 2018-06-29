@@ -8,6 +8,8 @@ int main(void)
 	/* Setup system */
 	setup();
 
+	/* CODE BELOW LEFT TO TEST COMMUNICATION */
+
 	uint8_t val = 0x01;
 	uint8_t retVal;
 	//write_slave_accumulator(0x06);

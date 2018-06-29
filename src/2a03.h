@@ -15,7 +15,3 @@ void write_slave_accumulator(uint8_t val);
 uint8_t fetch_slave_data(void);
 /* Setup timing of slave unit, and functions to use for communicating */
 void setup_slave_timing(void);
-/* Force use functions with divider 12 */
-void use_div_12(void);
-/* Detect divider for testing purposes */
-uint8_t detect64(void);

@@ -1,4 +1,4 @@
-#define F_CPU 20000000
+#define F_CPU 20000000UL
 #include <util/delay.h>
 #include "setup.h"
 #include "2a03.h"
@@ -65,11 +65,8 @@ void setup(void)
 	release_slave();
 	_delay_us(1000);
 
+	/* Figure out slave divider, disable slave interrupts and reset slave pc */
 	setup_slave_timing();
-	// use_div(16);
-	/* Disable interrupts on RP2A03 */
-	// disable_slave_interrupts();
-	// reset_slave_pc();
 
 	/* Master interrupt timing and routines */
 	setup_master_interrupts();

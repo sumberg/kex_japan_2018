@@ -60,7 +60,6 @@ TCNT0 = 0x26
 .global slave_write_accumulator12
 .global slave_write_accumulator15
 .global slave_write_accumulator16
-.global detect_64
 
 .section .text
 
@@ -355,7 +354,7 @@ detect:
 	ret
 
 ;;; ----------------------------------------------------------------------------
-;;; FETCH_DATA
+;;; slave_fetch_data
 ;;;
 ;;; parameters: none
 ;;; returns: r24 - fetched value
@@ -369,6 +368,8 @@ detect:
 
 slave_fetch_data:
 
+	;; Prepare latch output enable/disable masks, needed for reading from
+	;; data pins
 	in r18, PORTC
 	mov r19, r18
 	ori r18, OE_DISABLE_MASK
@@ -381,7 +382,7 @@ slave_fetch_data:
 	;; disable latch
 	out PORTC, r18
 
-	;; read data into r16
+	;; read data into r16 continuosly while RW pin is LOW
 4:	in r16, DATA_IN
 	sbis RWPORT, RWBIT
 	rjmp 4b
@@ -402,12 +403,14 @@ slave_fetch_data:
 ;;; Returns: none
 ;;;
 ;;; Use this to put a value in accumulator. This value will continuously be
-;;; held in accumulator until other routines are called.
+;;; held in accumulator until other routines using accumulator are called.
 ;;;
 
 .macro SLAVE_WRITE_ACCUMULATOR fill
+	;; Prepare LDA_imm instruction
 	ldi r20, LDA_imm
 
+	;; Sync before writing opcode
 	SYNC
 
 	nop
@@ -416,6 +419,8 @@ slave_fetch_data:
 	.endr
 	out DATA_OUT, r20
 
+	;; Write value on bus
+	;; TODO test with nops instead
 	mov r18, r24
 	andi r18, 0xFF
 	ori r18, 0x00
@@ -448,46 +453,15 @@ slave_fetch_data:
 	nop
 	.endr
 	out DATA_OUT, r20
-	ldi r24, 0x01
 
 	ret
 .endm
 
-;; 0
 slave_write_accumulator12:
 	SLAVE_WRITE_ACCUMULATOR 0
 
-;; 3
 slave_write_accumulator15:
 	SLAVE_WRITE_ACCUMULATOR 3
 
-;; 4
 slave_write_accumulator16:
 	SLAVE_WRITE_ACCUMULATOR 4
-
-
-detect_64:
-	ldi r18, 1
-	ldi r19, 0
-	out TCNT0, r19
-
-	;; Wait for R/W to transition from low to high
-	SYNC
-
-	;; Start timer 0
-	out TCCR0B, r18
-
-	;; Wait for R/W to transition from low to high twice
-	SYNC
-	SYNC
-
-	;; Stop timer 0
-	out TCCR0B, r19
-
-	;; Read timer count and divide by 8
-	in r24, TCNT0
-	lsr r24
-	lsr r24
-	lsr r24
-
-	ret

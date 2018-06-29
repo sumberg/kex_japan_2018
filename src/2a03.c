@@ -15,8 +15,6 @@ extern void slave_write_accumulator16(uint8_t);
 extern uint8_t slave_fetch_data(void);
 extern uint8_t detect(void);
 
-extern uint8_t detect_64(void);
-
 /* The 6502 opcodes needed */
 #define LDA_imm 0xA9
 #define STA_abs 0x8D
@@ -105,44 +103,4 @@ void setup_slave_timing(void)
 	/* Disable interrupts on RP2A03 */
 	disable_slave_interrupts();
 	reset_slave_pc();
-}
-
-void use_div(uint8_t div)
-{
-	switch (div) {
-		case 12:
-			slave_memory_write = &slave_memory_write12;
-			slave_reset_pc = &slave_reset_pc12;
-			slave_disable_interrupts = &slave_disable_interrupts12;
-			slave_write_accumulator = &slave_write_accumulator12;
-			break;
-		case 15:
-			slave_memory_write = &slave_memory_write15;
-			slave_reset_pc = &slave_reset_pc15;
-			slave_disable_interrupts = &slave_disable_interrupts15;
-			slave_write_accumulator = &slave_write_accumulator15;
-			break;
-		case 16:
-		default:
-			slave_memory_write = &slave_memory_write16;
-			slave_reset_pc = &slave_reset_pc16;
-			slave_disable_interrupts = &slave_disable_interrupts16;
-			slave_write_accumulator = &slave_write_accumulator16;
-			break;
-	}
-}
-
-uint8_t detect64(void)
-{
-	uint8_t val;
-
-	PORTD = STA_abs;
-
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-		val = detect_64();
-	}
-
-	PORTD = STA_zp;
-
-	return val;
 }
