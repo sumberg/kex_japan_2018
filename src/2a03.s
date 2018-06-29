@@ -420,13 +420,12 @@ slave_fetch_data:
 	out DATA_OUT, r20
 
 	;; Write value on bus
-	;; TODO test with nops instead
 	mov r18, r24
-	andi r18, 0xFF
-	ori r18, 0x00
-	mov r18, r24
-	andi r18, 0xFF
-	ori r18, 0x00
+	nop
+	nop
+	nop
+	nop
+	nop
 	nop
 	nop
 	nop
