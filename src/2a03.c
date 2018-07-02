@@ -17,6 +17,15 @@ extern void slave_invert_accumulator15(void);
 extern void slave_invert_accumulator16(void);
 extern uint8_t slave_fetch_data(void);
 extern uint8_t detect(void);
+extern void slave_send_instruction_immediate12(uint8_t, uint8_t);
+extern void slave_send_instruction_immediate15(uint8_t, uint8_t);
+extern void slave_send_instruction_immediate16(uint8_t, uint8_t);
+extern void slave_send_instruction_zero_page12(uint8_t, uint8_t);
+extern void slave_send_instruction_zero_page15(uint8_t, uint8_t);
+extern void slave_send_instruction_zero_page16(uint8_t, uint8_t);
+extern void slave_send_instruction_absolute12(uint8_t, uint8_t, uint8_t);
+extern void slave_send_instruction_absolute15(uint8_t, uint8_t, uint8_t);
+extern void slave_send_instruction_absolute16(uint8_t, uint8_t, uint8_t);
 
 /* The 6502 opcodes needed */
 #define LDA_imm 0xA9
@@ -30,6 +39,9 @@ void (*slave_reset_pc)(void);
 void (*slave_disable_interrupts)(void);
 void (*slave_write_accumulator)(uint8_t);
 void (*slave_invert_accumulator)(void);
+void (*slave_send_instruction_immediate)(uint8_t, uint8_t);
+void (*slave_send_instruction_zero_page)(uint8_t, uint8_t);
+void (*slave_send_instruction_absolute)(uint8_t, uint8_t, uint8_t);
 
 /* Check divider on slave */
 uint8_t io_clockdiv = 0;
@@ -73,6 +85,31 @@ void invert_slave_accumulator(void) {
 	}
 }
 
+void send_slave_instruction(Instruction *instr) {
+	enum AddrMode am = getOpcodeAddrMode(instr->opcode);
+	switch (am) {
+		case ZERO_PAGE:
+			slave_send_instruction_zero_page(
+				instr->opcode, instr->operands.zp_addr);
+			break;
+		case IMMEDIATE:
+			slave_send_instruction_immediate(
+				instr->opcode, instr->operands.imm_val);
+			break;
+		case ABSOLUTE:
+			slave_send_instruction_absolute(
+				instr->opcode,
+				instr->operands.abs_addr.hi,
+				instr->operands.abs_addr.lo);
+			break;
+		case UNSUPPORTED:
+			/* Treat unsupported instructions as idle instructions (STA zp) */
+			slave_send_instruction_zero_page(
+				instr->opcode, instr->operands.zp_addr);
+			break;
+	}
+}
+
 void setup_slave_timing(void)
 {
 	/* Output STA absolute addressing opcode on data bus to perform detect() */
@@ -95,6 +132,9 @@ void setup_slave_timing(void)
 	        slave_disable_interrupts = &slave_disable_interrupts12;
 			slave_write_accumulator = &slave_write_accumulator12;
 			slave_invert_accumulator = &slave_invert_accumulator12;
+			slave_send_instruction_immediate = &slave_send_instruction_immediate12;
+			slave_send_instruction_zero_page = &slave_send_instruction_zero_page12;
+			slave_send_instruction_absolute = &slave_send_instruction_absolute12;
 	        break;
 	    case 15:
 	        slave_memory_write = &slave_memory_write15;
@@ -102,6 +142,9 @@ void setup_slave_timing(void)
 	        slave_disable_interrupts = &slave_disable_interrupts15;
 			slave_write_accumulator = &slave_write_accumulator15;
 			slave_invert_accumulator = &slave_invert_accumulator15;
+			slave_send_instruction_immediate = &slave_send_instruction_immediate15;
+			slave_send_instruction_zero_page = &slave_send_instruction_zero_page15;
+			slave_send_instruction_absolute = &slave_send_instruction_absolute15;
 	        break;
 	    case 16:
 		default:
@@ -110,6 +153,9 @@ void setup_slave_timing(void)
 	        slave_disable_interrupts = &slave_disable_interrupts16;
 			slave_write_accumulator = &slave_write_accumulator16;
 			slave_invert_accumulator = &slave_invert_accumulator16;
+			slave_send_instruction_immediate = &slave_send_instruction_immediate16;
+			slave_send_instruction_zero_page = &slave_send_instruction_zero_page16;
+			slave_send_instruction_absolute = &slave_send_instruction_absolute16;
 	        break;
     }
 

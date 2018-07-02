@@ -63,6 +63,15 @@ TCNT0 = 0x26
 .global slave_invert_accumulator12
 .global slave_invert_accumulator15
 .global slave_invert_accumulator16
+.global slave_send_instruction_immediate12
+.global slave_send_instruction_immediate15
+.global slave_send_instruction_immediate16
+.global slave_send_instruction_zero_page12
+.global slave_send_instruction_zero_page15
+.global slave_send_instruction_zero_page16
+.global slave_send_instruction_absolute12
+.global slave_send_instruction_absolute15
+.global slave_send_instruction_absolute16
 
 .section .text
 
@@ -86,8 +95,8 @@ TCNT0 = 0x26
 ;;; MEMORY_WRITE
 ;;;
 ;;; Parameters:
-;;;		r24: Address high byte
-;;; 	r22: Address low byte
+;;;		r24: address hi
+;;; 	r22: address lo
 ;;;		r20: Value
 ;;; Return:	none
 ;;;
@@ -537,3 +546,234 @@ slave_invert_accumulator15:
 
 slave_invert_accumulator16:
 	INVERT_ACCUMULATOR 4
+
+
+
+;;;----------------------------------------------------------------------------
+;;;	SLAVE_SEND_INSTRUCTION_IMMEDIATE
+;;;
+;;;	Parameters:
+;;;		r24 - opcode
+;;;		r22 - immediate value
+;;; Returns: none
+;;;
+;;;	Sends an instruction with immediate addressing mode to slave unit by first
+;;; sending opcode byte followed by immediate value byte.
+;;;
+
+.macro SLAVE_SEND_INSTRUCTION_IMMEDIATE fill
+
+	;; Sync before starting communication
+	SYNC
+
+	;; Place opcode on data bus
+	.rept \fill
+	nop
+	.endr
+	out DATA_OUT, r24
+	out DATA_OUT, r24
+
+	;; Place immediate value on bus
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	.rept \fill
+	nop
+	.endr
+	out DATA_OUT, r22
+	out DATA_OUT, r22
+
+	;; Return to idle STA_zp instr
+	ldi r20, STA_zp
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	.rept \fill
+	nop
+	.endr
+	out DATA_OUT, r20
+	out DATA_OUT, r20
+
+	ret
+.endm
+
+slave_send_instruction_immediate12:
+	SLAVE_SEND_INSTRUCTION_IMMEDIATE 0
+
+slave_send_instruction_immediate15:
+	SLAVE_SEND_INSTRUCTION_IMMEDIATE 3
+
+slave_send_instruction_immediate16:
+	SLAVE_SEND_INSTRUCTION_IMMEDIATE 4
+
+;;;----------------------------------------------------------------------------
+;;;	SLAVE_SEND_INSTRUCTION_ZERO_PAGE
+;;;
+;;;	Parameters:
+;;;		r24 - opcode
+;;;		r22 - zero page address (addr_lo)
+;;; Returns: none
+;;;
+;;;	Sends an instruction with zero page addressing mode to slave unit by first
+;;; sending opcode byte followed by zero page address byte.
+;;;
+
+.macro SLAVE_SEND_INSTRUCTION_ZERO_PAGE fill
+
+	;; Sync before starting communication
+	SYNC
+
+	;; Place opcode on data bus
+	.rept \fill
+	nop
+	.endr
+	out DATA_OUT, r24
+	out DATA_OUT, r24
+
+	;; Place zero page address on bus
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	.rept \fill
+	nop
+	.endr
+	out DATA_OUT, r22
+	out DATA_OUT, r22
+
+	;; Return to idle STA_zp instr
+	ldi r20, STA_zp
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	.rept \fill
+	nop
+	.endr
+	out DATA_OUT, r20
+	out DATA_OUT, r20
+
+	ret
+.endm
+
+slave_send_instruction_zero_page12:
+	SLAVE_SEND_INSTRUCTION_ZERO_PAGE 0
+
+slave_send_instruction_zero_page15:
+	SLAVE_SEND_INSTRUCTION_ZERO_PAGE 3
+
+slave_send_instruction_zero_page16:
+	SLAVE_SEND_INSTRUCTION_ZERO_PAGE 4
+
+;;;----------------------------------------------------------------------------
+;;;	SLAVE_SEND_INSTRUCTION_ABSOLUTE
+;;;
+;;;	Parameters:
+;;;		r24 - opcode
+;;;		r22 - address hi
+;;;		r20 - address lo
+;;; Returns: none
+;;;
+;;;	Sends an instruction with absolute addressing mode to slave unit by first
+;;; sending opcode byte followed low address byte and then high address byte.
+;;;
+
+.macro SLAVE_SEND_INSTRUCTION_ABSOLUTE fill
+
+	;; Sync before starting communication
+	SYNC
+
+	;; Place opcode on data bus
+	.rept \fill
+	nop
+	.endr
+	out DATA_OUT, r24
+	out DATA_OUT, r24
+
+	;; Place low address byte on bus
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	.rept \fill
+	nop
+	.endr
+	out DATA_OUT, r20
+	out DATA_OUT, r20
+
+	;; Place high address byte on bus
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	.rept \fill
+	nop
+	.endr
+	out DATA_OUT, r22
+	out DATA_OUT, r22
+
+
+	;; Return to idle STA_zp instr
+	ldi r18, STA_zp
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	.rept \fill
+	nop
+	.endr
+	out DATA_OUT, r18
+
+	ret
+.endm
+
+slave_send_instruction_absolute12:
+	SLAVE_SEND_INSTRUCTION_ABSOLUTE 0
+
+slave_send_instruction_absolute15:
+	SLAVE_SEND_INSTRUCTION_ABSOLUTE 3
+
+slave_send_instruction_absolute16:
+	SLAVE_SEND_INSTRUCTION_ABSOLUTE 4
