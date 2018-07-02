@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include <util/atomic.h>
+#include "rom.h"
 
 /* Writes a value to slave memory */
 void slave_write(uint8_t, uint8_t,uint8_t val);
@@ -17,3 +18,5 @@ uint8_t fetch_slave_data(void);
 void setup_slave_timing(void);
 /* Inverts current value in slave accumulator */
 void invert_slave_accumulator(void);
+/* Sends instruction to slave device */
+void send_slave_instruction(Instruction*);

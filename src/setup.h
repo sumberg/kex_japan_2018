@@ -1,3 +1,5 @@
+#pragma once
+
 #include <avr/io.h>
 
 /* PORT direction bitmasks */
