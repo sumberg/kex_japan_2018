@@ -37,7 +37,6 @@ DATA_IN = 0x06			;; PINC
 PORTC = 0x08			;; PORTC
 
 ;; Masks
-DATA_IN_3_LO_BITS = 0x07 ;; Take the lowest 4 bits
 OE_DISABLE_MASK = 0x08 ;; HIGH for disable
 OE_ENABLE_MASK = 0xF7 ;; LOW for enable
 
@@ -403,7 +402,6 @@ slave_fetch_data:
 	out PORTC, r19
 
 	;; place value in return register
-	andi r16, DATA_IN_3_LO_BITS
 	mov r24, r16
 
 	ret
