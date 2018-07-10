@@ -1,86 +1,53 @@
-#define F_CPU 20000000
-#include <util/delay.h>
-#include "setup.h"
-#include "2a03.h"
+#include <avr/io.h>
 
-/* Set up the gpio pins for input/output etc. */
+#include "expander.h"
+
+/* Setup all ports used on Atmega328 */
+void setup_ports(void);
+
 void setup_ports(void)
 {
-	/* PORTD - Data output pins */
-	/* Using entire 8 bits of register as output */
-	DDRD = PORTD_ALL_OUTPUT;
-	/* PORTB - External clock and slave reset control */
-	DDRB =
-		PORTB_SLAVE_RESET
-		| PORTB_LATCH_OE
-		| PORTB_CLOCK_IN;
+	/********* SPI SETUP *********/
+	/* Set MOSI, SCK, SS as output */
+	DDRB = (1 << 5) | (1 << 3) | (1 << 2);;
+	/* Data bus on PORTD */
+	DDRD = 0xFF;
+
+	/********* CONTROL *********/
+	/*
+	 * PC0: GPIO expander chip select
+	 * PC1: RAM chip enable
+	 * PC2: RAM RW select
+	 * PC3: RAM OE select
+	 * PC4: Slave reset
+	 */
+	DDRC = 0x1F;
+
+	/* Debug LED on PB1 */
+	DDRB |= (1 << 1);
 }
 
-/* Sends (and holds) reset signal to slave */
-void reset_slave(void)
-{
-	PORTB &= SLAVE_RESET_MASK;
-}
-
-/* Sends (and holds) release signal to slave. Used to undo reset/start slave. */
-void release_slave(void)
-{
-	PORTB |= SLAVE_RELEASE_MASK;
-}
-
-/* Enable latch output */
-void latch_output_enable(void)
-{
-	/* Latch OE is inverted, make low to enable */
-	PORTB &= LATCH_OUTPUT_ENABLE_MASK;
-}
-
-/* Disable latch output (tri-state) */
-void latch_output_disable(void)
-{
-	/* Latch OE is inverted, make high to disable */
-	PORTB |= LATCH_OUTPUT_DISABLE_MASK;
-}
-
-/* Set up all interrupts that will be used on the Atmega328 */
-void setup_master_interrupts(void)
-{
-
-	/* Enable global interrupts */
-	sei();
-
-	/* TC0 in CTC mode */
-	TCCR0A = 0b10 << WGM00;
-
-	/* Set period */
-	OCR0A = 244;
-
-	/* Enable compare match interrupt */
-	TIMSK0 = 1 << OCIE0A;
-
-	/* Start timer as CTC, prescaler 1024 */
-	TCCR0B = (1 << FOC0A) | (0b101 << CS00);
-}
-
-ISR(TIMER0_COMPA_vect)
-{
-	reset_slave_pc();
-}
-
-/* Run entire setup routine */
 void setup(void)
 {
+	/* Setup GPIO */
 	setup_ports();
 
-	latch_output_enable();
-	/* Perform slave reset cycle */
-	reset_slave();
-	_delay_ms(1000);
-	release_slave();
-	_delay_us(1000);
+	/* Keep slave in reset mode */
+	PORTC &= ~(1 << 4);
 
-	setup_slave_timing();
+	/* RAM read mode as default */
+	PORTC &= ~(1 << 2);
 
-	/* Master interrupt timing and routines */
-	setup_master_interrupts();
+	/* Disable RAM during setup */
+	PORTC |= (1 << 1);
+
+	/* Enabe SPI in master mode */
+	SPCR = (1 << SPE) | (1 << MSTR);
+
+	/* Setup expander chip */
+	setup_expander();
+
+	/* Enable RAM */
+	PORTC &= ~(1 << 1);
+
 }
