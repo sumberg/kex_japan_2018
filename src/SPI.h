@@ -15,7 +15,9 @@
 #define SPI_SLAVE_ID    	0x40
 #define SPI_SLAVE_ADDR  	0x00
 #define SPI_SLAVE_WRITE		0x00
+#define SPI_SLAVE_READ		0x01
 #define SPI_WRITE_OPCODE	(SPI_SLAVE_ID | ((SPI_SLAVE_ADDR << 1) & 0x0E) | SPI_SLAVE_WRITE)
+#define SPI_READ_OPCODE		(SPI_SLAVE_ID | ((SPI_SLAVE_ADDR << 1) & 0x0E) | SPI_SLAVE_READ)
 
 // MCP23S17 Registers Definition for BANK=0 (default)
 #define IODIRA 0x00
@@ -28,5 +30,7 @@
 
 /* Set up SPI master-slave relationship */
 void SPI_setup();
+/* Read from SPI slave */
+uint8_t SPI_read(uint8_t);
 /* Write to SPI slave */
 void SPI_write(uint8_t, uint8_t);

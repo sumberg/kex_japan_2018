@@ -27,6 +27,40 @@ void SPI_write(uint8_t addr, uint8_t data)
 	SPI_PORT |= (1 << SPI_CS);
 }
 
+uint8_t SPI_read(uint8_t addr)
+{
+	uint8_t data;
+
+	/* Activate CS pin */
+	SPI_PORT &= ~(1 << SPI_CS);
+
+	/* Start SPI slave read */
+	SPDR = SPI_READ_OPCODE;
+
+	/* Wait for transmission to complete */
+	while(!TRANSFER_COMPLETE);
+
+	/* Start slave register address transmission */
+	SPDR = addr;
+
+	/* Wait for transmission to complete */
+	while(!TRANSFER_COMPLETE);
+
+	/* Send dummy instruction to read slave data */
+	SPDR = 0x00;
+
+	/* Wait for transmission to complete */
+	while(!TRANSFER_COMPLETE);
+
+	/* Start slave data read */
+	data = SPDR;
+
+	/* Deactivate CS pin */
+	SPI_PORT |= (1 << SPI_CS);
+
+	return data;
+}
+
 /* SPI setup */
 void SPI_setup()
 {
