@@ -93,22 +93,23 @@ static uint8_t ROM[512] = {
 	0xFF, 0xFF
 };
 
-static uint8_t nxt = 0;
+/* ROM "program counter" */
+static uint16_t nxt = 0;
 
 /* Gets the next byte from ROM */
-static uint8_t ROM_fetchNextByte(void)
+uint8_t ROM_fetchNextByte(void)
 {
 	return ROM[nxt++];
 }
 
 /* Returns 'true' if ROM still contains instructions, 'false' otherwise */
-uint8_t instructionsLeft(void)
+uint8_t ROM_instructionsLeft(void)
 {
 	return ROM[nxt] != 0xFF;
 }
 
 /* Gets the addressing mode of operation */
-enum AddrMode getOpcodeAddrMode(uint8_t opcode)
+enum AddrMode ROM_getOpcodeAddrMode(uint8_t opcode)
 {
 	uint8_t offset = opcode & 0x0F;
 	if (offset >= 0x04 && offset <= 0x07)
@@ -122,7 +123,7 @@ enum AddrMode getOpcodeAddrMode(uint8_t opcode)
 }
 
 /* Resets the "program counter" for ROM to 0. */
-void resetROMPC(void)
+void ROM_resetPC(void)
 {
 	nxt = 0;
 }
@@ -132,11 +133,11 @@ void resetROMPC(void)
  * and start fetching instructions from the beginning. */
 void ROM_nextInstruction(Instruction *instr)
 {
-	if (!instructionsLeft())
-		resetROMPC();
+	if (!ROM_instructionsLeft())
+		ROM_resetPC();
 
 	instr->opcode = ROM_fetchNextByte();
-	enum AddrMode am = getOpcodeAddrMode(instr->opcode);
+	enum AddrMode am = ROM_getOpcodeAddrMode(instr->opcode);
 
 	switch(am) {
 		case ZERO_PAGE:

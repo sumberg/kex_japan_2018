@@ -5,35 +5,43 @@
 #include "setup.h"
 #include "ram.h"
 #include "SPI.h"
+#include "rom.h"
 
 int main() {
-
-	_delay_ms(500);
+	_delay_ms(500); // TODO remove this?
 	setup();
 
-	uint8_t recv;
+	uint8_t nxtByte;
+	uint16_t addr = 0x8000;
+	uint8_t addr_hi, addr_lo;
 
-	RAM_write(0x40, 0x00, 0x04);
-	RAM_write(0x40, 0x01, 0x03);
-	RAM_write(0x40, 0x02, 0x02);
-	RAM_write(0x40, 0x03, 0x01);
-	RAM_write(0x40, 0x04, 0x00);
-	_delay_us(1);
-
-	while(1) {
-		uint8_t success = 1;
-
-		if ((recv = RAM_read(0x40, 0x00)) != 0x04) success = 0;
-		if ((recv = RAM_read(0x40, 0x01)) != 0x03) success = 0;
-		if ((recv = RAM_read(0x40, 0x02)) != 0x02) success = 0;
-		if ((recv = RAM_read(0x40, 0x03)) != 0x01) success = 0;
-		if ((recv = RAM_read(0x40, 0x04)) != 0x00) success = 0;
-
-		PORTB |= (success << 1);
-		_delay_ms(500);
-		PORTB &= ~(1 << 1);
-		_delay_ms(500);
+	/* Write entire ROM to RAM chip, from starting address 0x8000 (mask 0x7FFF)*/
+	while (ROM_instructionsLeft()) {
+		nxtByte = ROM_fetchNextByte();
+		addr_hi = ((addr & 0xFF00) >> 8);
+		addr_lo = (addr & 0x00FF);
+		RAM_write(addr_hi, addr_lo, nxtByte);
+		addr++;
 	}
+
+	/* Verify RAM write */
+	addr = 0x8000;
+	ROM_resetPC();
+	uint8_t tmp;
+	uint8_t success = 1;
+	while (ROM_instructionsLeft()) {
+		nxtByte = ROM_fetchNextByte();
+		addr_hi = ((addr & 0xFF00) >> 8);
+		addr_lo = (addr & 0x00FF);
+		tmp = RAM_read(addr_hi, addr_lo);
+		addr+++;
+		if (tmp != nxtByte)
+			success = 0;
+	}
+
+	PORTB |= (success << DEBUG_LED);
+
+	while(1) {}
 
 	return 0;
 }
