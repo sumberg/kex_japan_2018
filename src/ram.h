@@ -2,11 +2,14 @@
 
 #include "expander.h"
 
+#define RAM_CTRL_DDR	DDRC
 #define RAM_CTRL_PORT	PORTC
-#define RW 				PC2
-#define CE				PC1
+#define RAM_CE			PC1
+#define RAM_RW			PC2
 
 
+/* Setup control pins for RAM */
+void RAM_setup(void);
 /* Perform a write to memory */
 void RAM_write(uint8_t, uint8_t, uint8_t);
 /* Perform a read from memory */

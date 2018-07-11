@@ -4,36 +4,23 @@
 static void setup_ports(void)
 {
 	/* PORTD as output */
-	DDRD = 0xFF;
-	PORTD = 0x00;
+	DATA_DDR = 0xFF;
+	DATA_PORT = 0x00;
 
 	/* PB1 debug led */
-	DDRB |= (1 << DEBUG_LED);
+	DEBUG_DDR |= (1 << DEBUG_LED);
 
-	// /********* CONTROL *********/
-	// /*
-	//  * PC1: RAM chip enable
-	//  * PC2: RAM RW select
-	//  * PC3: RAM OE select
-	//  * PC4: Slave reset
-	//  */
-	DDRC = 0x1E;
+	/* Slave reset control as output */
+	CTRL_DDR |= (1 << CTRL_RESET_SLAVE);
+	/* Keep slave in reset mode */
+	CTRL_PORT &= ~(1 << CTRL_RESET_SLAVE);
 }
 
 void setup(void)
 {
 	SPI_setup();
+	RAM_setup();
 	setup_ports();
-
-	/* Set RAM to self refresh & read mode */
-	RAM_CTRL_PORT |= ((1 << CE) | (1 << RW));
-
-	/* Enable SPI in master mode (fck/2) */
-	SPCR = (1 << SPE) | (1 << MSTR);
-	SPSR |= (1 << SPI2X);
-
-	SPDR = 0xFF;
-	while (!(SPSR & (1 << SPIF)));
 
 	/* Setup expander chip */
 	expander_setup();

@@ -28,11 +28,11 @@ void RAM_write(uint8_t mem_hi, uint8_t mem_lo, uint8_t data)
 	PORTD = data;
 
 	/* Enable chip and RAM write, and hold value until written (at least 55 ns) */
-	RAM_CTRL_PORT &= ~((1 << RW) | (1 << CE));
+	RAM_CTRL_PORT &= ~((1 << RAM_RW) | (1 << RAM_CE));
 	_delay_us(1);
 
 	/* Disable chip and RAM write */
-	RAM_CTRL_PORT |= ((1 << RW) | (1 << CE));
+	RAM_CTRL_PORT |= ((1 << RAM_RW) | (1 << RAM_CE));
 
 	/* Clear data on bus */
 	PORTD = 0x00;
@@ -54,17 +54,28 @@ uint8_t RAM_read(uint8_t mem_hi, uint8_t mem_lo)
 	DDRD = 0x00;
 
 	/* Enable chip and output, and old until data is stable (at least 55ns) */
-	RAM_CTRL_PORT &= ~(1 << CE);
+	RAM_CTRL_PORT &= ~(1 << RAM_CE);
 	_delay_us(1);
 
 	/* Read data */
 	data = PIND;
 
 	/* Disable chip */
-	RAM_CTRL_PORT |= (1 << CE);
+	RAM_CTRL_PORT |= (1 << RAM_CE);
 
 	/* Reset Data port to output mode, and return read data */
 	DDRD = 0xFF;
 
 	return data;
+}
+
+/* Setup control pins for RAM */
+void RAM_setup(void)
+{
+	// PC1: RAM chip enable
+	// PC2: RAM RW select
+	RAM_CTRL_DDR |= (1 << RAM_CE) | (1 << RAM_RW);
+
+	/* Set RAM to self refresh & read mode */
+	RAM_CTRL_PORT |= ((1 << RAM_CE) | (1 << RAM_RW));
 }

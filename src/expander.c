@@ -1,4 +1,3 @@
-#include "SPI.h"
 #include "expander.h"
 
 void expander_setup(void)
