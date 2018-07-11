@@ -12,13 +12,11 @@
 #define EXPANDER_PORTA 0x12
 #define EXPANDER_PORTB 0x13
 
-#define CS 0x00
+#define CS 0x02
 
 /* Initializes ports as output, and other settings */
-void setup_expander(void);
+void expander_setup(void);
 /* Write data to expander address addr */
 void expander_write(uint8_t address, uint8_t data);
 /* Sets value to output on port A and B */
 void expander_set_ports_AB(uint8_t dataA, uint8_t dataB);
-
-

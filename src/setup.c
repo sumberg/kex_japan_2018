@@ -1,53 +1,40 @@
-#include <avr/io.h>
-
-#include "expander.h"
+#include "setup.h"
 
 /* Setup all ports used on Atmega328 */
-void setup_ports(void);
-
-void setup_ports(void)
+static void setup_ports(void)
 {
-	/********* SPI SETUP *********/
-	/* Set MOSI, SCK, SS as output */
-	DDRB = (1 << 5) | (1 << 3) | (1 << 2);;
-	/* Data bus on PORTD */
+	/* PORTD as output */
 	DDRD = 0xFF;
+	PORTD = 0x00;
 
-	/********* CONTROL *********/
-	/*
-	 * PC0: GPIO expander chip select
-	 * PC1: RAM chip enable
-	 * PC2: RAM RW select
-	 * PC3: RAM OE select
-	 * PC4: Slave reset
-	 */
-	DDRC = 0x1F;
+	/* PB1 debug led */
+	DDRB |= (1 << DEBUG_LED);
 
-	/* Debug LED on PB1 */
-	DDRB |= (1 << 1);
+	// /********* CONTROL *********/
+	// /*
+	//  * PC1: RAM chip enable
+	//  * PC2: RAM RW select
+	//  * PC3: RAM OE select
+	//  * PC4: Slave reset
+	//  */
+	DDRC = 0x1E;
 }
 
 void setup(void)
 {
-	/* Setup GPIO */
+	SPI_setup();
 	setup_ports();
 
-	/* Keep slave in reset mode */
-	PORTC &= ~(1 << 4);
+	/* Set RAM to self refresh & read mode */
+	RAM_CTRL_PORT |= ((1 << CE) | (1 << RW));
 
-	/* RAM read mode as default */
-	PORTC &= ~(1 << 2);
-
-	/* Disable RAM during setup */
-	PORTC |= (1 << 1);
-
-	/* Enabe SPI in master mode */
+	/* Enable SPI in master mode (fck/2) */
 	SPCR = (1 << SPE) | (1 << MSTR);
+	SPSR |= (1 << SPI2X);
+
+	SPDR = 0xFF;
+	while (!(SPSR & (1 << SPIF)));
 
 	/* Setup expander chip */
-	setup_expander();
-
-	/* Enable RAM */
-	PORTC &= ~(1 << 1);
-
+	expander_setup();
 }

@@ -21,17 +21,21 @@ static void set_RAM_address(uint8_t mem_hi, uint8_t mem_lo)
  **/
 void RAM_write(uint8_t mem_hi, uint8_t mem_lo, uint8_t data)
 {
+	/* Set write address, and hold until data is stable (at least 55ns) */
 	set_RAM_address(mem_hi, mem_lo);
 
 	/* Prepare data on bus */
 	PORTD = data;
 
-	/* Enable RAM write, and hold value until written (at least 55 ns) */
-	PORTC &= ~(1 << 2);
+	/* Enable chip and RAM write, and hold value until written (at least 55 ns) */
+	RAM_CTRL_PORT &= ~((1 << RW) | (1 << CE));
 	_delay_us(1);
 
-	/* Disable RAM write */
-	PORTC |= (1 << 2);
+	/* Disable chip and RAM write */
+	RAM_CTRL_PORT |= ((1 << RW) | (1 << CE));
+
+	/* Clear data on bus */
+	PORTD = 0x00;
 }
 
 /* Performs a single byte read from RAM
@@ -43,16 +47,22 @@ uint8_t RAM_read(uint8_t mem_hi, uint8_t mem_lo)
 {
 	uint8_t data;
 
+	/* Set read address */
+	set_RAM_address(mem_hi, mem_lo);
+
 	/* Set Data port as input temporarily to perform read */
 	DDRD = 0x00;
 
-	/* Set read address, and hold until data is stable (at least 55ns) */
-	set_RAM_address(mem_hi, mem_lo);
+	/* Enable chip and output, and old until data is stable (at least 55ns) */
+	RAM_CTRL_PORT &= ~(1 << CE);
 	_delay_us(1);
 
 	/* Read data */
 	data = PIND;
-	
+
+	/* Disable chip */
+	RAM_CTRL_PORT |= (1 << CE);
+
 	/* Reset Data port to output mode, and return read data */
 	DDRD = 0xFF;
 
