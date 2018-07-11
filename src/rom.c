@@ -156,3 +156,53 @@ void ROM_nextInstruction(Instruction *instr)
 			instr->operands.zp_addr = 0x85;
 	}
 }
+
+/* Write entire ROM to RAM chip, from starting address 0x8000 (mask 0x7FFF),
+ * and verifies that write is successful.
+ * Return: success - 1 if success, 0 otherwise
+ */
+uint8_t ROM_TO_RAM(void)
+{
+	uint16_t addr = 0x8000;
+	uint8_t nxtByte, addr_hi, addr_lo;
+	addr_hi = addr_lo = 0;
+	while (ROM_instructionsLeft()) {
+		nxtByte = ROM_fetchNextByte();
+		addr_hi = ((addr & 0xFF00) >> 8);
+		addr_lo = (addr & 0x00FF);
+		RAM_write(addr_hi, addr_lo, nxtByte);
+		addr++;
+	}
+
+	/* Write end loop at address 0xFF00 */
+	RAM_write(0xFF, 0x00, JMP_abs);
+	RAM_write(0xFF, 0x01, 0x00);
+	RAM_write(0xFF, 0x02, 0xFF);
+
+	/* Set reset vector (0xFFFC-0xFFFD) to point to start of program memory
+	* (0x8000) */
+	RAM_write(0xFF, 0xFC, 0x00);
+	RAM_write(0xFF, 0xFD, 0x80);
+
+
+	/* Verify write success */
+	addr = 0x8000;
+	ROM_resetPC();
+	uint8_t tmp;
+	uint8_t success = 1;
+	/* Verify program ROM */
+	while (ROM_instructionsLeft()) {
+		nxtByte = ROM_fetchNextByte();
+		addr_hi = ((addr & 0xFF00) >> 8);
+		addr_lo = (addr & 0x00FF);
+		tmp = RAM_read(addr_hi, addr_lo);
+		addr++;
+		if (tmp != nxtByte)
+			success = 0;
+	}
+	/* Verify reset vector */
+	if ((tmp = RAM_read(0xFF, 0xFC)) != 0x00) success = 0;
+	if ((tmp = RAM_read(0xFF, 0xFD)) != 0x80) success = 0;
+
+	return success;
+}
