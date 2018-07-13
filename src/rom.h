@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include "ram.h"
 
 /* Union of structs divided into different addressing modes */
 typedef struct {
@@ -15,10 +16,17 @@ typedef struct {
 
 enum AddrMode { ZERO_PAGE, IMMEDIATE, ABSOLUTE, UNSUPPORTED };
 
+/* Return next byte of ROM */
+uint8_t ROM_fetchNextByte(void);
 /* Returns 'true' if ROM still contains instructions, 'false' otherwise */
-uint8_t instructionsLeft(void);
+uint8_t ROM_instructionsLeft(void);
+/* Write entire ROM to RAM chip, from starting address 0x8000 (mask 0x7FFF)
+ * and verifies */
+uint8_t ROM_TO_RAM(void);
 /* Fetches the next instruction from ROM, and places it into the supplied
  * instruction struct */
 void ROM_nextInstruction(Instruction*);
 /* Gets the addressing mode for the instruction based on its opcode */
-enum AddrMode getOpcodeAddrMode(uint8_t opcode);
+enum AddrMode ROM_getOpcodeAddrMode(uint8_t opcode);
+/* Reset ROM program counter to beginning of ROM */
+void ROM_resetPC(void);
