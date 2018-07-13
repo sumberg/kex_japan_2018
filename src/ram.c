@@ -69,13 +69,25 @@ uint8_t RAM_read(uint8_t mem_hi, uint8_t mem_lo)
 	return data;
 }
 
+/* Zeros out entire RAM */
+void RAM_reset(void)
+{
+	for (uint8_t i = 0x00; i < 0xFF; i++) {
+		for (uint8_t j = 0x00; j <= 0xFF; j++) {
+			RAM_write(i, j, 0x00);
+		}
+	}
+}
+
 /* Setup control pins for RAM */
 void RAM_setup(void)
 {
+	// PC0: RAM OE/Refresh
 	// PC1: RAM chip enable
 	// PC2: RAM RW select
-	RAM_CTRL_DDR |= (1 << RAM_CE) | (1 << RAM_RW);
+	RAM_CTRL_DDR |= (1 << RAM_CE) | (1 << RAM_RW) | (1 << RAM_OE);
 
 	/* Set RAM to self refresh & read mode */
 	RAM_CTRL_PORT |= ((1 << RAM_CE) | (1 << RAM_RW));
+
 }

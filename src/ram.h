@@ -4,9 +4,9 @@
 
 #define RAM_CTRL_DDR	DDRC
 #define RAM_CTRL_PORT	PORTC
+#define RAM_OE			PC0
 #define RAM_CE			PC1
 #define RAM_RW			PC2
-
 
 /* Setup control pins for RAM */
 void RAM_setup(void);
