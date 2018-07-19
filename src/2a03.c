@@ -85,27 +85,45 @@ void invert_slave_accumulator(void) {
 	}
 }
 
-void send_slave_instruction(Instruction *instr) {
-	enum AddrMode am = getOpcodeAddrMode(instr->opcode);
-	switch (am) {
-		case ZERO_PAGE:
-			slave_send_instruction_zero_page(
-				instr->opcode, instr->operands.zp_addr);
-			break;
-		case IMMEDIATE:
-			slave_send_instruction_immediate(
-				instr->opcode, instr->operands.imm_val);
-			break;
-		case ABSOLUTE:
-			slave_send_instruction_absolute(
+void send_slave_absolute(Instruction *instr)
+{
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+		slave_send_instruction_absolute(
 				instr->opcode,
 				instr->operands.abs_addr.hi,
 				instr->operands.abs_addr.lo);
+	}
+}
+
+void send_slave_immediate(Instruction *instr)
+{
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+		slave_send_instruction_immediate(instr->opcode, instr->operands.imm_val);
+	}
+}
+
+void send_slave_zero_page(Instruction *instr)
+{
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+		slave_send_instruction_zero_page(instr->opcode, instr->operands.zp_addr);
+	}
+}
+
+void send_slave_instruction(Instruction *instr) {
+	enum AddrMode am = ROM_getOpcodeAddrMode(instr->opcode);
+	switch (am) {
+		case ZERO_PAGE:
+			send_slave_zero_page(instr);
+			break;
+		case IMMEDIATE:
+			send_slave_immediate(instr);
+			break;
+		case ABSOLUTE:
+			send_slave_absolute(instr);
 			break;
 		case UNSUPPORTED:
 			/* Treat unsupported instructions as idle instructions (STA zp) */
-			slave_send_instruction_zero_page(
-				instr->opcode, instr->operands.zp_addr);
+			send_slave_zero_page(instr);
 			break;
 	}
 }
