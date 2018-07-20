@@ -11,6 +11,9 @@
 #define SLAVE_RESET_MASK 0xFE;
 #define SLAVE_RELEASE_MASK 0x01;
 
+#define DEBUG_PORT PORTC
+#define DEBUG_LED PC4
+
 /* Setup GPIO pins for input/output */
 void setup_ports(void);
 /* Sends (and holds) reset signal to slave */

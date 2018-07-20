@@ -1,29 +1,5 @@
 #include "rom.h"
 
-enum OPCODES {
-	ADC_abs = 0x6D,
-	ADC_imm = 0x69,
-	ADC_zp = 0x65,
-	ASL_acc = 0x0A, // TODO this is unsupported
-	ASL_zp = 0x06,
-	ASL_abs = 0x0E,
-	EOR_abs = 0x4D,
-	EOR_imm = 0x49,
-	EOR_zp = 0x45,
-	JMP_abs = 0x4C,
-	LDA_abs = 0xAD,
-	LDA_imm = 0xA9,
-	LDA_zp = 0xA5,
-	ORA_abs = 0x0D,
-	ORA_imm = 0x09,
-	ORA_zp = 0x05,
-	SBC_abs = 0xED,
-	SBC_imm = 0xE9,
-	SBC_zp = 0xE5,
-	STA_abs = 0x8D,
-	STA_zp = 0x85,
-};
-
 /* A Program is a set of instructions contained within ROM, and
  * is run in the range of its start_instruction to end_instruction. */
 typedef struct {
@@ -192,54 +168,4 @@ void ROM_nextInstruction(Instruction *instr)
 			instr->opcode = 0x85;
 			instr->operands.zp_addr = 0x85;
 	}
-}
-
-/* Write entire ROM to RAM chip, from starting address 0x8000 (mask 0x7FFF),
- * and verifies that write is successful.
- * Return: success - 1 if success, 0 otherwise
- */
-uint8_t ROM_TO_RAM(void)
-{
-	uint16_t addr = 0x8000;
-	uint8_t nxtByte, addr_hi, addr_lo;
-	addr_hi = addr_lo = 0;
-	while (ROM_instructionsLeft()) {
-		nxtByte = ROM_fetchNextByte();
-		addr_hi = ((addr & 0xFF00) >> 8);
-		addr_lo = (addr & 0x00FF);
-		RAM_write(addr_hi, addr_lo, nxtByte);
-		addr++;
-	}
-
-	/* Write end loop at address 0xFF00 */
-	RAM_write(0xFF, 0x00, JMP_abs);
-	RAM_write(0xFF, 0x01, 0x00);
-	RAM_write(0xFF, 0x02, 0xFF);
-
-	/* Set reset vector (0xFFFC-0xFFFD) to point to start of program memory
-	* (0x8000) */
-	RAM_write(0xFF, 0xFC, 0x00);
-	RAM_write(0xFF, 0xFD, 0x80);
-
-
-	/* Verify write success */
-	addr = 0x8000;
-	ROM_resetPC();
-	uint8_t tmp;
-	uint8_t success = 1;
-	/* Verify program ROM */
-	while (ROM_instructionsLeft()) {
-		nxtByte = ROM_fetchNextByte();
-		addr_hi = ((addr & 0xFF00) >> 8);
-		addr_lo = (addr & 0x00FF);
-		tmp = RAM_read(addr_hi, addr_lo);
-		addr++;
-		if (tmp != nxtByte)
-			success = 0;
-	}
-	/* Verify reset vector */
-	if ((tmp = RAM_read(0xFF, 0xFC)) != 0x00) success = 0;
-	if ((tmp = RAM_read(0xFF, 0xFD)) != 0x80) success = 0;
-
-	return success;
 }

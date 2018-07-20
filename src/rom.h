@@ -1,5 +1,31 @@
+#pragma once
+
 #include <stdint.h>
-#include "ram.h"
+
+enum OPCODES {
+	ADC_abs = 0x6D,
+	ADC_imm = 0x69,
+	ADC_zp = 0x65,
+	ASL_acc = 0x0A, // TODO this is unsupported
+	ASL_zp = 0x06,
+	ASL_abs = 0x0E,
+	EOR_abs = 0x4D,
+	EOR_imm = 0x49,
+	EOR_zp = 0x45,
+	JMP_abs = 0x4C,
+	LDA_abs = 0xAD,
+	LDA_imm = 0xA9,
+	LDA_zp = 0xA5,
+	ORA_abs = 0x0D,
+	ORA_imm = 0x09,
+	ORA_zp = 0x05,
+	SBC_abs = 0xED,
+	SBC_imm = 0xE9,
+	SBC_zp = 0xE5,
+	STA_abs = 0x8D,
+	STA_zp = 0x85,
+};
+
 
 /* Union of structs divided into different addressing modes */
 typedef struct {

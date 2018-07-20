@@ -746,7 +746,6 @@ slave_send_instruction_zero_page16:
 	out DATA_OUT, r22
 	out DATA_OUT, r22
 
-
 	;; Return to idle STA_zp instr
 	ldi r18, STA_zp
 	nop
