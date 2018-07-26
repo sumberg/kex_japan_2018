@@ -32,6 +32,7 @@ RWBIT = 0x01
 
 ;; I/O ports
 RWPORT = 0x03			;; PORTB
+DATA_DIR = 0x0A			;; DDRD
 DATA_OUT = 0x0B			;; PORTD
 DATA_IN = 0x06			;; PINC
 PORTC = 0x08			;; PORTC
@@ -658,9 +659,9 @@ slave_send_instruction_immediate16:
 	out DATA_OUT, r22
 	out DATA_OUT, r22
 
-	;; Return to idle STA_zp instr
-	ldi r20, STA_zp
-	nop
+	;; R/W cycle
+	in r20, PORTC
+	ori r20, OE_DISABLE_MASK
 	nop
 	nop
 	nop
@@ -672,8 +673,25 @@ slave_send_instruction_immediate16:
 	.rept \fill
 	nop
 	.endr
-	out DATA_OUT, r20
-	out DATA_OUT, r20
+	out PORTC, r20
+	out PORTC, r20
+
+	;; Return to idle STA_zp instr
+	in r20, PORTC
+	andi r20, OE_ENABLE_MASK
+	ldi r21, STA_zp
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	.rept \fill
+	nop
+	.endr
+	out DATA_OUT, r21
+	out PORTC, r20
 
 	ret
 .endm
@@ -746,10 +764,27 @@ slave_send_instruction_zero_page16:
 	out DATA_OUT, r22
 	out DATA_OUT, r22
 
+	;; R/W cycle
+	in r20, PORTC
+	ori r20, OE_DISABLE_MASK
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	.rept \fill
+	nop
+	.endr
+	out PORTC, r20
+	out PORTC, r20
+
 	;; Return to idle STA_zp instr
+	in r20, PORTC
+	andi r20, OE_ENABLE_MASK
 	ldi r18, STA_zp
-	nop
-	nop
 	nop
 	nop
 	nop
@@ -762,6 +797,7 @@ slave_send_instruction_zero_page16:
 	nop
 	.endr
 	out DATA_OUT, r18
+	out PORTC, r20
 
 	ret
 .endm
