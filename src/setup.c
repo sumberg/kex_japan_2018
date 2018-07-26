@@ -9,11 +9,9 @@ void setup_ports(void)
 	/* PORTD - Data output pins */
 	/* Using entire 8 bits of register as output */
 	DDRD = PORTD_ALL_OUTPUT;
-	/* PORTB - External clock and slave reset control */
-	DDRB =
-		PORTB_SLAVE_RESET
-		| PORTB_CLOCK_IN;
-	/* PC0-PC2 Data input, PC3 Latch OE, PC4-PC5 debug leds */
+	/* PORTB - External clock and slave reset control, Timer stop output PB3 */
+	DDRB = PORTB_SLAVE_RESET | PORTB_CLOCK_IN | (3 << PB3);
+	/* PC0-PC2 data input, PC3 Latch OE, PC4-PC5 debug leds */
 	DDRC = (7 << 3);
 }
 
