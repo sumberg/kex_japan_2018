@@ -1,38 +1,5 @@
 #include "rom.h"
 
-enum OPCODES {
-	ADC_abs = 0x6D,
-	ADC_imm = 0x69,
-	ADC_zp = 0x65,
-	ASL_acc = 0x0A, // TODO this is unsupported
-	ASL_zp = 0x06,
-	ASL_abs = 0x0E,
-	CLD = 0xD8,
-	EOR_abs = 0x4D,
-	EOR_imm = 0x49,
-	EOR_zp = 0x45,
-	INX = 0xE8,
-	JMP_abs = 0x4C,
-	LDA_abs = 0xAD,
-	LDA_imm = 0xA9,
-	LDA_zp = 0xA5,
-	LDX_abs = 0xAE,
-	LDX_imm = 0xA2,
-	LDX_zp = 0xA6,
-	ORA_abs = 0x0D,
-	ORA_imm = 0x09,
-	ORA_zp = 0x05,
-	SBC_abs = 0xED,
-	SBC_imm = 0xE9,
-	SBC_zp = 0xE5,
-	SEI = 0x78,
-	STA_abs = 0x8D,
-	STA_zp = 0x85,
-	STX_abs = 0x8E,
-	STX_zp = 0x86,
-	TXS = 0x9A,
-};
-
 /* A Program is a set of instructions contained within ROM, and
  * is run in the range of its start_instruction to end_instruction. */
 typedef struct {
