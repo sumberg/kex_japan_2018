@@ -10,6 +10,10 @@
 #define LED_ON() (DEBUG_PORT |= (1 << DEBUG_LED))
 #define LED_OFF() (DEBUG_PORT &= ~(1 << DEBUG_LED))
 
+#define SIGNAL_READY() (TIMING_PORT |= (1 << READY_PIN))
+#define SIGNAL_STOP() (TIMING_PORT |= (1 << STOP_PIN))
+#define SIGNAL_START (TIMING_PORT_IN & (1 << START_PIN))
+
 void start_slave(void);
 void stop_slave(void);
 void flash_led(uint8_t);

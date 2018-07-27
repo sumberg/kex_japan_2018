@@ -14,6 +14,12 @@ static void setup_ports(void)
 	CTRL_DDR |= (1 << CTRL_RESET_SLAVE);
 	/* Keep slave in reset mode */
 	CTRL_PORT &= ~(1 << CTRL_RESET_SLAVE);
+
+	/* Timing */
+	TIMING_DDR |= (1 << STOP_PIN) | (1 << READY_PIN);
+
+	/* Error */
+	ERROR_DDR |= (1 << ERROR_LED);
 }
 
 void setup(void)
