@@ -7,131 +7,20 @@ typedef struct {
 	int end_instruction;
 } Program;
 
-/* Program ROM here */
-static uint8_t ROM[512] = {
-	/* Setup */
-	SEI,
-	CLD,
-	LDX_imm, 0x40,
-	STX_abs, 0x17, 0x40,
-	LDX_imm, 0xFF,
-	TXS,
-	INX,
-	STX_abs, 0x00, 0x20,
-	STX_abs, 0x01, 0x20,
-	STX_abs, 0x10, 0x40,
-
-
-	/* Test simple store and load */
-	LDA_imm, 0xAA,
-	STA_zp, 0x20, // zero page 0x20 should now contain 0xAA
-	LDA_imm, 0x55,
-	STA_zp, 0x21, // zero page 0x21 should now contain 0x55
-	LDA_imm, 0x66,
-	STA_zp, 0x22, // zero page 0x22 should now contain 0x66
-
-	/* Test logical operations */
-	LDA_zp, 0x20,
-	ORA_zp, 0x21,
-	STA_zp, 0x23, // zero page 0x23 should now contain 0xFF
-	LDA_zp, 0x22,
-	EOR_imm, 0xFF,
-	STA_zp, 0x24, // zero page 0x24 should now contain 0x99
-	LDA_zp, 0x23,
-	ORA_zp, 0x24,
-	ORA_imm, 0x24,
-	STA_zp, 0x25, // zero page 0x25 should now contain 0xBD
-	STA_zp, 0x26,
-	ASL_zp, 0x26, // zero page 0x26 should now contain 0x7A
-	LDA_zp, 0x26,
-	STA_zp, 0x27,
-	ASL_zp, 0x27, // zero page 0x27 should now contain 0xF4
-
-	/* Test arithmetic operations */
-	LDA_imm, 0x00,
-	ADC_imm, 0x01,
-	STA_zp, 0x28, // zero page 0x28 should now contain 0x01
-	ADC_zp, 0x28,
-	STA_zp, 0x29, // zero page 0x29 should now contain 0x02
-	ADC_zp, 0x29,
-	STA_zp, 0x2A, // zero page 0x2A should now contain 0x04
-	ADC_zp, 0x2A,
-	STA_zp, 0x2B, // zero page 0x2B should now contain 0x08
-	ADC_zp, 0x2B,
-	STA_zp, 0x2C, // zero page 0x2C should now contain 0x10
-	STA_zp, 0x2D,
-	SBC_imm, 0x01, // zero page 0x2D should now contain 0x0F
-	LDA_zp, 0x2D,
-	STA_zp, 0x2E,
-	SBC_imm, 0x01,
-	SBC_imm, 0x01,
-	SBC_imm, 0x01,
-	SBC_imm, 0x01,
-	SBC_imm, 0x01, // zero page 0x2E should now contain 0x0A
-
-	/* Test APU store and loads */
-	LDA_imm, 0x30,
-	STA_abs, 0x00, 0x40, // 0x4000 should now contain 0x30
-	LDA_imm, 0x00,
-	STA_abs, 0x01, 0x40,
-	STA_abs, 0x02, 0x40,
-	STA_abs, 0x03, 0x40, // 0x4001-0x4003 should now contain 0x00
-	LDA_abs, 0x00, 0x40,
-	STA_zp, 0x2F, // zero page 0x2F should now (maybe) contain 0x30
-
-	/* Write zp values to RAM, from address 0x6000 and up */
-	LDA_zp, 0x20,
-	STA_abs, 0x00, 0x60,
-	LDA_zp, 0x21,
-	STA_abs, 0x01, 0x60,
-	LDA_zp, 0x22,
-	STA_abs, 0x02, 0x60,
-	LDA_zp, 0x23,
-	STA_abs, 0x03, 0x60,
-	LDA_zp, 0x24,
-	STA_abs, 0x04, 0x60,
-	LDA_zp, 0x25,
-	STA_abs, 0x05, 0x60,
-	LDA_zp, 0x26,
-	STA_abs, 0x06, 0x60,
-	LDA_zp, 0x27,
-	STA_abs, 0x07, 0x60,
-	LDA_zp, 0x28,
-	STA_abs, 0x08, 0x60,
-	LDA_zp, 0x29,
-	STA_abs, 0x09, 0x60,
-	LDA_zp, 0x2A,
-	STA_abs, 0x0A, 0x60,
-	LDA_zp, 0x2B,
-	STA_abs, 0x0B, 0x60,
-	LDA_zp, 0x2C,
-	STA_abs, 0x0C, 0x60,
-	LDA_zp, 0x2D,
-	STA_abs, 0x0D, 0x60,
-	LDA_zp, 0x2E,
-	STA_abs, 0x0E, 0x60,
-	LDA_zp, 0x2F,
-	STA_abs, 0x0F, 0x60,
-
-	/* Jump to end loop (0xFF00) */
-	JMP_abs, 0x00, 0xFF,
-	/* End of instructions */
-	0xFF, 0xFF
-};
-
 /* ROM "program counter" */
 static uint16_t nxt = 0;
 
 /* Gets the next byte from ROM */
-uint8_t ROM_fetchNextByte(void)
+uint8_t ROM_fetchNextByte(uint8_t *prgROM)
 {
-	return ROM[nxt++];
+	return prgROM[nxt++];
 }
 
 /* Returns 'true' if ROM still contains instructions, 'false' otherwise */
-uint8_t ROM_instructionsLeft(void)
+uint8_t ROM_instructionsLeft(uint8_t *prgROM)
 {
-	return ROM[nxt] != 0xFF;
+	/* If three contiguous bytes contain 0xFF, we have reached end of program */
+	return (prgROM[nxt] != 0xFF) && (prgROM[nxt + 1] != 0xFF) && (prgROM[nxt + 2] != 0xFF);
 }
 
 /* Gets the addressing mode of operation */
@@ -157,24 +46,24 @@ void ROM_resetPC(void)
 /* Fetches the next instruction from ROM, and places it into the supplied
  * instruction struct. If memory has reached end of instructions, wrap around
  * and start fetching instructions from the beginning. */
-void ROM_nextInstruction(Instruction *instr)
+void ROM_nextInstruction(uint8_t *prgROM, Instruction *instr)
 {
-	if (!ROM_instructionsLeft())
+	if (!ROM_instructionsLeft(prgROM))
 		ROM_resetPC();
 
-	instr->opcode = ROM_fetchNextByte();
+	instr->opcode = ROM_fetchNextByte(prgROM);
 	enum AddrMode am = ROM_getOpcodeAddrMode(instr->opcode);
 
 	switch(am) {
 		case ZERO_PAGE:
-			instr->operands.zp_addr = ROM_fetchNextByte();
+			instr->operands.zp_addr = ROM_fetchNextByte(prgROM);
 			break;
 		case IMMEDIATE:
-			instr->operands.imm_val = ROM_fetchNextByte();
+			instr->operands.imm_val = ROM_fetchNextByte(prgROM);
 			break;
 		case ABSOLUTE:
-			instr->operands.abs_addr.lo = ROM_fetchNextByte();
-			instr->operands.abs_addr.hi = ROM_fetchNextByte();
+			instr->operands.abs_addr.lo = ROM_fetchNextByte(prgROM);
+			instr->operands.abs_addr.hi = ROM_fetchNextByte(prgROM);
 			break;
 		case UNSUPPORTED:
 			/* Treat unsupported instructions as idle mode (STA zp) */
@@ -183,27 +72,34 @@ void ROM_nextInstruction(Instruction *instr)
 	}
 }
 
-/* Write entire ROM to RAM chip, from starting address 0x8000 (mask 0x7FFF),
- * and verifies that write is successful.
- * Return: success - 1 if success, 0 otherwise
+/* Write numBytes worth of bytes from ROM to RAM chip, from starting address 0x8000,
+ * and verify that write is successful.
+ * NOTE: Assumes that ROM <= available RAM memory
+ * Params:
+ * 		numBytes - number of program ROM bytes to copy
+ * Return:
+ * 		1 if success, 0 otherwise
  */
-uint8_t ROM_TO_RAM(void)
+uint8_t ROM_TO_RAM(uint8_t *prgROM)
 {
+	ROM_resetPC();
+
 	uint16_t addr = 0x8000;
 	uint8_t nxtByte, addr_hi, addr_lo;
 	addr_hi = addr_lo = 0;
-	while (ROM_instructionsLeft()) {
-		nxtByte = ROM_fetchNextByte();
-		addr_hi = ((addr & 0xFF00) >> 8);
-		addr_lo = (addr & 0x00FF);
+	while (ROM_instructionsLeft(prgROM)) {
+		PORTB |= (1 << PB1);
+		nxtByte = ROM_fetchNextByte(prgROM);
+		addr_hi = ((addr & ADDR_HI_MASK) >> 8);
+		addr_lo = (addr & ADDR_LO_MASK);
 		RAM_write(addr_hi, addr_lo, nxtByte);
 		addr++;
 	}
 
-	/* Write end loop at address 0xFF00 */
-	RAM_write(0xFF, 0x00, JMP_abs);
-	RAM_write(0xFF, 0x01, 0x00);
-	RAM_write(0xFF, 0x02, 0xFF);
+	/* Write end loop at address 0xFFF0 */
+	RAM_write(0xFF, 0xF0, JMP_abs);
+	RAM_write(0xFF, 0xF1, 0xF0);
+	RAM_write(0xFF, 0xF2, 0xFF);
 
 	/* Set reset vector (0xFFFC-0xFFFD) to point to start of program memory
 	* (0x8000) */
@@ -215,20 +111,22 @@ uint8_t ROM_TO_RAM(void)
 	ROM_resetPC();
 	uint8_t tmp;
 	uint8_t success = 1;
+
 	/* Verify program ROM */
-	while (ROM_instructionsLeft()) {
-		nxtByte = ROM_fetchNextByte();
-		addr_hi = ((addr & 0xFF00) >> 8);
-		addr_lo = (addr & 0x00FF);
+	while (ROM_instructionsLeft(prgROM)) {
+		nxtByte = ROM_fetchNextByte(prgROM);
+		addr_hi = ((addr & ADDR_HI_MASK) >> 8);
+		addr_lo = (addr & ADDR_LO_MASK);
 		tmp = RAM_read(addr_hi, addr_lo);
+		/* fuck this rad */
+		if (tmp != nxtByte) success = 0;
 		addr++;
-		if (tmp != nxtByte)
-			success = 0;
 	}
+
 	/* Verify end loop */
-	if (RAM_read(0xFF,0x00) != JMP_abs) success = 0;
-	if (RAM_read(0xFF,0x01) != 0x00) success = 0;
-	if (RAM_read(0xFF,0x02) != 0xFF) success = 0;
+	if (RAM_read(0xFF,0xF0) != JMP_abs) success = 0;
+	if (RAM_read(0xFF,0xF1) != 0xF0) success = 0;
+	if (RAM_read(0xFF,0xF2) != 0xFF) success = 0;
 	/* Verify reset vector */
 	if (RAM_read(0xFF, 0xFC) != 0x00) success = 0;
 	if (RAM_read(0xFF, 0xFD) != 0x80) success = 0;

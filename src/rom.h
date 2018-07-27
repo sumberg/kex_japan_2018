@@ -1,6 +1,13 @@
 #include <stdint.h>
 #include "ram.h"
 
+#define ROM_BASEADDR 8000
+#define ROM_ENDADDR 0xFFED
+#define ROM_MAXSIZE_BYTES (ROM_ENDADDR - ROM_BASEADDR)
+
+#define ADDR_HI_MASK 0xFF00
+#define ADDR_LO_MASK 0x00FF
+
 enum OPCODES {
 	ADC_abs = 0x6D,
 	ADC_imm = 0x69,
@@ -50,15 +57,15 @@ typedef struct {
 enum AddrMode { ZERO_PAGE, IMMEDIATE, ABSOLUTE, UNSUPPORTED };
 
 /* Return next byte of ROM */
-uint8_t ROM_fetchNextByte(void);
+uint8_t ROM_fetchNextByte(uint8_t *prgROM);
 /* Returns 'true' if ROM still contains instructions, 'false' otherwise */
-uint8_t ROM_instructionsLeft(void);
-/* Write entire ROM to RAM chip, from starting address 0x8000 (mask 0x7FFF)
+uint8_t ROM_instructionsLeft(uint8_t *prgROM);
+/* Write numBytes worth of ROM to RAM chip, from starting address 0x8000 (mask 0x7FFF)
  * and verifies */
-uint8_t ROM_TO_RAM(void);
+uint8_t ROM_TO_RAM(uint8_t *prgROM);
 /* Fetches the next instruction from ROM, and places it into the supplied
  * instruction struct */
-void ROM_nextInstruction(Instruction*);
+void ROM_nextInstruction(uint8_t *prgROM, Instruction*);
 /* Gets the addressing mode for the instruction based on its opcode */
 enum AddrMode ROM_getOpcodeAddrMode(uint8_t opcode);
 /* Reset ROM program counter to beginning of ROM */
