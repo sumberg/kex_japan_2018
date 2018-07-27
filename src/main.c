@@ -16,6 +16,7 @@
 
 #define SIGNAL_READY()	(TIMING_PORT |= (1 << READY_PIN))
 #define SIGNAL_STOP()	(TIMING_PORT |= (1 << STOP_PIN))
+#define CLEAR_STOP() 	(TIMING_PORT &= ~(1 << STOP_PIN))
 #define SIGNAL_START	(TIMING_PORT_IN & (1 << START_PIN))
 
 void start_slave(void);
@@ -30,7 +31,7 @@ int main()
 	/* ROM to write to slave */
 	uint8_t *ROM = (uint8_t*) malloc(sizeof(uint8_t) * 1024);
 
-	/*Setup */
+	// /*Setup */
 	// ROM[0x0000] = SEI;
 	// ROM[0x0001] = CLD;
 	// ROM[0x0002] = LDX_imm; ROM[0x0003] = 0x40;
@@ -41,8 +42,8 @@ int main()
 	// ROM[0x000b] = STX_abs; ROM[0x000c] = 0x00; ROM[0x000d] = 0x20;
 	// ROM[0x000e] = STX_abs; ROM[0x000f] = 0x01; ROM[0x0010] = 0x20;
 	// ROM[0x0011] = STX_abs; ROM[0x0012] = 0x10; ROM[0x0013] = 0x40;
-
-	/*Test simple store and load */
+	//
+	// /*Test simple store and load */
 	// ROM[0x0014] = LDA_imm; ROM[0x0015] = 0xAA;
 	// ROM[0x0016] = STA_zp; ROM[0x0017] = 0x20;  //zero page 0x20 should now contain 0xAA
 	// ROM[0x0018] = LDA_imm; ROM[0x0019] = 0x55;
@@ -50,7 +51,7 @@ int main()
 	// ROM[0x001c] = LDA_imm; ROM[0x001d] = 0x66;
 	// ROM[0x001e] = STA_zp; ROM[0x001f] = 0x22;  //zero page 0x22 should now contain 0x66
 	//
-	/*Test logical operations */
+	// /*Test logical operations */
 	// ROM[0x0020] = LDA_zp; ROM[0x0021] = 0x20;
 	// ROM[0x0022] = ORA_zp; ROM[0x0023] = 0x21;
 	// ROM[0x0024] = STA_zp; ROM[0x0025] = 0x23;  //zero page 0x23 should now contain 0xFF
@@ -66,8 +67,8 @@ int main()
 	// ROM[0x0038] = LDA_zp; ROM[0x0039] = 0x26;
 	// ROM[0x003a] = STA_zp; ROM[0x003b] = 0x27;
 	// ROM[0x003c] = ASL_zp; ROM[0x003d] = 0x27;  //zero page 0x27 should now contain 0xF4
-
-	/*Test arithmetic operations */
+	//
+	// /*Test arithmetic operations */
 	// ROM[0x003e] = LDA_imm; ROM[0x003f] = 0x00;
 	// ROM[0x0040] = ADC_imm; ROM[0x0041] = 0x01;
 	// ROM[0x0042] = STA_zp; ROM[0x0043] = 0x28;  //zero page 0x28 should now contain 0x01
@@ -88,8 +89,8 @@ int main()
 	// ROM[0x0060] = SBC_imm; ROM[0x0061] = 0x01;
 	// ROM[0x0062] = SBC_imm; ROM[0x0063] = 0x01;
 	// ROM[0x0064] = SBC_imm; ROM[0x0065] = 0x01;  //zero page 0x2E should now contain 0x0A
-
-	/*Test APU store and loads */
+	//
+	// /*Test APU store and loads */
 	// ROM[0x0066] = LDA_imm; ROM[0x0067] = 0x30;
 	// ROM[0x0068] = STA_abs; ROM[0x0069] = 0x00; ROM[0x006a] = 0x40;  //0x4000 should now contain 0x30
 	// ROM[0x006b] = LDA_imm; ROM[0x006c] = 0x00;
@@ -99,7 +100,7 @@ int main()
 	// ROM[0x0076] = LDA_abs; ROM[0x0077] = 0x00; ROM[0x0078] = 0x40;
 	// ROM[0x0079] = STA_zp; ROM[0x007a] = 0x2F;  //zero page 0x2F should now (maybe) contain 0x30
 	//
-	/*Write zp values to RAM, from address 0x6000 and up */
+	// /*Write zp values to RAM, from address 0x6000 and up */
 	// ROM[0x007b] = LDA_zp; ROM[0x007c] = 0x20;
 	// ROM[0x007d] = STA_abs; ROM[0x007e] = 0x00; ROM[0x007f] = 0x60;
 	// ROM[0x0080] = LDA_zp; ROM[0x0081] = 0x21;
@@ -132,39 +133,43 @@ int main()
 	// ROM[0x00c3] = STA_abs; ROM[0x00c4] = 0x0E; ROM[0x00c5] = 0x60;
 	// ROM[0x00c6] = LDA_zp; ROM[0x00c7] = 0x2F;
 	// ROM[0x00c8] = STA_abs; ROM[0x00c9] = 0x0F; ROM[0x00ca] = 0x60;
-
-	/*Jump to end loop (0xFFF0) */
+	//
+	// /*Jump to end loop (0xFFF0) */
 	// ROM[0x00cb] = JMP_abs; ROM[0x00cc] = 0xF0; ROM[0x00cd] = 0xFF;
-
-	/*End of instructions */
+	//
+	// /*End of instructions */
 	// ROM[0x00ce] = 0xFF; ROM[0x00cf] = 0xFF; ROM[0x00d0] = 0xFF;
 
-
-
 	/***************** Main Program ***********************/
+	/* setup */
+	ROM[0x0000] = SEI;
+	ROM[0x0001] = CLD;
+	ROM[0x0002] = LDX_imm; ROM[0x0003] = 0x40;
+	ROM[0x0004] = STX_abs; ROM[0x0005] = 0x17; ROM[0x0006] = 0x40;
+	ROM[0x0007] = LDX_imm; ROM[0x0008] = 0xFF;
+	ROM[0x0009] = TXS;
+	ROM[0x000a] = INX;
+	ROM[0x000b] = STX_abs; ROM[0x000c] = 0x00; ROM[0x000d] = 0x20;
+	ROM[0x000e] = STX_abs; ROM[0x000f] = 0x01; ROM[0x0010] = 0x20;
+	ROM[0x0011] = STX_abs; ROM[0x0012] = 0x10; ROM[0x0013] = 0x40;
 
-	volatile uint16_t i;
-	for (i = 0; i < 1000; i++) {
-		if (i % 2 == 0)
-			ROM[i] = LDA_imm;
-		else
-			ROM[i] = 0x01;
-	}
-	ROM[i++] = JMP_abs;
-	ROM[i++] = 0xF0;
-	ROM[i++] = 0xFF;
-	ROM[i++] = 0xFF;
-	ROM[i++] = 0xFF;
-
-	if (!ROM_TO_RAM(ROM)) ERROR_ON();
-	while(1) {}
+	// if (!ROM_TO_RAM(ROM)) ERROR_ON();
+	// while(1) {}
 
 	uint32_t numInstr = 10;
 	SIGNAL_READY();
 	while (1) {
-
 		/* Wait for start */
-		while (!SIGNAL_START);
+		while (!SIGNAL_START) LED_ON();
+
+		/* Load ROM with instructions */
+		volatile uint16_t i;
+		for (i = 0x0014; i < 0x0014 + numInstr; i++) {
+			if (i % 2 == 0)
+				ROM[i] = LDA_imm;
+			else
+				ROM[i] = 0x01;
+		}
 
 		/* Write ROM and indicate if success */
 		if (!ROM_TO_RAM(ROM)) ERROR_ON();
@@ -175,7 +180,10 @@ int main()
 		stop_slave();
 
 		SIGNAL_STOP();
-		// LED_ON();
+		CLEAR_STOP();
+
+		LED_OFF();
+		numInstr += 10;
 	}
 
 	return 0;
@@ -213,11 +221,11 @@ void flash_led(uint8_t val)
 {
 	for (uint8_t i = val; i > 0; i--) {
 		LED_ON();
-		_delay_ms(500);
+		_delay_ms(50);
 		LED_OFF();
-		_delay_ms(500);
+		_delay_ms(50);
 	}
-	_delay_ms(1000);
+	_delay_ms(100);
 }
 
 /* Waits until slave is within the address range addrStart - addrEnd */
