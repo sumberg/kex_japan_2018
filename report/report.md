@@ -109,7 +109,38 @@ This section provides a brief introduction to agile development and Scrum. These
 
 ### Agile development
 
+The term agile, meaning "to have a quick resourceful and adaptable character" [@Webster_agile], was made popular in the software development circuit by the Manifesto for Agile Software Development [@AgileManifesto]. The manifesto describes a model that, in contrast to traditional models for software development, embraces the fact that product description and requirements will most likely change during a development process, and adapts accordingly. It encourages building projects around motivated individuals, and promotes self-organization, continuous team meetings to reflect on the work that has been done, and regularly delivering work-in-process products to the product owner.
+
+The agile software development model has spawned a number of frameworks to uphold the manifesto, including Extreme Programming (XP) and Scrum. These frameworks have helped set the standard of agile development, and has as such gained an immense foothold in the software development field. More recently, many universities are offering courses in the agile software development model, with research continously being done on how to effectively do so [@AgileTeaching].
+
 ### Scrum
+
+As previously mentioned, Scrum is one of many frameworks that applies/upholds/maintains(?) the Manifesto for Agile Software Development. The creators Jeff Sutherland and Ken Schwaber define Scrum as the following [@ScrumGuide, p. 3]:
+
+> "Scrum (n): A framework within which people can address
+> complex adaptive problems, while productively and creatively
+> delivering products of the highest possible value."
+
+Scrum utilizes an iterative, incremental approach to manage risks, and to dynamically develop a solution to a problem (osäker på denna). The project is broken down into a set of time boxes known as "Sprints". The creators of Scrum recommend a sprint length of no longer than a month [@ScrumGuide, p. 8], however the author of the popular Scrum introduction book "Scrum and XP from the Trenches" Henrik Kniberg recommends new Scrum teams to experiment with sprint lengths until they find a time frame that the team feels comfortable with [@ScrumKniberg, p. 22].
+
+Each member of the Scrum team is assigned a role. These roles include product owner, developers and Scrum master. Each role have a specific set of tasks to fulfill.
+* Scrum Master
+  - Responsible for ensuring that Scrum is understood and enacted [@ScrumGuide, p. 6] by making sure that the each member of the team follows the Scrum theory, practice, and rules.
+* Product Owner
+  - Responsible for maximizing the value of the product and the work of the development team [@ScrumGuide, p. 5], and of managing the so called "Product Backlog", which contains items/tasks/requirements(?) that are to be completed in order for the product to meet the definition of done.
+* Developer
+  - Professionals who do the development work by delivering potentially releasable software at the end of each sprint [@ScrumGuide, p. 6].
+
+The framework employs four formal events that help make sure that the team can deliver at the end of each sprint. These events are known as Sprint Planning, Daily Scrum, Sprint Review and Sprint Retrospective [@ScrumGuide, p. 7].
+* Sprint Planning
+  - The Scrum team collaboratively decides on what can be delivered at the end of the sprint by moving tasks from the Product Backlog to a Sprint  [@ScrumKniberg, p. 24]. A Sprint Goal is then created, which is a goal set by the team that can be reached by implementing the items in the Sprint backlog.
+* Daily Scrum
+  - A short meeting, usually around 15 minutes, where the team discusses the work that they will do on that day. This is done in order to synchronize team members, improve communication and improve the teams knowledge.
+* Sprint Review
+  - Helt at the end of each sprint, where the Scrum team and possible stakeholders collaborate and discuss what was done in the sprint. The attendees inspect the Product Backlog and any changes that was made, decide on what could be done in the next sprint in order to optimize value. The meeting is held with the intention of generating feedback.
+* Sprint Retrospective
+  - Held after the Sprint Review and before the next Sprint Planning meeting. It is held in order to inspect how the last Sprint went with regards to the team members, their relationships, the process and tools. The team tries to identify what went well, and what can be improved, with the aim to create a plan that improves performance in the next sprint.
+
 
 # Project work/Development
 
