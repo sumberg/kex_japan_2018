@@ -6,7 +6,7 @@ csl: ieee.csl
 
 # Introduction
 
-When integrating legacy information system components into a modern system, one of several usual approaches is to create an interface for the modern system to control or communicate with the legacy component. This approach is known as wrapping.[@Bisbal1999;@Sneed2000] Wrapping as a concept could be adapted for legacy hardware in embedded systems, to enable the original and proven functionality of the outdated system, by providing an interface to control the legacy components. There are few documented examples of migration of legacy systems that include the incorporation of the system including the hardware platform, and the few examples that exist are often designed with a specific functionality in mind. This thesis will evaluate how one of these methods could be expanded upon to allow for a general use case of the legacy component, and to evaluate how well the method performs as a means of wrapping.
+When integrating legacy information system components into a modern system, one of several usual approaches is to create an interface for the modern system to control or communicate with the legacy component. This approach is known as wrapping.[@Bisbal1999;@Sneed2000] Wrapping as a concept could be adapted for legacy hardware in embedded systems, to enable the original and proven functionality of the outdated system, by providing an interface to control the legacy components. There are few documented examples of migration of legacy systems that include the incorporation of the system including the hardware platform, and the few examples that exist are often designed with a specific functionality in mind. The NESizer2 project details a method wherein a modern microcontroller is used to wrap certain functionalities of the microprocessor used in a Nintendo Entertainment System, by dynamically injecting instructions to the microprocessor like an emulated ROM.[@NESizer2_GitHub] This thesis will evaluate how this method could be expanded upon to allow for a general use case of the legacy component, and to evaluate how well the method performs as a means of wrapping.
 
 ## Background
 
@@ -17,11 +17,15 @@ When incorporating legacy information systems into modern systems, there are usu
 When redevelopment and migration is too risky or expensive, wrapping offers a cost-effective option with less risk. It surrounds existing data, systems and interfaces with new interfaces, giving the legacy components a "new and improved" look [@Bisbal1999, p. 3], and lets organizations reuse trusted components in a new, more up-to-date manner.
 While these methodologies and frameworks usually focus on legacy software systems, they are very much applicable to hardware systems and components as well.
 
+One way of wrapping a legacy hardware component is detailed in the hobby project NESizer2 by _Johan Fjeldtvedt_.[@NESizer2_GitHub] The project is a MIDI controlled synthesizer, using the original _Audio Processing Unit_ (APU) found embedded in a RP2A03 microprocessor - the microprocessor used in the Nintendo Entertainment System. In his method he uses a modern microcontroller to handle the normal functionality of a MIDI-controller aswell as controlling the RP2A03 by dynamically injecting instructions into the microprocessor when the APU is needed.
+
 ## Problem
 
 To address the issues of unexpected behaviour in an otherwise proven, well functioning system, the solution could be to keep only the crucial legacy components including their hardware platforms, and provide an interface for a modern system to control them - creating a wrapper for both hardware and software. While there exists implementations of similar approaches, they are often designed with a specific functionality of the legacy component in mind, and as such does not provide a method of controlling the component for a general use case. This poses the question;
 
 Could these specific implementations be generalized into methods of controlling a legacy component, without any specific use case in mind? If so, how well do they perform as a means of modernization?
+
+To try and answer these questions, we will investigate the method used in the NESizer2 project, hereafter referred to as _The NESizer2 method_, to see if it can be expanded upon to be used as a _wrapper_ for the RP2A03 microprocessor. The method is considered a wrapper if it can allow a general use case of the microcontroller - specifically if it can successfully utilize the entire instruction set of the processor, thereby allowing any RP2A03 program to be run through the wrapper.
 
 ## Purpose
 
@@ -141,8 +145,115 @@ The framework employs four formal events that help make sure that the team can d
 * Sprint Retrospective
   - Held after the Sprint Review and before the next Sprint Planning meeting. It is held in order to inspect how the last Sprint went with regards to the team members, their relationships, the process and tools. The team tries to identify what went well, and what can be improved, with the aim to create a plan that improves performance in the next sprint.
 
+# Evaluation criteria
+
+* Performance in speed
+	+ How fast is the wrapper method compared to non-wrapped?
+	+ Measure time of completion of programs categorized in types of operations
+* Functionality as a wrapper method
+	+ Same behaviour as non-wrapped?
+	+ Response time
 
 # Project work/Development
+
+This section details the project work, including literature studies and the hardware and software implementation/design process as governed by the Scrum framework, and the design and implementation of experiments according to the experimental research approach. It has been structured to closely follow the steps of the project work in chronological order.
+
+## Literature study
+
+The project work started with a literature study, to gain knowledge on related work and theoretical background knowledge in the field of modernizing legacy hardware and legacy hardware used in modern applications. The search was performed using mainly the following databases of scientific publications: (i) IEEE Xplore, (ii) ACM Digital Library and (iii) Google Scholar. Additional searching tools used was simple internet searching tools such as _Google_, which could often provide ideas for additional keywords used when further searching in the databases. The results from this literature study was searched for using keywords: modernization/modernizing, legacy, hardware, microprocessor, computer. Based on the results of this search we further defined our keywords to target specific methods that seemed relevant, in order to find references on related previous work. The keywords used in this search was: legacy, microcontroller, microprocessor, master, slave, injection, wrapping, shared memory. The results from both searches was selected with title, abstract and publication year taken into consideration. Most of the related work was found to be older than 10 years, but considering that the articles mentioned methods of controlling legacy hardware, and that the problem of upgrading/modernizing hardware is generally a problem for machines older than 10-20 years, we found them relevant to the research.
+
+Another literature study was conducted in order to gain further knowledge on experimental research, how it is used in performance comparison and evaluation, and general information on scientific methodology and how it is used in research. The keywords used in this search was: experimental, research, methodology, computer, system, performance. The search was conducted over the same databases mentioned above, and evaluated and selected using the same process. Anne Håkansson's article _Portal of Research Methods and Methodologies for Research Projects and Degree Projects_[@Hakansson_Portal] mentions the book _Introduction to Research in Education_[@IntroToResearch] as a source, and it has proved to be of great help when trying to understand what experimental research means, and how it can be used as a research strategy/methodology.
+
+## Designing experiments
+
+The experiments had to be designed not only to reflect our evaluation criteria, but in accordance with the experimental research approach they had to be designed around understanding how _the single independent variable_ and _the single significant variable_ affect the system performance.
+
+When designing the experiments to evaluate performance in time, we used the categories of programs discussed in section [Evaluation criteria] and identified a set of all controllable variables that could have a significant impact on the results from each category. The variable chosen were:
+
+i. Length of program, as measured in number of instructions
+ii. Selection of timing for reset function
+iii. Using emulated ROM functions or "pure" assembly
+
+For each category we then designed an experiment that would test the performance when changing each of these variables while keeping the others stable.
+
+To address the evaluation criteria _behaviour_, we included a data validation test to each experiment. The data validation is simply to verify that all test programs produced the expected output at each RP2A03 write cycle.
+
+The outline of the experiments are further detailed in section [Experiments phase].
+
+## Hardware and Software implementation process
+
+When planning the project work we decided to use agile development and the framework _Scrum_ to govern the design and implementation process. We chose divide design and implementation work into categories _hardware_ and _software_, with one person responsible for each category. Before our first sprint we set up milestones and goals, and created a backlog of stories, or tasks, that would work towards reaching set goals. This backlog is what we used to define tasks to include in each sprints.
+
+The sprint goals were then set to reflect stages of iteratively increasing implemented functionality in the method, and stories and tasks for that specific sprint were then chosen to reflect the sprint goal. For each sprint we also defined a set of one or more deliverables that should represent the result of that sprint. A detailed description of the work concluded in each sprint during the implementation process will be given below, and a summary of the sprint goals and deliverables can be seen in Table 1.
+
+Sprint #	Goal								Deliverables
+----------	------------						--------------------
+1			Research and Design phase done		Research and design documents
+												for hardware and software
+2-3			Basic communication working			Components, circuitry, and basic
+												software needed for communication
+4			Sending instructions				Hardware for debugging, Software
+												for sending instructions
+5			Entire instruction set working		Software supporting entire instruction set
+
+Table: Overview of sprints and deliverables
+
+### Sprint 1, Research and design phase
+
+The research and design phase included research the NESizer2 software and hardware implementation. This research was made in order to pinpoint the parts from NESizer2 that we would need, and what modifications had to be done to it. We found that we could use the assembly routines (which was at the heart of the communication with the RP2A03) together with a simple 8-bit databus through an 8-bit latch to control flow of instructions, as a foundation for our implementation. This is detailed in the circuit diagram found in Appendix A.
+
+We also made research on the RP2A03 microprocessor, but since the RP2A03 is a proprietary chip, owned by Nintendo, there was not much official information available. However, a community of NES enthusiasts has, through reverse engineering, gathered much information on the processor on their forums and wiki-site _Nesdev Wiki_[@NesdevWiki]. Through these channels we were able to learn that the chip differs little from the MOS Technology 6502 architecture, and as such we could learn much about the chip through official 6502 hardware and software development guides.
+
+Hardware design work then included research and decision of what hardware components were needed for our implementation, and finally to create a circuit diagram that we could use when building. Software design work resulted in a program flowchart and diagram of software components.
+
+### Sprint 2 & 3, Basic communication
+
+The first part of the sprint was aimed at basic testing of components. Testing the RP2A03 was hard without any specialized tools, but we found a online document detailing a simple method of testing (i) power on and (ii) data bus of 6502.[@6502Test] The method mentions how to test this by using an array of LEDs on the address pins, but we decided to expand the test to observe the chip with an oscilloscope; we monitored the Read/Write and Clock output pin of the chip to confirm that different inputs produced expected sequence of RW signals. This gave us the confidence that the data bus and instruction parsing functioned, at least on some level.
+
+After component testing was concluded, the next step was building a simple circuit of components that, together with basic software and a simple test program, could confirm that basic communication between the microcontroller and RP2A03 was working as intended. The results were inconsistent and erroneous, and the build had to be debugged, which resulted in the sprint "overflowing" to the next sprint.
+
+We finally realized that the problem was due to a misunderstanding in how the latch was used in NESizer2, and a simple edit to the circuitry resulted in consistent expected results. This confirmed that communication between the chips worked at a basic level.
+
+### Sprint 4, Sending instructions
+
+Hardware work included implementing simple debugging and diagnostics that could be used to determine if something was not working as intended in a quick manner, and proved to be very helpful during the sprint. After concluding the hardware work of the sprint, the software work was distributed to both parties and implemented together.
+
+The NESizer2 uses high(er) level functions for instructing the RP2A03 to play a note, or to modify the sound, etc., with the help of hardcoded assembly instructions that performed set memory operations. We wanted to extend these assembly routines to allow for any instruction to be sent, and to build our own higher level C functions that could be used in a C program for the microcontroller used in the implementation. This was achieved by categorizing the 6502 instruction set (which is the instruction set used by the RP2A03) into instruction families that use the same number of operands. At this stage we chose to focus on three main families; (i) Immediate operations, (ii) Absolute addressing memory operations, and (iii) Zero Page addressing memory operations. A summary of the characteristics of these families can be found in Table 2.
+
+Instruction family		Size of instruction [B]			# Cycles / instruction		R/W Cycle sequence
+----------------------  --------------------------- 	--------------------------	----------------------
+Immediate				2								2							R, R
+Absolute				3								4							R, R, R, R/W
+Zero page				2								3							R, R, R/W
+
+Table: Instruction families and their characteristics
+
+These characteristics was then used to redesign the assembly routines and to build the functions mentioned above. When implemented it was possible to send any opcode[^opcode] together with any operand, handled properly by the assembly routines.
+
+### Sprint 5, Entire instruction set
+
+The first part of this sprint focused on further extending the functionality of the previously written instruction handling, allowing a 6502 program to be stored and parsed as an array of byte instructions, functioning as a simple emulated ROM. This simplified the setup routine that had to be performed on boot of the RP2A03, as it could simply be written into the ROM, followed by the rest of the RP2A03 instructions we wanted to run.
+
+When analyzing the 6502 instruction set further, we concluded that we were not interested in implementing support for branching instructions that conditionally jumps the program counter. This is because the RP2A03 reads instructions directly from the microcontroller, and as such branching has no real effect.
+
+The second part of the sprint was aimed at thoroughly testing the entire instruction set, making sure that all instructions produced expected results. While all operations that used the accumulator register (immediate loads, ALU [^ALU] operations, etc.) worked consistently and as expected, we noticed that seemingly _none of the memory operations worked_. This is further detailed in section [Results].
+
+The sprint, and some continuous work during the experiments phase, was concluded without managing to resolve this issue.
+
+## Experiments phase
+
+The implementation was extended in hardware and software to include simple communication with an Arduino M0 board, which was used to measure time. The choice of the Arduino M0 as a hardware timer was the increased resolution of time, and the fact that it ran on a clock with more than double the frequency of the wrapper system, further increasing accuracy of the measurements.
+
+To measure communication timing and cycles between instructions, we used a digital logic analyzer to monitor digital output. The data from the analyzer could then be collected both numerically (in the form of CSV) and as diagrams. On the RP2A03 we chose to monitor all bits of the data bus, as well as the R/W and output clock pins, and on the microcontroller we monitored a signal pin to measure response time.
+
+The experiments phase was conducted according to design, with the exception that any test cases involving memory operations could not be confirmed to produce expected results. The experiments were performed according to the following steps:
+
+1. Validate data output and record response time when all variables are at default values
+2. Measure time of completion as program increases in length
+3. Measure time of completion as time interval of reset increases
+4. Measure time of completion when program is called with emulated ROM functions
+5. Measure time of completion when program is called without emulated ROM functions
+6. Switch to next category and repeat process until all categories have been tested
 
 # Results
 
