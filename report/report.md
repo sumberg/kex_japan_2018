@@ -57,7 +57,7 @@ No stakeholder.
 
 ## Delimitations
 
-The scope of this report is limited to the design and performance analysis of the NESizer2 method when it has been expanded to handle the entire 6502 instruction set, on a RP2A03 microprocessor. Performance evaluation has been limited to speed of execution per cycle and the complexity of implementation, measured in components required and lines of source code required to write firmware. The details of the implementation can be found in subsequent sections.
+The scope of this report is limited to the design and performance analysis of the NESizer2 method when it has been expanded to handle the entire 6502 instruction set, on a RP2A03 microprocessor. Performance evaluation has been limited to speed of execution per cycle across different types of test programs, as well as the response time from when an instruction is issued until it is performed by the RP2A03. The details of the implementation and evaluation criteria can be found in subsequent sections.
 
 For a better indication of how well the communication method studied in our research can be adopted for other microchips/hardware and for a better picture of the behaviour of these communication methods on other systems, it would have been beneficial to implement them for two or more devices with different architectures. We have compared the performance in execution time against a theoretical execution time of one instruction per second, however measuring the execution speed of the RP2A03 used "as intended" with a ROM could possibly have been more insightful.
 
