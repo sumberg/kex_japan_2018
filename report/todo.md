@@ -11,3 +11,4 @@
 * Review footnotes
 * Review references
 * Add figures
+* Add flowcharts and circuit diagrams to appendix A
