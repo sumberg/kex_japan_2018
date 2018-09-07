@@ -125,9 +125,9 @@ The agile software development model has spawned a number of frameworks to uphol
 
 As previously mentioned, Scrum is one of many frameworks that applies/upholds/maintains(?) the Manifesto for Agile Software Development. The creators Jeff Sutherland and Ken Schwaber define Scrum as the following [@ScrumGuide, p. 3]:
 
-> "Scrum (n): A framework within which people can address
+> _"Scrum (n): A framework within which people can address
 > complex adaptive problems, while productively and creatively
-> delivering products of the highest possible value."
+> delivering products of the highest possible value."_
 
 Scrum utilizes an iterative, incremental approach to manage risks, and to dynamically develop a solution to a problem (osäker på denna). The project is broken down into a set of time boxes known as "Sprints". The creators of Scrum recommend a sprint length of no longer than a month [@ScrumGuide, p. 8], however the author of the popular Scrum introduction book "Scrum and XP from the Trenches" Henrik Kniberg recommends new Scrum teams to experiment with sprint lengths until they find a time frame that the team feels comfortable with [@ScrumKniberg, p. 22].
 
