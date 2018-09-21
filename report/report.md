@@ -12,7 +12,7 @@ When integrating legacy information system components into a modern system, one 
 
 Computer based information systems are an invaluable asset for modern enterprises and corporations. The use of information systems can range from data storage, analysis and organization, to communication systems such as mail servers. With continued updating and upgrading of these systems they become increasingly complex, and as technology evolves the existing technology of the systems are quickly rendered obsolete, and "eventually, the existing information systems become too fragile to modify and too important to discard" [@ComellaDorda2000], and as such it can be considered a legacy system. [@seacord2003] At this point the legacy systems must be modernized, or migrated into a more modern system to remain viable.
 
-When incorporating legacy information systems into modern systems, there are usually three popular approaches: redevelopment, wrapping and migration [@Bisbal1999, p.2-4]. While redeveloping an entire system is usually the best option in the long run, it is also the most expensive and risky. Therefore, migration is usually a more popular method, as it provides an interface to control the legacy components, while retaining its data and functionality. However, migrating systems to a modern platform can lead to unexpected behaviour, with a notable example being NASA’s Ariane 5 flight 501 [@Dowson1997;@Ariane-Board-Report].
+When incorporating legacy information systems into modern systems, there are usually three popular approaches: redevelopment, wrapping and migration.[@Bisbal1999, p.2-4] While redeveloping an entire system is usually the best option in the long run, it is also the most expensive and risky. Therefore, migration is usually a more popular method, as it provides an interface to control the legacy components, while retaining its data and functionality. However, migrating systems to a modern platform can lead to unexpected behaviour, with a notable example being NASA’s Ariane 5 flight 501.[@Dowson1997;@Ariane-Board-Report]
 
 When redevelopment and migration is too risky or expensive, wrapping offers a cost-effective option with less risk. It surrounds existing data, systems and interfaces with new interfaces, giving the legacy components a "new and improved" look [@Bisbal1999, p. 3], and lets organizations reuse trusted components in a new, more up-to-date manner.
 While these methodologies and frameworks usually focus on legacy software systems, they are very much applicable to hardware systems and components as well.
@@ -45,11 +45,11 @@ We acknowledge that our research could contribute to the continued use of legacy
 
 ## Methodology
 
-In order to expand our knowledge and theoretical background in the field of research and define the research objectives, literature studies were conducted on several occasions during the research. A literature study is the systematic and methodical analysis of literature for a scientific purpose [@LUI_litteraturstudie].
+In order to expand our knowledge and theoretical background in the field of research and define the research objectives, literature studies were conducted on several occasions during the research. A literature study is the systematic and methodical analysis of literature for a scientific purpose.[@LUI_litteraturstudie]
 
 A literature study was also conducted to decide on a suitable scientific method under which to conduct the research. The scientific method acts as a framework or guidance for the researcher to conduct their research in a well defined and systematic way, based on the works and experiences of researchers before them, and it is crucial to a research in order to ensure quality and correctness of gathered results and analysis.
 
-We found that experimental research was most suited to the nature of our research. The experimental approach allows for observing how a system's behavior changes as one variable is manipulated while other variables are kept stable [@IntroToResearch], and as such it is suitable for analyzing performance of a system [@Hakansson_Portal].
+We found that experimental research was most suited to the nature of our research. The experimental approach allows for observing how a system's behavior changes as one variable is manipulated while other variables are kept stable [@IntroToResearch], and as such it is suitable for analyzing performance of a system.[@Hakansson_Portal]
 
 ## Stakeholder
 
@@ -70,7 +70,7 @@ TODO
 This chapter provides an introduction of what legacy hardware means, and also discusses how legacy hardware is used in modern systems and particularly how old hardware is still used to create and produce retro-sounding music. It also introduces a hobby project that sparked the idea for this research. The second part of this chapter discusses some earlier work related to the research problem, and work that was used as a basis for the communication methods designed for this research.
 
 ## Legacy
-Legacy is a term used in computing to mean "of, relating to, or being a previous or outdated computer system" [@Webster_legacy]. This could, for example, be computer systems or components that might have had a widespread usage or been considered a standard in the past, but are no longer manufactured or maintained by the producer.
+Legacy is a term used in computing to mean "of, relating to, or being a previous or outdated computer system".[@Webster_legacy] This could, for example, be computer systems or components that might have had a widespread usage or been considered a standard in the past, but are no longer manufactured or maintained by the producer.
 
 ## Trackers and the Chiptunes scene
 
@@ -119,13 +119,13 @@ This section provides a brief introduction to agile development and Scrum. These
 
 ### Agile development
 
-The term agile, meaning "to have a quick resourceful and adaptable character",[@Webster_agile] was made popular in the software development circuit by the Manifesto for Agile Software Development [@AgileManifesto]. The manifesto describes a model that, in contrast to traditional models for software development, embraces the fact that product description and requirements will most likely change during a development process, and adapts accordingly. It encourages building projects around motivated individuals, and promotes self-organization, continuous team meetings to reflect on the work that has been done, and regularly delivering work-in-process products to the product owner.
+The term agile, meaning "to have a quick resourceful and adaptable character"[@Webster_agile], was made popular in the software development circuit by the Manifesto for Agile Software Development.[@AgileManifesto] The manifesto describes a model that, in contrast to traditional models for software development, embraces the fact that product description and requirements will most likely change during a development process, and adapts accordingly. It encourages building projects around motivated individuals, and promotes self-organization, continuous team meetings to reflect on the work that has been done, and regularly delivering work-in-process products to the product owner.
 
 The agile software development model has spawned a number of frameworks to uphold the manifesto, including Extreme Programming (XP) and Scrum. These frameworks have helped set the standard of agile development, and has as such gained an immense foothold in the software development field. More recently, many universities are offering courses in the agile software development model, with research continously being done on how to effectively do so.[@AgileTeaching]
 
 ### Scrum
 
-As previously mentioned, Scrum is one of many frameworks that applies/upholds/maintains(?) the Manifesto for Agile Software Development. The creators Jeff Sutherland and Ken Schwaber define Scrum as the following:[@ScrumGuide, p. 3]
+As previously mentioned, Scrum is one of many frameworks that applies/upholds/maintains(?) the Manifesto for Agile Software Development. The creators Jeff Sutherland and Ken Schwaber define Scrum as the following[@ScrumGuide, p. 3]:
 
 > _"Scrum (n): A framework within which people can address
 > complex adaptive problems, while productively and creatively
@@ -138,11 +138,11 @@ Each member of the Scrum team is assigned a role. These roles include product ow
 * Scrum Master
   - Responsible for ensuring that Scrum is understood and enacted [@ScrumGuide, p. 6] by making sure that the each member of the team follows the Scrum theory, practice, and rules.
 * Product Owner
-  - Responsible for maximizing the value of the product and the work of the development team,[@ScrumGuide, p. 5] and of managing the so called "Product Backlog", which contains items/tasks/requirements(?) that are to be completed in order for the product to meet the definition of done.
+  - Responsible for maximizing the value of the product and the work of the development team[@ScrumGuide, p. 5], and of managing the so called "Product Backlog", which contains items/tasks/requirements(?) that are to be completed in order for the product to meet the definition of done.
 * Developer
-  - Professionals who do the development work by delivering potentially releasable software at the end of each sprint [@ScrumGuide, p. 6].
+  - Professionals who do the development work by delivering potentially releasable software at the end of each sprint.[@ScrumGuide, p. 6]
 
-The framework employs four formal events that help make sure that the team can deliver at the end of each sprint. These events are known as Sprint Planning, Daily Scrum, Sprint Review and Sprint Retrospective [@ScrumGuide, p. 7].
+The framework employs four formal events that help make sure that the team can deliver at the end of each sprint. These events are known as Sprint Planning, Daily Scrum, Sprint Review and Sprint Retrospective.[@ScrumGuide, p. 7]
 
 * Sprint Planning
   - The Scrum team collaboratively decides on what can be delivered at the end of the sprint by moving tasks from the Product Backlog to a Sprint.[@ScrumKniberg, p. 24] A Sprint Goal is then created, which is a goal set by the team that can be reached by implementing the items in the Sprint backlog.
