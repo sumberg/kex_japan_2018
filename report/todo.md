@@ -13,5 +13,11 @@
     - Review bibtex @ATMega328_Datasheet author and publisher
 * Review footnotes
 * Review references
+* Results
+  - Rebuild emulated ROM circuit
+  - Run new/more tests
+  - Compile in figures (tables, graphs)
+  - Write text
+* Write disposition
 * Add figures
 * Add flowcharts and circuit diagrams to appendix A
