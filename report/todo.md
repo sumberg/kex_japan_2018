@@ -8,6 +8,9 @@
   	- Scrum
 	  - Review the sub-chapter, see if there's anything to add or if it's extensive enough
     - Review
+  - Sub-chapter on Atmega328
+    - Popularity? Articles describing why it's so great?
+    - Review bibtex @ATMega328_Datasheet author and publisher
 * Review footnotes
 * Review references
 * Add figures
