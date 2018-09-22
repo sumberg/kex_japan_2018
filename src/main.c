@@ -9,6 +9,7 @@
 #define LED_OFF() (DEBUG_PORT &= ~(1 << DEBUG_LED))
 #define CLEAR_STOP() (TIMING_PORT &= ~(1 << STOP_PIN))
 #define TIMING_STOP() (TIMING_PORT |= (1 << STOP_PIN))
+#define SETUP_DONE() (TIMING_PORT |= (1 << WAIT_PIN))
 
 #define INCR (uint32_t) 10
 
@@ -28,7 +29,8 @@ int main(void)
 	instr->operands.imm_val = 0x42;
 	send_slave_instruction(instr);
 
-	TIMING_PORT |= (1 << PB4);
+	// Tell arduino that setup is done
+	SETUP_DONE();
 
 	/* Idle indefinitely */
 	while (1) {

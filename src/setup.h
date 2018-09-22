@@ -18,6 +18,7 @@
 #define TIMING_PORT_IN PINB
 #define START_PIN PB2
 #define STOP_PIN PB3
+#define WAIT_PIN PB4
 
 /* Setup GPIO pins for input/output */
 void setup_ports(void);
