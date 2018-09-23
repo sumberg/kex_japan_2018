@@ -20,6 +20,12 @@
 #define STOP_PIN PB3
 #define WAIT_PIN PB4
 
+#define TIMER_OVERFLOW_MAX 180		// With prescaler set to 8, 180 overflows yields ~54Hz
+#define TIMER_OVERFLOW_DEFAULT 122	// With prescaler set to 8, 122 overflows yields ~80Hz
+#define TIMER_OVERFLOW_MIN 40		// With prescaler set to 8, 48 overflows yields ~200Hz
+
+extern int globalTimerOverflowTimeout;
+
 /* Setup GPIO pins for input/output */
 void setup_ports(void);
 /* Sends (and holds) reset signal to slave */

@@ -37,19 +37,23 @@ void setup_master_interrupts(void)
 	/* TC0 in CTC mode */
 	TCCR0A = 0b10 << WGM00;
 
-	/* Set period */
-	OCR0A = 244;
+	/* Use full period register, and count overflows */
+	OCR0A = 255;
 
 	/* Enable compare match interrupt */
 	TIMSK0 = 1 << OCIE0A;
 
-	/* Start timer as CTC, prescaler 1024 */
-	TCCR0B = (1 << FOC0A) | (0b101 << CS00);
+	/* Start timer as CTC, prescaler 8 */
+	TCCR0B = (1 << FOC0A) | (0b010 << CS00);
 }
 
 ISR(TIMER0_COMPA_vect)
 {
-	reset_slave_pc();
+	static int overflowCount = 0;
+	if (overflowCount >= globalTimerOverflowTimeout) {
+		reset_slave_pc();
+		overflowCount = 0;
+	}
 }
 
 /* Run entire setup routine */
