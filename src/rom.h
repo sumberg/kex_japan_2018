@@ -54,5 +54,7 @@ uint8_t ROM_TO_RAM(void);
 void ROM_nextInstruction(Instruction*);
 /* Gets the addressing mode for the instruction based on its opcode */
 enum AddrMode ROM_getOpcodeAddrMode(uint8_t opcode);
+/* Set the ROM to be used by ROM functions */
+void ROM_setROM(uint8_t*);
 /* Reset ROM program counter to beginning of ROM */
 void ROM_resetPC(void);
