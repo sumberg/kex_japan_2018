@@ -16,8 +16,10 @@
 * Results
   - Rebuild emulated ROM circuit
   - Run new/more tests
+    - Try to automate the process from "Experiments phase"
   - Compile in figures (tables, graphs)
   - Write text
+* Conclusions & discussion
 * Write disposition
 * Add figures
 * Add flowcharts and circuit diagrams to appendix A
