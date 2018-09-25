@@ -82,11 +82,11 @@ int main(void)
 					}
 					mode = INCR_LENGTH;
 					break;
-					/* Sends numInstructions worth of instructions, and increases
-					 * numInstructions after each iteration. Measure:
-					 * 		- Time of completion as program length is increased
-					 * All variables except program length are default values.
-					 * */
+				/* Sends numInstructions worth of instructions, and increases
+				 * numInstructions after each iteration. Measure:
+				 * 		- Time of completion as program length is increased
+				 * All variables except program length are default values.
+				 * */
 				case INCR_LENGTH:
 					// Measure time of completion as program increases in length
 					/* Send instructions */
@@ -106,12 +106,12 @@ int main(void)
 						globalTimerOverflowTimeout = TIMER_OVERFLOW_MIN;
 					}
 					break;
-					/* Decrease the frequency of when the reset_slave_pc interrupt
-					 * routine is run by increasing the number of timer overflows
-					 * needed to trigger. Measure:
-					 * 		- Time of completion as reset routine is varied
-					 * All variables except reset_slave_pc frequency are default values.
-					 * */
+				/* Decrease the frequency of when the reset_slave_pc interrupt
+				 * routine is run by increasing the number of timer overflows
+				 * needed to trigger. Measure:
+				 * 		- Time of completion as reset routine is varied
+				 * All variables except reset_slave_pc frequency are default values.
+				 * */
 				case INCR_RESET:
 					for (uint32_t i = DEFAULTINSTR; i > 0; i--) {
 						ROM_nextInstruction(instr);
@@ -121,11 +121,11 @@ int main(void)
 					if (globalTimerOverflowTimeout >= TIMER_OVERFLOW_MAX)
 						mode = NO_EMUROM_FUNC;
 					break;
-					/* Disables the emulated ROM wrapping functions, and sends instructions
-					 * manually from the respecitve ROMs. Measure:
-					 * 		- Time of completion WITHOUT ROM functions
-					 * All variables except ROM functionality are default values.
-					 * */
+				/* Disables the emulated ROM wrapping functions, and sends instructions
+				 * manually from the respecitve ROMs. Measure:
+				 * 		- Time of completion WITHOUT ROM functions
+				 * All variables except ROM functionality are default values.
+				 * */
 				case NO_EMUROM_FUNC:
 					// Measure time of completion without emulated ROM functions
 					mode = DONE;
