@@ -100,7 +100,11 @@ int main(void)
 					ROM_resetPC();
 
 					/* Done when MAXINSTR has been tested */
-					if (numInstructions > MAXINSTR) mode = INCR_RESET;
+					if (numInstructions > MAXINSTR) {
+						mode = INCR_RESET;
+						/* Prepare timer overflow values for next test */
+						globalTimerOverflowTimeout = TIMER_OVERFLOW_MIN;
+					}
 					break;
 					/* Decrease the frequency of when the reset_slave_pc interrupt
 					 * routine is run by increasing the number of timer overflows
@@ -109,7 +113,6 @@ int main(void)
 					 * All variables except reset_slave_pc frequency are default values.
 					 * */
 				case INCR_RESET:
-					globalTimerOverflowTimeout = TIMER_OVERFLOW_MIN;
 					for (uint32_t i = DEFAULTINSTR; i > 0; i--) {
 						ROM_nextInstruction(instr);
 						send_slave_instruction(instr);
