@@ -1,9 +1,10 @@
 #define INSTRS 5000
+#define INSTR_INCR 10
 #define DEF_INSTRS 1000
-#define TIMER_OVERFLOW_MAX 140
+#define TIMER_OVERFLOW_MAX 140 // (180 - 40)
 
 /* Used pins */
-int endPin, startPin, waitPin, btnPin;
+int stopPin, startPin, waitPin, btnPin;
 /* Test modes */
 enum MODE {DEF, INCR_LENGTH, INCR_RESET, NO_EMU_ROM_FUNC, MODE_DONE} mode;
 /* Test category (IMM, ZP, ABS, MIX) */
@@ -46,50 +47,57 @@ void loop() {
 
   /* Main test loop */
   while(!done) {
-    int count;
-    double tRes;
-    switch(mode) {
-      case DEF             :    Serial.println("Test case 1: All values default.");
-                                tRes = measureTime();
-                                /* Print to serial monitor */
-                                Serial.print("1000 instr: ");
-                                Serial.println(tRes);
-                                mode = INCR_LENGTH;
-                                break;
-  
-      case INCR_LENGTH     :    count = 0;
-                                Serial.println("Test case 2: Increase # of instructions from 1 to 5000 in increments of 10.");
-                                while(count < INSTRS) {
-                                  tRes = measureTime();
-                                  /* Print to serial monitor */
-                                  Serial.print(count += 10);
-                                  Serial.print(" ");
-                                  Serial.println(tRes);
-                                }
-                                mode = INCR_RESET;
-                                break;
-                      
-      case INCR_RESET      :    count = 40;
-                                Serial.println("Test case 3: Increase # of timer overflows from 40 to 180 in increments of 1.");
-                                Serial.println("Reset PC function call frequency = (System clock / Prescaler / Timer resolution / # of timer overflows) =");
-                                Serial.println("20 MHz / 8 / 256 / # of timer overflows");
-                                while (count < TIMER_OVERFLOW_MAX) {
-                                  tRes = measureTime();
-                                  /* Print to serial monitor */
-                                  Serial.print(count++);
-                                  Serial.print(" ");
-                                  Serial.println(tRes);
-                                }
-                                mode = NO_EMU_ROM_FUNC;
-                                break;
-  
-      case NO_EMU_ROM_FUNC  :   /* TODO */
-                                mode = MODE_DONE;
-                                break;
-      case MODE_DONE        :   done = true;
-                                category++;
+      int count;
+      double tRes;
+      switch(mode) {
+          case DEF :
+              Serial.println("Test case 1: All values default.");
+              tRes = measureTime();
+              /* Print to serial monitor */
+              Serial.print(DEF_INSTRS);
+              Serial.print(" instr: ");
+              Serial.println(tRes);
+              mode = INCR_LENGTH;
+              break;
+      
+          case INCR_LENGTH :
+              count = 0;
+              Serial.println("Test case 2: Increase # of instructions from 1 to 5000 in increments of 10.");
+              while(count < INSTRS) {
+                  tRes = measureTime();
+                  /* Print to serial monitor */
+                  Serial.print(count += INSTR_INCR);
+                  Serial.print(" ");
+                  Serial.println(tRes);
+              }
+              mode = INCR_RESET;
+              break;
+                          
+          case INCR_RESET :
+              count = 0;
+              Serial.println("Test case 3: Increase # of timer overflows from 40 to 180 in increments of 1.");
+              Serial.println("Reset PC function call frequency = (System clock / Prescaler / Timer resolution / # of timer overflows) =");
+              Serial.println("20 MHz / 8 / 256 / # of timer overflows");
+              while (count < TIMER_OVERFLOW_MAX) {
+                  tRes = measureTime();
+                  /* Print to serial monitor */
+                  Serial.print(count + 140);
+                  Serial.print(" ");
+                  Serial.println(tRes);
+                  count++;
+              }
+              mode = NO_EMU_ROM_FUNC;
+              break;
+      
+           case NO_EMU_ROM_FUNC :
+              /* TODO */
+              mode = MODE_DONE;
+              break;
+           case MODE_DONE :
+              done = true;
+              category++;
+        }
     }
-  }
 }
 
 /* Wait for 2A03 to signal for ready */
@@ -102,9 +110,9 @@ void waitForSlaveSetup() {
 
 /* Setup used Arduino M0 Pro pins */
 void setupPins() {
-  waitPin = 5, startPin = 6, endPin = 7, btnPin = 12;
+  waitPin = 5, startPin = 6, stopPin = 7, btnPin = 12;
   pinMode(startPin, OUTPUT);
-  pinMode(endPin, INPUT);
+  pinMode(stopPin, INPUT);
   pinMode(btnPin, INPUT);
   pinMode(waitPin, INPUT);
 }
@@ -132,7 +140,7 @@ double measureTime() {
   /* Start timer */
   tStart = micros();
   /* Wait for Atmega328p to finish execution */
-  while(digitalRead(endPin) != HIGH);
+  while(digitalRead(stopPin) != HIGH);
   /* Stop timer */
   tEnd = micros();
   /* End ATMega328P execution */

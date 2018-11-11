@@ -64,6 +64,7 @@ int main(void)
 			/* Wait for start signal */
 			while ((TIMING_PORT_IN & (1 << START_PIN)) == 0);
 			LED_ON();
+			globalTimerOverflowTimeout = TIMER_OVERFLOW_DEFAULT;
 
 			switch (mode) {
 				/* Run everything at default values. Measure:
@@ -74,9 +75,7 @@ int main(void)
 				case DEFAULT:
 					// Validate output and measure response time and
 					// time of completion when using ROM functions
-					globalTimerOverflowTimeout = TIMER_OVERFLOW_DEFAULT;
-
-					for (uint32_t i = DEFAULTINSTR; i > 0; i--) {
+					for (uint32_t i = 0; i < DEFAULTINSTR; i++) {
 						ROM_nextInstruction(instr);
 						send_slave_instruction(instr);
 					}
@@ -90,7 +89,7 @@ int main(void)
 				case INCR_LENGTH:
 					// Measure time of completion as program increases in length
 					/* Send instructions */
-					for (uint32_t i = numInstructions; i > 0; i--) {
+					for (uint32_t i = 0; i < numInstructions; i++) {
 						ROM_nextInstruction(instr);
 						send_slave_instruction(instr);
 					}
@@ -100,10 +99,8 @@ int main(void)
 					ROM_resetPC();
 
 					/* Done when MAXINSTR has been tested */
-					if (numInstructions > MAXINSTR) {
+					if (numInstructions >= MAXINSTR) {
 						mode = INCR_RESET;
-						/* Prepare timer overflow values for next test */
-						globalTimerOverflowTimeout = TIMER_OVERFLOW_MIN;
 					}
 					break;
 				/* Decrease the frequency of when the reset_slave_pc interrupt
@@ -113,12 +110,12 @@ int main(void)
 				 * All variables except reset_slave_pc frequency are default values.
 				 * */
 				case INCR_RESET:
-					for (uint32_t i = DEFAULTINSTR; i > 0; i--) {
+					for (uint32_t i = 0; i < DEFAULTINSTR; i++) {
 						ROM_nextInstruction(instr);
 						send_slave_instruction(instr);
 					}
 					globalTimerOverflowTimeout++;
-					if (globalTimerOverflowTimeout >= TIMER_OVERFLOW_MAX)
+					if (globalTimerOverflowTimeout == TIMER_OVERFLOW_MAX)
 						mode = NO_EMUROM_FUNC;
 					break;
 				/* Disables the emulated ROM wrapping functions, and sends instructions
@@ -146,7 +143,9 @@ int main(void)
 	}
 
 	/* Idle when all tests are done */
-	while (1);
+	while (1) {
+		flash_led(1);
+	};
 
 	return 0;
 }
