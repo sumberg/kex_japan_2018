@@ -32,7 +32,9 @@ enum MODE { DEFAULT, INCR_LENGTH, INCR_RESET, NO_EMUROM_FUNC, DONE };
 int main(void)
 {
 	/* ROM to be used in test */
-	ROM_setROM(ROM_MIXED);
+	/* ROM_setROM(ROM_MIXED); */
+	/* Set category to test without ROM emulation */
+	enum AddrMode addrMode = ABSOLUTE;
 
 	/* Setup system */
 	setup();
@@ -44,7 +46,10 @@ int main(void)
 	/* testIncreasingInstructions(); */
 
 	/* Run Increasing Reset Timeout test */
-	testIncreasingResetTimeout();
+	/* testIncreasingResetTimeout(); */
+
+	/* Run No ROM Emulation Functions test */
+	testNoROMEmulationFunctions(addrMode);
 
 	/* Idle when all tests are done */
 	LED_ON();
@@ -161,6 +166,59 @@ void testIncreasingResetTimeout()
 			/* Send instruction to slave */
 			send_slave_instruction(instr);
 			numInstructionsSent++;
+		}
+		TIMING_STOP();
+		_delay_ms(10);
+	}
+
+	return;
+}
+
+void testNoROMEmulationFunctions(enum AddrMode addrMode)
+{
+	/* Instruction struct used for sending instructions */
+	Instruction *imm_instr = (Instruction *) malloc(sizeof(Instruction));
+	Instruction *zp_instr = (Instruction *) malloc(sizeof(Instruction));
+	Instruction *abs_instr = (Instruction *) malloc(sizeof(Instruction));
+
+	imm_instr->opcode = LDA_imm;
+	imm_instr->operands.imm_val = 0x42;
+
+	zp_instr->opcode = LDA_zp;
+	zp_instr->operands.zp_addr = 0x20;
+
+	abs_instr->opcode = LDA_abs;
+	abs_instr->operands.abs_addr.hi = 0x40;
+	abs_instr->operands.abs_addr.lo = 0x00;
+
+	/* Tell arduino that setup is done */
+	LED_ON();
+	CLEAR_SLAVE_WAITING();
+	CLEAR_STOP();
+	SETUP_DONE();
+
+	uint32_t numInstructionsSent = 0;
+	/* Run 50 iterations to get a good average */
+	for (int i = 0; i < 50; ++i) {
+		CLEAR_STOP();
+		SLAVE_WAITING();
+		while (!ARDUINO_READY());
+		CLEAR_SLAVE_WAITING();
+		LED_OFF();
+		numInstructionsSent = 0;
+		while (numInstructionsSent < INSTRS_DEFAULT) {
+			switch (addrMode) {
+				case IMMEDIATE:
+					send_slave_instruction(imm_instr);
+					break;
+				case ZERO_PAGE:
+					send_slave_instruction(zp_instr);
+					break;
+				case ABSOLUTE:
+					send_slave_instruction(abs_instr);
+					break;
+			}
+		numInstructionsSent++;
 		}
 		TIMING_STOP();
 		_delay_ms(10);

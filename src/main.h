@@ -3,6 +3,7 @@
 void testIncreasingInstructions(void);
 void testDefaultSettings(void);
 void testIncreasingResetTimeout(void);
+void testNoROMEmulationFunctions(enum AddrMode);
 
 /* ROM containing Immediate category */
 uint8_t ROM_IMMEDIATE[15] = {
