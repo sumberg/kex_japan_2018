@@ -37,8 +37,12 @@ int main(void)
 	/* Setup system */
 	setup();
 
+	/* Run default test */
+	testDefaultSettings();
+
+
 	/* Run Increasing Instructions test */
-	testIncreasingInstructions();
+	/* testIncreasingInstructions(); */
 
 	/* Idle when all tests are done */
 	LED_ON();
@@ -92,4 +96,36 @@ void testIncreasingInstructions()
 	}
 
 	return;
+}
+
+void testDefaultSettings()
+{
+	/* Instruction struct used for sending instructions */
+	Instruction *instr = (Instruction *) malloc(sizeof(Instruction));
+
+	/* Tell arduino that setup is done */
+	LED_ON();
+	CLEAR_SLAVE_WAITING();
+	CLEAR_STOP();
+	SETUP_DONE();
+
+	uint32_t numInstructionsSent = 0;
+	/* Run 50 iterations to get a good average */
+	for (int i = 0; i < 50; ++i) {
+		CLEAR_STOP();
+		SLAVE_WAITING();
+		while (!ARDUINO_READY());
+		CLEAR_SLAVE_WAITING();
+		LED_OFF();
+		numInstructionsSent = 0;
+		while (numInstructionsSent < INSTRS_DEFAULT) {
+			/* Get next instruction */
+			ROM_nextInstruction(instr);
+			/* Send instruction to slave */
+			send_slave_instruction(instr);
+			numInstructionsSent++;
+		}
+		TIMING_STOP();
+		_delay_ms(10);
+	}
 }

@@ -1,6 +1,7 @@
 #include "rom.h"
 
-void testIncreasingInstructions();
+void testIncreasingInstructions(void);
+void testDefaultSettings(void);
 
 /* ROM containing Immediate category */
 uint8_t ROM_IMMEDIATE[15] = {
