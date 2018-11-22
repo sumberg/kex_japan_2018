@@ -1,0 +1,10 @@
+Waiting for ATmega328P setup . . .
+Slave ready, starting program!
+
+Press button to start . . .
+Button pressed!
+
+Running. . .
+The average execution time for 1000 instructions is 22.04
+
+Test program completed!
