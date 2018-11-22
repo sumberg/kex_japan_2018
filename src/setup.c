@@ -48,7 +48,8 @@ void setup_master_interrupts(void)
 
 ISR(TIMER0_COMPA_vect)
 {
-	static int overflowCount = 0;
+	static int overflowCount = -1;
+	overflowCount++;
 	if (overflowCount >= globalTimerOverflowTimeout) {
 		reset_slave_pc();
 		overflowCount = 0;

@@ -2,6 +2,7 @@
 
 void testIncreasingInstructions(void);
 void testDefaultSettings(void);
+void testIncreasingResetTimeout(void);
 
 /* ROM containing Immediate category */
 uint8_t ROM_IMMEDIATE[15] = {

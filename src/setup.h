@@ -21,9 +21,9 @@
 #define STOP_SLAVE_EXEC PB3
 #define SETUP_DONE_PIN PB4
 
-#define TIMER_OVERFLOW_MAX 180		// With prescaler set to 8, 180 overflows yields ~54Hz
+#define TIMER_OVERFLOW_MAX 98		// With prescaler set to 8, 98 overflows yields ~100Hz
 #define TIMER_OVERFLOW_DEFAULT 122	// With prescaler set to 8, 122 overflows yields ~80Hz
-#define TIMER_OVERFLOW_MIN 40		// With prescaler set to 8, 48 overflows yields ~200Hz
+#define TIMER_OVERFLOW_MIN 1		// With prescaler set to 8, 48 overflows yields ~9.8kHz
 
 extern int globalTimerOverflowTimeout;
 

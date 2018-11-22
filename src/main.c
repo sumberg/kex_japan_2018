@@ -38,11 +38,13 @@ int main(void)
 	setup();
 
 	/* Run default test */
-	testDefaultSettings();
-
+	/* testDefaultSettings(); */
 
 	/* Run Increasing Instructions test */
 	/* testIncreasingInstructions(); */
+
+	/* Run Increasing Reset Timeout test */
+	testIncreasingResetTimeout();
 
 	/* Idle when all tests are done */
 	LED_ON();
@@ -128,4 +130,41 @@ void testDefaultSettings()
 		TIMING_STOP();
 		_delay_ms(10);
 	}
+
+	return;
+}
+
+void testIncreasingResetTimeout()
+{
+	/* Instruction struct used for sending instructions */
+	Instruction *instr = (Instruction *) malloc(sizeof(Instruction));
+
+	/* Tell arduino that setup is done */
+	LED_ON();
+	CLEAR_SLAVE_WAITING();
+	CLEAR_STOP();
+	SETUP_DONE();
+
+	uint32_t numInstructionsSent = 0;
+	/* Loop over all reset timing settings, send default num instructions  */
+	for (int i = TIMER_OVERFLOW_MAX; i >= TIMER_OVERFLOW_MIN; i--) {
+		globalTimerOverflowTimeout = i;
+		CLEAR_STOP();
+		SLAVE_WAITING();
+		while (!ARDUINO_READY());
+		CLEAR_SLAVE_WAITING();
+		LED_OFF();
+		numInstructionsSent = 0;
+		while (numInstructionsSent < INSTRS_MAX) {
+			/* Get next instruction */
+			ROM_nextInstruction(instr);
+			/* Send instruction to slave */
+			send_slave_instruction(instr);
+			numInstructionsSent++;
+		}
+		TIMING_STOP();
+		_delay_ms(10);
+	}
+
+	return;
 }
