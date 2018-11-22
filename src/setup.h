@@ -13,12 +13,13 @@
 
 #define DEBUG_PORT PORTC
 #define DEBUG_LED PC4
+#define DONE_LED PC5
 
 #define TIMING_PORT PORTB
 #define TIMING_PORT_IN PINB
-#define START_PIN PB2
-#define STOP_PIN PB3
-#define WAIT_PIN PB4
+#define START_SLAVE_EXEC PB2
+#define STOP_SLAVE_EXEC PB3
+#define SETUP_DONE_PIN PB4
 
 #define TIMER_OVERFLOW_MAX 180		// With prescaler set to 8, 180 overflows yields ~54Hz
 #define TIMER_OVERFLOW_DEFAULT 122	// With prescaler set to 8, 122 overflows yields ~80Hz

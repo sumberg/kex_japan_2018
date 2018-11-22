@@ -30,7 +30,6 @@ void release_slave(void)
 /* Set up all interrupts that will be used on the Atmega328 */
 void setup_master_interrupts(void)
 {
-
 	/* Enable global interrupts */
 	sei();
 
