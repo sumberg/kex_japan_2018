@@ -25,7 +25,7 @@
 
 void flash_led(uint8_t);
 
-int globalTimerOverflowTimeout;
+int globalTimerOverflowTimeout = TIMER_OVERFLOW_DEFAULT;
 
 enum MODE { DEFAULT, INCR_LENGTH, INCR_RESET, NO_EMUROM_FUNC, DONE };
 
