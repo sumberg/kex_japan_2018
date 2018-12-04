@@ -4,6 +4,8 @@ documentclass: article
 csl: ieee.csl
 ---
 
+# Abstract
+
 # Introduction
 
 When integrating legacy information system components into a modern system, one of several usual approaches is to create an interface for the modern system to control or communicate with the legacy component. This approach is known as wrapping.[@Bisbal1999;@Sneed2000] Wrapping as a concept could be adapted for legacy hardware in embedded systems, to enable the original and proven functionality of the outdated system, by providing an interface to control the legacy components. There are few documented examples of migration of legacy systems that include the incorporation of the system including the hardware platform, and the few examples that exist are often designed with a specific functionality in mind. The NESizer2 project details a method wherein a modern microcontroller is used to wrap certain functionalities of the microprocessor used in a Nintendo Entertainment System, by dynamically injecting instructions to the microprocessor like an emulated ROM.[@NESizer2_GitHub] This thesis will evaluate how this method could be expanded upon to allow for a general use case of the legacy component, and to evaluate how well the method performs as a means of wrapping.
@@ -53,8 +55,6 @@ We found that experimental research was most suited to the nature of our researc
 
 ## Stakeholder
 
-No stakeholder.
-
 ## Delimitations
 
 The scope of this report is limited to the design and performance analysis of the NESizer2 method when it has been expanded to handle the entire 6502 instruction set, on a RP2A03 microprocessor. Performance evaluation has been limited to speed of execution per cycle across different types of test programs, as well as the response time from when an instruction is issued until it is performed by the RP2A03. The details of the implementation and evaluation criteria can be found in subsequent sections.
@@ -62,8 +62,6 @@ The scope of this report is limited to the design and performance analysis of th
 For a better indication of how well the communication method studied in our research can be adopted for other microchips/hardware and for a better picture of the behaviour of these communication methods on other systems, it would have been beneficial to implement them for two or more devices with different architectures. We have compared the performance in execution time against a theoretical execution time of one instruction per second, however measuring the execution speed of the RP2A03 used "as intended" with a ROM could possibly have been more insightful.
 
 ## Disposition
-
-TODO
 
 # Background theory/Technical background
 
@@ -84,15 +82,16 @@ We realized that our need to control the Ricoh chip in this fashion could also b
 
 The MOS Technology 6502 microprocessor and architecture was introduced on the market in 1975. It gained almost instant popularity due to its competative performance for a cheaper price than its competitors.[@IEEE-HoF-6502]
 
-...
+... TODO (Explain 6502 addressing modes)
 
-The microprocessor that was used in the Nintendo Entertainment System was a Ricoh RP2A03 chip. [får man reffa till Nintendos patent? isf reffa det här] The RP2A03 is a proprietary chip based on the MOS Technology 6502 microprocessor architecture, with the difference that it has an added Audio Processing Unit (APU), and it does not support _decimal mode_[^decimal-mode] that would normally be available on a 6502 architecture.[@IEEE-HoF-6502]
+The microprocessor that was used in the Nintendo Entertainment System was a Ricoh RP2A03 chip. [TODO fix @NintendoPatent] The RP2A03 is a proprietary chip based on the MOS Technology 6502 microprocessor architecture, with the difference that it has an added Audio Processing Unit (APU), and it does not support _decimal mode_[^decimal-mode] that would normally be available on a 6502 architecture.[@IEEE-HoF-6502]
 
 ## ATmega328P
 
 The ATMega328P is an 8-bit, low-power CMOS microcontroller based on the AVR RISC architecture, with a throughput of up to 1 MIPS per MHz.[@ATMega328_Datasheet] It is an easy-to-program, multi-purpose microcontroller that is included on the Arduino Uno and Nano microcontroller boards. It contains 32 KBytes ISP flash memory with true read-while-write operation, 1 KByte of EEPROM and 2 KByte of internal SRAM. It's 23 GPIO pins with programmable peripheral interfaces including SPI, I^2^C and USART makes it an excellent light-weight microcontroller for relatively small scale projects.
 
 ## Related work
+TODO
 * NESizer2
 * Shared memory, injection-grejen
 * Andra artiklar vi hittade tidigare
@@ -131,7 +130,7 @@ As previously mentioned, Scrum is one of many frameworks that applies/upholds/ma
 > complex adaptive problems, while productively and creatively
 > delivering products of the highest possible value."_
 
-Scrum utilizes an iterative, incremental approach to manage risks, and to dynamically develop a solution to a problem (osäker på denna). The project is broken down into a set of time boxes known as "Sprints". The creators of Scrum recommend a sprint length of no longer than a month [@ScrumGuide, p. 8], however the author of the popular Scrum introduction book "Scrum and XP from the Trenches" Henrik Kniberg recommends new Scrum teams to experiment with sprint lengths until they find a time frame that the team feels comfortable with.[@ScrumKniberg, p. 22]
+Scrum utilizes an iterative, incremental approach to manage risks, and to dynamically develop a solution to a problem. The project is broken down into a set of time boxes known as "Sprints". The creators of Scrum recommend a sprint length of no longer than a month [@ScrumGuide, p. 8], however the author of the popular Scrum introduction book "Scrum and XP from the Trenches" Henrik Kniberg recommends new Scrum teams to experiment with sprint lengths until they find a time frame that the team feels comfortable with.[@ScrumKniberg, p. 22]
 
 Each member of the Scrum team is assigned a role. These roles include product owner, developers and Scrum master. Each role have a specific set of tasks to fulfill.
 
@@ -153,7 +152,7 @@ The framework employs four formal events that help make sure that the team can d
 * Sprint Retrospective
   - Held after the Sprint Review and before the next Sprint Planning meeting. It is held in order to inspect how the last Sprint went with regards to the team members, their relationships, the process and tools. The team tries to identify what went well, and what can be improved, with the aim to create a plan that improves performance in the next sprint.
 
-# Evaluation criteria
+## Evaluation criteria
 
 * Performance in speed
 	+ How fast is the wrapper method compared to non-wrapped?
@@ -161,6 +160,7 @@ The framework employs four formal events that help make sure that the team can d
 * Functionality as a wrapper method
 	+ Same behaviour as non-wrapped?
 	+ Response time
+
 
 # Project work/Development
 
@@ -263,10 +263,20 @@ The experiments phase was conducted according to design, with the exception that
 5. Measure time of completion when program is called without emulated ROM functions
 6. Switch to next category and repeat process until all categories have been tested
 
+For step 1 we used a digital logic analyzer to measure the bit value on the output of the RP2A03, in order to ensure that an expected value was output. (TODO bilder på detta). We also recorded the response time for each instruction type (TODO tabell på detta?) at the same time.
+For steps 2 through 5 we utilized an Arduino M0 Pro to act as a master controller unit, which we programmed to tell the Atmega328P to start executing programs on the RP2A03 on our command, and at the same time measure the time it took for the Atmega328P to execute. Three different test programs were written for each controller device (Arduino M0 Pro and Atmega328P), each following the same pattern:
+The Arduino waits for the Atmega328P to signal that it has completed its setup routine. The Atmega328P then waits for a start signal from the Arduino, which is sent upon the press of a hardware button. When the button is pressed, the Arduino sends a *go* signal to the Atmega328P and starts a timer. It then waits for the Atmega328P to signal that it has finished it execution, where upon the Arduino will stop it's timer and save the results. When the test program has finished, the Arduino outputs all the measured times. (TODO For the full test program implementations, see appendix kanske?)
+
+TODO Eventuellt fylla ut?
+
 # Results
+
+glöm inte att övriga memory operations ej funkade, bara accumulator
 
 # Conclusions & discussion
 
 # Future work
+
+software monitoring glöm ej från ref @P1990
 
 # References
