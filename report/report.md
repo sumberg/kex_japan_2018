@@ -244,7 +244,7 @@ The first part of this sprint focused on further extending the functionality of 
 
 When analyzing the 6502 instruction set further, we concluded that we were not interested in implementing support for branching instructions that conditionally jumps the program counter. This is because the RP2A03 reads instructions directly from the microcontroller, and as such branching has no real effect.
 
-The second part of the sprint was aimed at thoroughly testing the entire instruction set, making sure that all instructions produced expected results. While all operations that used the accumulator register (immediate loads, ALU [^ALU] operations, etc.) worked consistently and as expected, we noticed that seemingly _none of the memory operations worked_. This is further detailed in section [Results].
+The second part of the sprint was aimed at thoroughly testing the entire instruction set, making sure that all instructions produced expected results. While all operations that used the accumulator register (immediate loads, ALU [^ALU] operations, etc.) worked consistently and as expected, we noticed that seemingly _none of the memory operations worked_. This is further detailed and discussed in sections [Results] and [Conclusions & discussion].
 
 The sprint, and some continuous work during the experiments phase, was concluded without managing to resolve this issue.
 
@@ -271,11 +271,35 @@ TODO Eventuellt fylla ut?
 
 # Results
 
-glöm inte att övriga memory operations ej funkade, bara accumulator
+This chapter details the results of all tests that were performed on the system. The tests were performed as outlined in the subchapter [Experiments phase], and the test results have been labeled
+
+1. Data validation and Response time
+2. Increasing number of instructions
+3. Increasing frequency of resets
+4. Using ROM-Emulation functions
+5. Not using ROM-Emulation functions
+
+, respectively.
+
+Firstly all tests are presented and compared across categories, followed by a comparison of tests for each separate category. In the category _Mixed_, only three test cases were applicable and relevant, and as such the _Mixed_ category will not show in all comparisons. (TODO speca vilka test som detta gäller, här eller i subkapitlena?)
+
+## Comparison: Test cases
+
+Test cases 1 through 5 are shown in figures [TODO referens till respektive figurer här] respectively. Categories are compared to each other in each figure where applicable.
+
+As shown in figures [TODO referens till figurer detta gäller för], data could only be partially validated for categories _Zero Page_ and _Absolute_. They are categorized as partially validated because the instructions sent from the master unit and the execution time on the slave unit behaves as expected, but the data output after execution is not correct. As shown in figure [TODO referens till figur som visar detta beteende, logic analyser med beskrivning], the data output from a _Load_ instruction ([TODO rätt instruktion i parentesen]) only outputs the last sent byte of the instruction, instead of the expected stored byte ([TODO rätt byte här]). All instructions in the _Immediate_ category, which only stores data directly to the Accumulator register, was properly validated consistently.
+
+## Comparison: Categories
+
+The results for how each category separately performed in each test are shown in figures [TODO referens till figurer här].
 
 # Conclusions & discussion
 
 # Future work
+
+First and foremost, we acknowledge that the proposed method of hardware wrapping presented in this work shows inconclusive results. In order to tell whether this method is at all viable, it is required to (i) investigate whether the "broken" memory operations encountered during the tests was caused by a faulty RP2A03 unit, or if it was because of an error in the proposed implementation, and (ii) compare it against other methods of hardware wrapping on roughly equal level of complexity in implementation. As for case (ii), we had originally intended to compare this implementation against a different method of wrapping, which used a _shared memory_ to communicate between the master and slave unit, however we were unable to complete it because of the aforementioned problematic memory operations. The schematics for the shared memory approach can be found in [TODO rätt appendix här].
+
+## More 
 
 software monitoring glöm ej från ref @P1990
 
