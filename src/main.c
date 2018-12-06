@@ -160,7 +160,7 @@ void testIncreasingResetTimeout()
 		CLEAR_SLAVE_WAITING();
 		LED_OFF();
 		numInstructionsSent = 0;
-		while (numInstructionsSent < INSTRS_MAX) {
+		while (numInstructionsSent < INSTRS_DEFAULT) {
 			/* Get next instruction */
 			ROM_nextInstruction(instr);
 			/* Send instruction to slave */
