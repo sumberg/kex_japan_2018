@@ -24,10 +24,10 @@ set style data line
 #set yrange [0 : 250]
 
 # Files to use
-imm = './results/immediate/incr_overflow_timeout_imm.dat'
-zp = './results/zero_page/incr_overflow_timeout_zp.dat'
-abs = './results/absolute/incr_overflow_timeout_abs.dat'
-mix = './results/mixed/incr_overflow_timeout_mixed.dat'
+imm = './results/immediate/ver_2.0/incr_overflow_timeout_imm.dat'
+zp = './results/zero_page/ver_2.0/incr_overflow_timeout_zp.dat'
+abs = './results/absolute/ver_2.0/incr_overflow_timeout_abs.dat'
+mix = './results/mixed/ver_2.0/incr_overflow_timeout_mixed.dat'
 
 # red, green, blue, orange
 plot \

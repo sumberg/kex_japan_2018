@@ -80,10 +80,14 @@ We realized that our need to control the Ricoh chip in this fashion could also b
 
 ## MOS Technology 6502 architecture and the Ricoh RP2A03
 
+### MOS Technology 6502
 The MOS Technology 6502 microprocessor and architecture was introduced on the market in 1975. It gained almost instant popularity due to its competative performance for a cheaper price than its competitors.[@IEEE-HoF-6502]
 
 ... TODO (Explain 6502 addressing modes)
+The 6502 microprocessor contains instruction families and addressing modes to control every part of the architecture. Other than instructions which target basic CPU functionality (such as controlling program counter, reading status register etc.), there are groups of instructions to perform operations with the accumulator and memory. Included in these groups are immediate, zero page and absolute addressing. Immediate addressing , and takes one operand in addition to its opcode. Zero page addressing utilizes the address range `0x0000-0x00FF`, meaning it also only needs one operand. Absolute addressing has access to the entire available memory range (`0x0000-0xFFFF`), meaning it together with its opcode will require two additional operands.
+A full, detailed explanation of all of the available addressing modes can be found in the MC6500 Microcomputer Family Programming Manual.[@6502ProgManual] This research will utilize three of the addressing modes of the 6502 microprocessor, which are immediate, zero page and absolute addressing. See [Delimitations] for further details on the choice of instruction families.
 
+### Ricoh 2A03
 The microprocessor that was used in the Nintendo Entertainment System was a Ricoh RP2A03 chip. [TODO fix @NintendoPatent] The RP2A03 is a proprietary chip based on the MOS Technology 6502 microprocessor architecture, with the difference that it has an added Audio Processing Unit (APU), and it does not support _decimal mode_[^decimal-mode] that would normally be available on a 6502 architecture.[@IEEE-HoF-6502]
 
 ## ATmega328P
@@ -220,7 +224,10 @@ The first part of the sprint was aimed at basic testing of components. Testing t
 
 After component testing was concluded, the next step was building a simple circuit of components that, together with basic software and a simple test program, could confirm that basic communication between the microcontroller and RP2A03 was working as intended. The results were inconsistent and erroneous, and the build had to be debugged, which resulted in the sprint "overflowing" to the next sprint.
 
-We finally realized that the problem was due to a misunderstanding in how the latch was used in NESizer2, and a simple edit to the circuitry resulted in consistent expected results. This confirmed that communication between the chips worked at a basic level.
+We finally realized that the problem was due to a misunderstanding in how the latch was used in NESizer2, and a simple edit to the circuitry resulted in consistent expected results. This confirmed that communication between the chips worked at a basic level. Figure \ref{misplaced_latch} and \ref{misplaced_latch} illustrates the misbehaving circuit and the corrected circuit, respectively.
+
+![The circuit with the misplaced LE pin on the 74LS373 latch .\label{misplaced_latch}]("../img/Emulated ROM/v10/emulated_rom.png")
+![The circuit with the corrected LE pin on the 74LS373 latch.\label{corrected_latch}]("../img/Emulated ROM/v20/emulated_rom.png")
 
 ### Sprint 4, Sending instructions
 
@@ -250,7 +257,9 @@ The sprint, and some continuous work during the experiments phase, was concluded
 
 ## Experiments phase
 
-The implementation was extended in hardware and software to include simple communication with an Arduino M0 board, which was used to measure time. The choice of the Arduino M0 as a hardware timer was the increased resolution of time, and the fact that it ran on a clock with more than double the frequency of the wrapper system, further increasing accuracy of the measurements.
+In order to measure time according to our criterias, we attempted to set up the SPI peripheral on the Atmega328P. Unfortunately the programmer we used did not support two-say SPI communication, which forced us to further extend the implementation with a second microcontroller unit.
+
+The implementation was extended in hardware and software to include simple communication with an Arduino M0 Pro board, which was used to measure time. The choice of the Arduino M0 Pro as a hardware timer was the increased resolution of time, and the fact that it ran on a clock with more than double the frequency of the wrapper system, further increasing accuracy of the measurements.
 
 To measure communication timing and cycles between instructions, we used a digital logic analyzer to monitor digital output. The data from the analyzer could then be collected both numerically (in the form of CSV) and as diagrams. On the RP2A03 we chose to monitor all bits of the data bus, as well as the R/W and output clock pins, and on the microcontroller we monitored a signal pin to measure response time.
 
@@ -264,8 +273,8 @@ The experiments phase was conducted according to design, with the exception that
 6. Switch to next category and repeat process until all categories have been tested
 
 For step 1 we used a digital logic analyzer to measure the bit value on the output of the RP2A03, in order to ensure that an expected value was output. (TODO bilder på detta). We also recorded the response time for each instruction type (TODO tabell på detta?) at the same time.
-For steps 2 through 5 we utilized an Arduino M0 Pro to act as a master controller unit, which we programmed to tell the Atmega328P to start executing programs on the RP2A03 on our command, and at the same time measure the time it took for the Atmega328P to execute. Three different test programs were written for each controller device (Arduino M0 Pro and Atmega328P), each following the same pattern:
-The Arduino waits for the Atmega328P to signal that it has completed its setup routine. The Atmega328P then waits for a start signal from the Arduino, which is sent upon the press of a hardware button. When the button is pressed, the Arduino sends a *go* signal to the Atmega328P and starts a timer. It then waits for the Atmega328P to signal that it has finished it execution, where upon the Arduino will stop it's timer and save the results. When the test program has finished, the Arduino outputs all the measured times. (TODO For the full test program implementations, see appendix kanske?)
+For steps 2 through 5 we utilized the Arduino M0 Pro to act as a master controller unit, which we programmed to tell the Atmega328P to start executing programs on the RP2A03 on our command, and at the same time measure the time it took for the Atmega328P to execute. Three different test programs were written for each controller device (Arduino M0 Pro and Atmega328P), each following the same pattern:
+The Arduino waits for the Atmega328P to signal that it has completed its setup routine. The Atmega328P then waits for a start signal from the Arduino, which is sent upon the press of a hardware button. When the button is pressed, the Arduino sends a *go* signal to the Atmega328P and starts a timer. It then waits for the Atmega328P to signal that it has finished it execution, where upon the Arduino will stop it's timer and save the results. When the test program has finished, the Arduino outputs all the measured times. (TODO For the full test program implementations, see appendix kanske typ eller nåt?)
 
 TODO Eventuellt fylla ut?
 
@@ -285,21 +294,31 @@ Firstly all tests are presented and compared across categories, followed by a co
 
 ## Comparison: Test cases
 
-Test cases 1 through 5 are shown in figures [TODO referens till respektive figurer här] respectively. Categories are compared to each other in each figure where applicable.
+Test cases 1 through 5 are shown in figures \ref{}, \ref{}, \ref{}, \ref{} and \ref{} [TODO referens till respektive figurer här] respectively. Categories are compared to each other in each figure where applicable.
 
-As shown in figures [TODO referens till figurer detta gäller för], data could only be partially validated for categories _Zero Page_ and _Absolute_. They are categorized as partially validated because the instructions sent from the master unit and the execution time on the slave unit behaves as expected, but the data output after execution is not correct. As shown in figure [TODO referens till figur som visar detta beteende, logic analyser med beskrivning], the data output from a _Load_ instruction ([TODO rätt instruktion i parentesen]) only outputs the last sent byte of the instruction, instead of the expected stored byte ([TODO rätt byte här]). All instructions in the _Immediate_ category, which only stores data directly to the Accumulator register, was properly validated consistently.
+![.\label{}]()
+![.\label{}]()
+![.\label{}]()
+![.\label{}]()
+![.\label{}]()
+
+As shown in figures \ref{} [TODO referens till figurer detta gäller för], data could only be partially validated for categories _Zero Page_ and _Absolute_. They are categorized as partially validated because the instructions sent from the master unit and the execution time on the slave unit behaves as expected, but the data output after execution is not correct. As shown in figure \ref{} [TODO referens till figur som visar detta beteende, logic analyser med beskrivning], the data output from a _Load_ instruction ([TODO rätt instruktion i parentesen]) only outputs the last sent byte of the instruction, instead of the expected stored byte ([TODO rätt byte här]). All instructions in the _Immediate_ category, which only stores data directly to the Accumulator register, was properly validated consistently.
 
 ## Comparison: Categories
 
-The results for how each category separately performed in each test are shown in figures [TODO referens till figurer här].
+The results for how each category separately performed in each test are shown in figures \ref{}, \ref{} and \ref{}[TODO referens till figurer här].
+
+![.\label{}]()
+![.\label{}]()
+![.\label{}]()
 
 # Conclusions & discussion
 
 # Future work
 
-First and foremost, we acknowledge that the proposed method of hardware wrapping presented in this work shows inconclusive results. In order to tell whether this method is at all viable, it is required to (i) investigate whether the "broken" memory operations encountered during the tests was caused by a faulty RP2A03 unit, or if it was because of an error in the proposed implementation, and (ii) compare it against other methods of hardware wrapping on roughly equal level of complexity in implementation. As for case (ii), we had originally intended to compare this implementation against a different method of wrapping, which used a _shared memory_ to communicate between the master and slave unit, however we were unable to complete it because of the aforementioned problematic memory operations. The schematics for the shared memory approach can be found in [TODO rätt appendix här].
+First and foremost, we acknowledge that the proposed method of hardware wrapping presented in this work shows inconclusive results. In order to tell whether this method is at all viable, it is required to (i) investigate whether the "broken" memory operations encountered during the tests was caused by a faulty RP2A03 unit, or if it was because of an error in the proposed implementation, and (ii) compare it against other methods of hardware wrapping on roughly equal level of complexity in implementation. As for case (ii), we had originally intended to compare this implementation against a different method of wrapping, which used a _shared memory_ to communicate between the master and slave unit, however we were unable to complete it because of the aforementioned problematic memory operations. The schematics for the shared memory approach can be found in [TODO rätt appendix här, nämn att man bör använda ett annat minne].
 
-## More 
+## More
 
 software monitoring glöm ej från ref @P1990
 

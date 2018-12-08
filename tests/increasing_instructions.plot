@@ -24,10 +24,10 @@ set style data line
 #set yrange [0 : 250]
 
 # Files to use
-imm = './results/immediate/incr_instr_imm.dat'
-zp = './results/zero_page/incr_instr_zp.dat'
-abs = './results/absolute/incr_instr_abs.dat'
-mix = './results/mixed/incr_instr_mixed.dat'
+imm = './results/immediate/ver_2.0/incr_instr_imm.dat'
+zp = './results/zero_page/ver_2.0/incr_instr_zp.dat'
+abs = './results/absolute/ver_2.0/incr_instr_abs.dat'
+mix = './results/mixed/ver_2.0/incr_instr_mixed.dat'
 
 # red, green, blue, orange
 plot \

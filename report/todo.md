@@ -2,7 +2,6 @@
 
 * Finish first draft
   - Sub-chapter on Atmega328
-    + Popularity? Articles describing why it's so great?
     + Review bibtex @ATMega328_Datasheet author and publisher
   - Results
     + Compile in figures (tables, graphs)
@@ -25,7 +24,7 @@
   - Appendix
   	+ Search strings and results for gathering information
 	+ Source code including test programs
-	+ Raw data
+	+ Raw data (create columns with each test case (5000 rows etc remember?))
 	+ Anything from wiki?
   	+ Flowcharts and circuit diagrams to appendix A
 * Deliver first draft
