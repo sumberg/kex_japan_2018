@@ -20,12 +20,6 @@ zeropagecolor = "#3cb44b";
 absolutecolor = "#0082c8";
 mixed = "#f58231";
 
-# Files to use
-imm = './results/immediate/ver_2.0/default_settings_imm.txt'
-zp = './results/zero_page/ver_2.0/default_settings_zp.txt'
-abs = './results/absolute/ver_2.0/default_settings_abs.txt'
-mix = './results/mixed/ver_2.0/default_settings_mixed.txt'
-
 # Graph title
 set title 'Emulated ROM Functions'
 # Label y

@@ -294,23 +294,61 @@ Firstly all tests are presented and compared across categories, followed by a co
 
 ## Comparison: Test cases
 
-Test cases 1 through 5 are shown in figures \ref{}, \ref{}, \ref{}, \ref{} and \ref{} [TODO referens till respektive figurer här] respectively. Categories are compared to each other in each figure where applicable.
+Test cases 1 through 5 are shown in figures \ref{data-validation}, \ref{increasing-instructions}, \ref{increasing-interrupt-timeout} and \ref{emurom-func} respectively. Categories are compared to each other in each figure where applicable.
 
-![.\label{}]()
-![.\label{}]()
-![.\label{}]()
-![.\label{}]()
-![.\label{}]()
+![.\label{data-validation}](../tests/results/data-validation.pdf)
+![.\label{increasing-instructions}](../tests/results/increasing_instructions.pdf)
+![.\label{increasing-interrupt-timeout}](../tests/results/increasing_interrupt_timeout.pdf)
+![.\label{emurom-func}](../tests/results/emuromfunc.pdf)
 
-As shown in figures \ref{} [TODO referens till figurer detta gäller för], data could only be partially validated for categories _Zero Page_ and _Absolute_. They are categorized as partially validated because the instructions sent from the master unit and the execution time on the slave unit behaves as expected, but the data output after execution is not correct. As shown in figure \ref{} [TODO referens till figur som visar detta beteende, logic analyser med beskrivning], the data output from a _Load_ instruction ([TODO rätt instruktion i parentesen]) only outputs the last sent byte of the instruction, instead of the expected stored byte ([TODO rätt byte här]). All instructions in the _Immediate_ category, which only stores data directly to the Accumulator register, was properly validated consistently.
+As shown in figure \ref{data-validation}, data could only be partially validated for categories _Zero Page_ and _Absolute_. They are categorized as partially validated because the instructions sent from the master unit and the execution time on the slave unit behaves as expected, but the data output after execution is not correct. As shown in table \ref{mem-error}, the `LDA (0xA5)` instruction loads the value `0x04` from Zero Page address `0x24`, however trying to store the accumulator at another memory address strangely enough outputs `0x24` from the accumulator instead.
 
-## Comparison: Categories
+Table: Illustrating error in memory operations \label{mem-error}
 
-The results for how each category separately performed in each test are shown in figures \ref{}, \ref{} and \ref{}[TODO referens till figurer här].
+------------------------------------------------------------------------------
+Data bus	Comment
+--------	-------
+`0xA5`		Zero Page `LDA` instruction Opcode
+`0x24`		Zero Page `LDA` Operand, Zero Page Address `0x24`
+`0x04`		Returned value `0x04` from memory
+`0x85`		"Idle" Zero Page `STA` instruction
+`0x85`		"Idle" Zero Page `STA` instruction
+`0x85`		"Idle" Zero Page `STA` instruction
+`0x85`		"Idle" Zero Page `STA` instruction
+`0x85`		"Idle" Zero Page `STA` instruction
+`0x85`		"Idle" Zero Page `STA` instruction
+`0x85`		Zero Page `STA` instruction Opcode
+`0x06`		Zero Page `STA` Operand, Zero Page Address `0x06`
+`0x24`		Value on accumulator to be written to memory (Expected `0x04`)
+------------------------------------------------------------------------------
 
-![.\label{}]()
-![.\label{}]()
-![.\label{}]()
+When not performing memory operations, i.e. accumulator writes and ALU operations, all data was validated as expected, even when performing sequences of connected operations. Table \ref{xor-accumulator} shows a short sequence of instructions storing a value in the accumulator and performing an _Exclusive OR_ (`EOR`) operation on it.
+
+Table: Illustrating a sequence of two accumulator operations \label{xor-accumulator}
+
+---------------------------------------------------------------------
+Data bus	Comment
+--------	-------
+`0xA9`		Immediate `LDA` instruction Opcode
+`0x01`		Immediate `LDA` Operand, Immediate value `0x01`
+`0x85`		"Idle" Zero Page `STA` instruction
+`0x85`		"Idle" Zero Page `STA` instruction
+`0x85`		"Idle" Zero Page `STA` instruction
+`0x85`		"Idle" Zero Page `STA` instruction
+`0x85`		"Idle" Zero Page `STA` instruction
+`0x85`		"Idle" Zero Page `STA` instruction
+`0x49`		Immediate `EOR` instruction Opcode
+`0xFF`		Immediate `EOR` Operand, Immediate value `0xFF`
+`0x85`		"Idle" Zero Page `STA` instruction
+`0x85`		"Idle" Zero Page `STA` instruction
+`0x85`		"Idle" Zero Page `STA` instruction
+`0x85`		"Idle" Zero Page `STA` instruction
+`0x85`		"Idle" Zero Page `STA` instruction
+`0x85`		"Idle" Zero Page `STA` instruction
+`0x85`		Zero Page `STA` instruction Opcode
+`0x85`		Zero Page `STA` Operand, Zero Page Address `0x85`
+`0xFE`		Result of `EOR` in accumulator to be stored in memory
+---------------------------------------------------------------------
 
 # Conclusions & discussion
 
