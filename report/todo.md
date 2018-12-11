@@ -8,7 +8,7 @@
     + Write text
     + Redo tests with timeout properly set
   - Background theory/Technical background
-  	+ Explain 6502 addressing modes
+	+ Review lines report.md:86 through report.md:94
 	+ Related work
   - Evaluation Criteria
   - Conclusions & discussion
@@ -27,6 +27,7 @@
 	+ Raw data (create columns with each test case (5000 rows etc remember?))
 	+ Anything from wiki?
   	+ Flowcharts and circuit diagrams to appendix A
+* Thoroughly check for spelling mistakes
 * Deliver first draft
 * Modify according to needs (Bengan)
 * Deliver second draft
