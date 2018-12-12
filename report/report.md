@@ -9,6 +9,8 @@ geometry: margin=3cm
 
 # Abstract
 
+TODO
+
 # Introduction
 
 When integrating legacy information system components into a modern system, one of several usual approaches is to create an interface for the modern system to control or communicate with the legacy component. This approach is known as wrapping.[@Bisbal1999;@Sneed2000] Wrapping as a concept could be adapted for legacy hardware in embedded systems, to enable the original and proven functionality of the outdated system, by providing an interface to control the legacy components. There are few documented examples of migration of legacy systems that include the incorporation of the system including the hardware platform, and the few examples that exist are often designed with a specific functionality in mind. The NESizer2 project details a method wherein a modern microcontroller is used to wrap certain functionalities of the microprocessor used in a Nintendo Entertainment System, by dynamically injecting instructions to the microprocessor like an emulated ROM.[@NESizer2_GitHub] This thesis will evaluate how this method could be expanded upon to allow for a general use case of the legacy component, and to evaluate how well the method performs as a means of wrapping.
@@ -57,6 +59,8 @@ A literature study was also conducted to decide on a suitable scientific method 
 We found that experimental research was most suited to the nature of our research. The experimental approach allows for observing how a system's behavior changes as one variable is manipulated while other variables are kept stable [@IntroToResearch], and as such it is suitable for analyzing performance of a system.[@Hakansson_Portal]
 
 ## Stakeholder
+
+TODO
 
 ## Delimitations
 
@@ -138,7 +142,7 @@ The agile software development model has spawned a number of frameworks to uphol
 
 ### Scrum
 
-As previously mentioned, Scrum is one of many frameworks that applies/upholds/maintains(?) the Manifesto for Agile Software Development. The creators Jeff Sutherland and Ken Schwaber define Scrum as the following[@ScrumGuide, p. 3]:
+As previously mentioned, Scrum is one of many frameworks that TODO applies/upholds/maintains(?) the Manifesto for Agile Software Development. The creators Jeff Sutherland and Ken Schwaber define Scrum as the following[@ScrumGuide, p. 3]:
 
 > _"Scrum (n): A framework within which people can address
 > complex adaptive problems, while productively and creatively
@@ -178,7 +182,7 @@ TODO
 	+ Response time
 
 
-# Project work/Development
+# Project Work and Development
 
 This section details the project work, including literature studies and the hardware and software implementation/design process as governed by the Scrum framework, and the design and implementation of experiments according to the experimental research approach. It has been structured to closely follow the steps of the project work in chronological order.
 
@@ -208,7 +212,9 @@ The outline of the experiments are further detailed in section [Experiments phas
 
 When planning the project work we decided to use agile development and the framework _Scrum_ to govern the design and implementation process. We chose divide design and implementation work into categories _hardware_ and _software_, with one person responsible for each category. Before our first sprint we set up milestones and goals, and created a backlog of stories, or tasks, that would work towards reaching set goals. This backlog is what we used to define tasks to include in each sprints.
 
-The sprint goals were then set to reflect stages of iteratively increasing implemented functionality in the method, and stories and tasks for that specific sprint were then chosen to reflect the sprint goal. For each sprint we also defined a set of one or more deliverables that should represent the result of that sprint. A detailed description of the work concluded in each sprint during the implementation process will be given below, and a summary of the sprint goals and deliverables can be seen in Table 1.
+The sprint goals were then set to reflect stages of iteratively increasing implemented functionality in the method, and stories and tasks for that specific sprint were then chosen to reflect the sprint goal. For each sprint we also defined a set of one or more deliverables that should represent the result of that sprint. A detailed description of the work concluded in each sprint during the implementation process will be given below, and a summary of the sprint goals and deliverables can be seen in Table \ref{sprint-overview}.
+
+Table: Overview of sprints and deliverables \label{sprint-overview}
 
 Sprint #	Goal								Deliverables
 ----------	------------						--------------------
@@ -220,7 +226,6 @@ Sprint #	Goal								Deliverables
 												for sending instructions
 5			Entire instruction set working		Software supporting entire instruction set
 
-Table: Overview of sprints and deliverables
 
 ### Sprint 1, Research and design phase
 
@@ -238,14 +243,16 @@ After component testing was concluded, the next step was building a simple circu
 
 We finally realized that the problem was due to a misunderstanding in how the latch was used in NESizer2, and a simple edit to the circuitry resulted in consistent expected results. This confirmed that communication between the chips worked at a basic level. Figure \ref{misplaced_latch} and \ref{misplaced_latch} illustrates the misbehaving circuit and the corrected circuit, respectively.
 
-![The circuit with the misplaced LE pin on the 74LS373 latch .\label{misplaced_latch}]("../img/Emulated ROM/v10/emulated_rom.png")
-![The circuit with the corrected LE pin on the 74LS373 latch.\label{corrected_latch}]("../img/Emulated ROM/v20/emulated_rom.png")
+![The circuit with the misplaced LE pin on the 74LS373 latch .\label{misplaced_latch}]("./img/emulated_rom/emulated_rom_v10.png")
+![The circuit with the corrected LE pin on the 74LS373 latch.\label{corrected_latch}]("./img/emulated_rom/emulated_rom_v20.png")
 
 ### Sprint 4, Sending instructions
 
 Hardware work included implementing simple debugging and diagnostics that could be used to determine if something was not working as intended in a quick manner, and proved to be very helpful during the sprint. After concluding the hardware work of the sprint, the software work was distributed to both parties and implemented together.
 
-The NESizer2 uses high(er) level functions for instructing the RP2A03 to play a note, or to modify the sound, etc., with the help of hardcoded assembly instructions that performed set memory operations. We wanted to extend these assembly routines to allow for any instruction to be sent, and to build our own higher level C functions that could be used in a C program for the microcontroller used in the implementation. This was achieved by categorizing the 6502 instruction set (which is the instruction set used by the RP2A03) into instruction families that use the same number of operands. At this stage we chose to focus on three main families; (i) Immediate operations, (ii) Absolute addressing memory operations, and (iii) Zero Page addressing memory operations. A summary of the characteristics of these families can be found in Table 2.
+The NESizer2 uses high(er) level functions for instructing the RP2A03 to play a note, or to modify the sound, etc., with the help of hardcoded assembly instructions that performed set memory operations. We wanted to extend these assembly routines to allow for any instruction to be sent, and to build our own higher level C functions that could be used in a C program for the microcontroller used in the implementation. This was achieved by categorizing the 6502 instruction set (which is the instruction set used by the RP2A03) into instruction families that use the same number of operands. At this stage we chose to focus on three main families; (i) Immediate operations, (ii) Absolute addressing memory operations, and (iii) Zero Page addressing memory operations. A summary of the characteristics of these families can be found in Table \ref{instruction_chars}.
+
+Table: Instruction families and their characteristics \label{instruction_chars}
 
 Instruction family		Size of instruction [B]			# Cycles / instruction		R/W Cycle sequence
 ----------------------  --------------------------- 	--------------------------	----------------------
@@ -253,7 +260,6 @@ Immediate				2								2							R, R
 Absolute				3								4							R, R, R, R/W
 Zero page				2								3							R, R, R/W
 
-Table: Instruction families and their characteristics
 
 These characteristics was then used to redesign the assembly routines and to build the functions mentioned above. When implemented it was possible to send any opcode[^opcode] together with any operand, handled properly by the assembly routines.
 
@@ -308,10 +314,10 @@ Firstly all tests are presented and compared across categories, followed by a co
 
 Test cases 1 through 5 are shown in figures \ref{data-validation}, \ref{increasing-instructions}, \ref{increasing-interrupt-timeout} and \ref{emurom-func} respectively. Categories are compared to each other in each figure where applicable.
 
-![.\label{data-validation}](../tests/results/data-validation.pdf)
-![.\label{increasing-instructions}](../tests/results/increasing_instructions.pdf)
-![.\label{increasing-interrupt-timeout}](../tests/results/increasing_interrupt_timeout.pdf)
-![.\label{emurom-func}](../tests/results/emuromfunc.pdf)
+![.\label{data-validation}](./img/data-validation.jpg)
+![.\label{increasing-instructions}](./img/increasing_instructions.pdf)
+![.\label{increasing-interrupt-timeout}](./img/increasing_interrupt_timeout.pdf)
+![.\label{emurom-func}](./img/emuromfunc.pdf)
 
 As shown in figure \ref{data-validation}, data could only be partially validated for categories _Zero Page_ and _Absolute_. They are categorized as partially validated because the instructions sent from the master unit and the execution time on the slave unit behaves as expected, but the data output after execution is not correct. As shown in table \ref{mem-error}, the `LDA (0xA5)` instruction loads the value `0x04` from Zero Page address `0x24`, however trying to store the accumulator at another memory address strangely enough outputs `0x24` from the accumulator instead.
 
@@ -362,7 +368,45 @@ Data bus	Comment
 `0xFE`		Result of `EOR` in accumulator to be stored in memory
 ---------------------------------------------------------------------
 
-# Conclusions & discussion
+# Discussion & conclusions
+
+This chapter will present a summary of our thoughts on the project work and experiments. Firstly we present thoughts on our choice of methods, how effectively we perceived them to be in practice for this particular study, and thoughts on our choice of tools and technology, and the project work in general. Secondly we will discuss the experiments and measured results, and finally present selected conclusions.
+
+## Project work
+
+### Research Methodology
+
+Since experimental research is based on identifying and testing the underlying variables that make up the entire system, much of the project was designed with these variables and how to structure experiments in mind. We found that experimental research was a good fit for this type of problem, however we believe that the process of identifying the variables requires a better theoretical understanding of the target system and the experimental approach than we had at the time of design and implementation. We would suggest a more thorough study of both experimental research philosophy and approach, as well as the system that should be analyzed, before designing an experimental research study of this kind.
+
+### Scrum in this project
+
+We had initially planned to implement additional wrapping methods, in order to compare the performance between the different methods of wrapping, but due to technical issues and time limitation we were unable to implement them fully. However, this affected our choice of working method; we believed initially that _Scrum_ could give us a good overview of the implementation work across the different wrapping methods, each with their own requirements and tasks. When we realized that it was no longer feasible to continue development of the additional wrapping methods, Scrum was not as effective anymore, since we started to focus more on either the same tasks or closely related tasks. This also meant since that we could continuously plan and discuss the iterative process, we no longer had much use for sprint and daily meetings. For projects of this limited scope, we believe that there may not be a need for more involved frameworks such as _Scrum_.
+
+### Arduino M0 Pro
+
+As mentioned previously in the text, the idea for this project was sparked by a hobby project which was to implement a portable music tracker utilizing the NES processor Ricoh 2A03, together with a microcontroller. Initially, we set out to use an Arduino unit in this hobby project, but after experimenting with an Arduino M0 Pro we realized that, due to the lack of documentation and its limited flexibility, we'd much prefer a microcontroller with a more detailed documentation where we could, in a more familiar manner, create our own complementary library code and use a compiler of our choosing. We settled for the Atmega328P as the master controller in the circuit. The Arduino M0 Pro saw a comeback though, as it was used in the test phase of the project and proved to be quite useful for programming simple tasks, and its high clock frequency allowed us to produce more accurate measurements.
+
+### Atmega328P
+
+The Atmega328P was useful in our project, as it is fairly easy to program (AVR architecture), and is very well documented. It is also the same processor that the NESizer2 method implements (with minor differences which do not affect the implementation), meaning that we only had to convert some of the source code, and that the assembly routines could be used as is. We felt that the choice was appropriate for two reasons: (i) it made the software easier to implement, and (ii) we could stay closer to the source code that we wish to evaluate.
+
+### Programming toolchain
+
+During the research phase, we discovered that that a popular compiler for AVR microcontrollers was AVRDUDE [@avrdude], a cross-platform programming software compatible with a wide range of programmers. It needs a compiled hex file, meaning a separate compiler is required. We used avr-gcc [@avr-gcc] for compiling our source code, and we used AVR Libc [@avrlibc] which provides library functions for AVR microprocessors. As avr-gcc is a C compiler, a language both of us are comfortable with, and as all of the above mentioned tools are documented and widely used, we felt that this entire toolchain was the obvious choice.
+
+We found, also during the research stage, that a popular programmer for AVR micro controllers was the USBasp [@usbasp], which we obtained and used for the project. One negative aspect of this was that there was no serial interface to use for debugging, something we did not notice until later in the project. Had we done more thorough research earlier in the project work, we could found and used a different programmer that included this functionality so that we did not have to write Arduino programs for the testing phase, which could have saved us some time.
+
+### Oscilloscope, Digital logic analyzer
+
+In attempts to verify that the RP2A03 would execute a basic program, we initially used an oscilloscope to monitor the R/W pin to see if it behaved according to the input instructions, which we were successful in doing. However we could not find any good way of validating our input and output data. After consulting with our supervisor, we were provided with a digital logic analyzer. This helped us immensely in moving forward with the project, as we could validate that our inputs produced expected outputs, and we would recommend any reproducing persons to use one as well.
+
+## Experiments & Results
+
+As shown in the [Results] section, a major part of the intended functionality did not produce correct results. Any program or sequence of instructions involving memory operations led to faulty data. Although we were unable to determine the cause of this error, we have established two possible explanations; (i) a bug in the software implementation of memory operations, or (ii) a defect memory unit of the RP2A03. Since this error did not occur for operations involving the ALU, accumulator or system level operations (i.e. disable interrupts etc.), and only for memory operations independent of instruction size, case (i) seems unlikely. We could also confirm that the data on the data bus, and the behavior of the R/W pin, was indicative of the correct instructions being sent at correct timing, which further makes (i) a less likely cause. However, since we did not have access to a replacement RP2A03 unit, or diagnostic tools to investigate the hardware of the unit we used, we were unable to rule out the RP2A03 as the cause either. Fortunately, as this error only affected the actual stored and loaded data and not the machines behavior in terms of cycles per instruction etc., we could still use memory operations in our test programs in order to measure timing.
+
+TODO Skriv om resultaten överlag; förväntat eller ej? intressant beteende eller ej? etc.
+
+TODO skriv om overhead som minimum overhead, och att teoretiskt bör det finnas en risk att en interrupt sker innan vi hinner påbörja en ny sync + instruktion
 
 # Future work
 

@@ -27,6 +27,7 @@
 	+ Raw data (create columns with each test case (5000 rows etc remember?))
 	+ Anything from wiki?
   	+ Flowcharts and circuit diagrams to appendix A
+  - Change _response time_ to _communication overhead_ where applicable
 * Thoroughly check for spelling mistakes
 * Deliver first draft
 * Modify according to needs (Bengan)
