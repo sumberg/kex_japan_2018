@@ -1,7 +1,10 @@
 ---
 title: Evaluation of the NESizer2 method as a means of wrapping embedded legacy systems
 documentclass: article
+bibliography: bib.bibtex
+toc: true
 csl: ieee.csl
+geometry: margin=3cm
 ---
 
 # Abstract
@@ -102,6 +105,7 @@ The ATMega328P is an 8-bit, low-power CMOS microcontroller based on the AVR RISC
 
 ## Related work
 TODO
+
 * NESizer2
 * Shared memory, injection-grejen
 * Andra artiklar vi hittade tidigare
@@ -163,6 +167,8 @@ The framework employs four formal events that help make sure that the team can d
   - Held after the Sprint Review and before the next Sprint Planning meeting. It is held in order to inspect how the last Sprint went with regards to the team members, their relationships, the process and tools. The team tries to identify what went well, and what can be improved, with the aim to create a plan that improves performance in the next sprint.
 
 ## Evaluation criteria
+
+TODO
 
 * Performance in speed
 	+ How fast is the wrapper method compared to non-wrapped?
