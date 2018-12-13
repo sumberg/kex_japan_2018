@@ -243,8 +243,9 @@ After component testing was concluded, the next step was building a simple circu
 
 We finally realized that the problem was due to a misunderstanding in how the latch was used in NESizer2, and a simple edit to the circuitry resulted in consistent expected results. This confirmed that communication between the chips worked at a basic level. Figure \ref{misplaced_latch} and \ref{misplaced_latch} illustrates the misbehaving circuit and the corrected circuit, respectively.
 
-![The circuit with the misplaced LE pin on the 74LS373 latch .\label{misplaced_latch}]("./img/emulated_rom/emulated_rom_v10.png")
-![The circuit with the corrected LE pin on the 74LS373 latch.\label{corrected_latch}]("./img/emulated_rom/emulated_rom_v20.png")
+![The circuit with the misplaced LE pin on the 74LS373 latch .\label{misplaced_latch}](./img/emulated_rom/emulated_rom_ver10.png)
+
+![The circuit with the corrected LE pin on the 74LS373 latch.\label{corrected_latch}](./img/emulated_rom/emulated_rom_ver20.png)
 
 ### Sprint 4, Sending instructions
 
@@ -314,16 +315,18 @@ Firstly all tests are presented and compared across categories, followed by a co
 
 Test cases 1 through 5 are shown in figures \ref{data-validation}, \ref{increasing-instructions}, \ref{increasing-interrupt-timeout} and \ref{emurom-func} respectively. Categories are compared to each other in each figure where applicable.
 
-![.\label{data-validation}](./img/data-validation.jpg)
+![.\label{data-validation}](./img/data_validation.jpg)
+
 ![.\label{increasing-instructions}](./img/increasing_instructions.pdf)
+
 ![.\label{increasing-interrupt-timeout}](./img/increasing_interrupt_timeout.pdf)
+
 ![.\label{emurom-func}](./img/emuromfunc.pdf)
 
 As shown in figure \ref{data-validation}, data could only be partially validated for categories _Zero Page_ and _Absolute_. They are categorized as partially validated because the instructions sent from the master unit and the execution time on the slave unit behaves as expected, but the data output after execution is not correct. As shown in table \ref{mem-error}, the `LDA (0xA5)` instruction loads the value `0x04` from Zero Page address `0x24`, however trying to store the accumulator at another memory address strangely enough outputs `0x24` from the accumulator instead.
 
 Table: Illustrating error in memory operations \label{mem-error}
 
-------------------------------------------------------------------------------
 Data bus	Comment
 --------	-------
 `0xA5`		Zero Page `LDA` instruction Opcode
@@ -338,13 +341,11 @@ Data bus	Comment
 `0x85`		Zero Page `STA` instruction Opcode
 `0x06`		Zero Page `STA` Operand, Zero Page Address `0x06`
 `0x24`		Value on accumulator to be written to memory (Expected `0x04`)
-------------------------------------------------------------------------------
 
 When not performing memory operations, i.e. accumulator writes and ALU operations, all data was validated as expected, even when performing sequences of connected operations. Table \ref{xor-accumulator} shows a short sequence of instructions storing a value in the accumulator and performing an _Exclusive OR_ (`EOR`) operation on it.
 
 Table: Illustrating a sequence of two accumulator operations \label{xor-accumulator}
 
----------------------------------------------------------------------
 Data bus	Comment
 --------	-------
 `0xA9`		Immediate `LDA` instruction Opcode
@@ -366,7 +367,6 @@ Data bus	Comment
 `0x85`		Zero Page `STA` instruction Opcode
 `0x85`		Zero Page `STA` Operand, Zero Page Address `0x85`
 `0xFE`		Result of `EOR` in accumulator to be stored in memory
----------------------------------------------------------------------
 
 # Discussion & conclusions
 
