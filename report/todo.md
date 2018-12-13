@@ -2,32 +2,21 @@
 
 * Finish first draft
   - Sub-chapter on Atmega328
-    + Review bibtex @ATMega328_Datasheet author and publisher
-  - Results
-    + Compile in figures (tables, graphs)
-    + Write text
-    + Redo tests with timeout properly set
-  - Background theory/Technical background
 	+ Review lines report.md:86 through report.md:94
 	+ Related work
-  - Evaluation Criteria
-  - Conclusions & discussion
-  - Future work
-  - Disposition
   - Stakeholders/Steakholders
   - Abstract
   - Add figures
   	+ Literature Review
 	+ Testing process
+	+ 6502 opcode matrix, all versions
   - Review footnotes
   - Review references
   - Appendix
-  	+ Search strings and results for gathering information
-	+ Source code including test programs
-	+ Raw data (create columns with each test case (5000 rows etc remember?))
-	+ Anything from wiki?
-  	+ Flowcharts and circuit diagrams to appendix A
-  - Change _response time_ to _communication overhead_ where applicable
+  	+ Search strings and results for gathering information (behövs detta utan påsägning från bengan?)
+	+ Source code including test programs?
+	+ Anything from wiki? Opcode matrix? Anything else?
+  - theoretical execution speeds in results
 * Thoroughly check for spelling mistakes
 * Deliver first draft
 * Modify according to needs (Bengan)

@@ -58,17 +58,21 @@ A literature study was also conducted to decide on a suitable scientific method 
 
 We found that experimental research was most suited to the nature of our research. The experimental approach allows for observing how a system's behavior changes as one variable is manipulated while other variables are kept stable [@IntroToResearch], and as such it is suitable for analyzing performance of a system.[@Hakansson_Portal]
 
-## Stakeholder
+## Stakeholders
 
-TODO
+TODO är detta ens tillräckligt?
+
+As previously mentioned, wrapping could provide an alternative for businesses to keep their legacy systems alive, meaning it could save a company a substantial economic and temporal investment. As such, our main stakeholders are businesses and corporations where the need to maintain old systems exists.
 
 ## Delimitations
 
-The scope of this report is limited to the design and performance analysis of the NESizer2 method when it has been expanded to handle the entire 6502 instruction set, on a RP2A03 microprocessor. Performance evaluation has been limited to speed of execution per cycle across different types of test programs, as well as the response time from when an instruction is issued until it is performed by the RP2A03. The details of the implementation and evaluation criteria can be found in subsequent sections.
+The scope of this report is limited to the design and performance analysis of the NESizer2 method when it has been expanded to handle key parts of the 6502 instruction set, on a RP2A03 microprocessor. Performance evaluation has been limited to speed of execution across the implemented instruction set, as well as the overhead as measured in time between consecutive instructions. The details of the implementation and evaluation criteria can be found in subsequent sections.
 
-For a better indication of how well the communication method studied in our research can be adopted for other microchips/hardware and for a better picture of the behaviour of these communication methods on other systems, it would have been beneficial to implement them for two or more devices with different architectures. We have compared the performance in execution time against a theoretical execution time of one instruction per second, however measuring the execution speed of the RP2A03 used "as intended" with a ROM could possibly have been more insightful.
+For a better indication of how well the communication method studied in our research can be adopted for other microchips/hardware and for a better picture of the behaviour of these communication methods on other systems, it would have been beneficial to implement them for two or more devices with different architectures. We have not tested intended use case performance of the RP2A03, i.e. having it read program instructions from a regular ROM, and as such we were unable to make a tested comparison of execution speed.
 
 ## Disposition
+
+This report will firstly provide some background theory on legacy hardware and its use in a modern context, as well as an introduction to the hardware that has been used in this research. The research methodology used is presented in the following section together with other techniques and frameworks used to facilitate the research and development work. It is followed by a description of the project work, including the initial literature study and research phases, development phases and finally experiments and testing phases, followed by a section presenting the results from experiments. The last chapters will discuss the project work and the results from experiments, provide conclusions from the research work, and finally present ideas and thoughts about future work.
 
 # Background theory/Technical background
 
@@ -86,6 +90,8 @@ We wanted to, as a hobby project, develop a prototype for a portable music track
 We realized that our need to control the Ricoh chip in this fashion could also be applicable to other legacy systems that are in need of upgrades, and where emulation is not a viable option.
 
 ## MOS Technology 6502 architecture and the Ricoh RP2A03
+
+TODO Behöver vi ha överrubriken om vi ändå delar in delkapitlena som 6502 och RP2A03? Känns lite överflödix
 
 ### MOS Technology 6502
 The MOS Technology 6502 microprocessor and architecture was introduced on the market in 1975. It gained almost instant popularity due to its competative performance for a cheaper price than its competitors.[@IEEE-HoF-6502]
@@ -124,11 +130,11 @@ During the research, a research method was applied to facilitate the process of 
 
 One example of quantitative research is _experimental research_. Experimental research is a strategy where the researchers try to control all variables that can affect the outcome of an observation. By methodically manipulate the state of one variable at a time, while keeping other variables stable, it is possible to understand how different variables affect the phenomenon that is to be researched.[@Hakansson_Portal;@IntroToResearch, p. 26] As its main method of data collection, experimental research relies on experiments that are performed in this fashion. The gathered data can then be analyzed and used as a basis for conclusion to confirm or deny the stated hypotheses. In computer systems this method can be used to isolate the behaviour of the system for a certain input or event, and can be a useful method to analyze system performance.[@Hakansson_Portal]
 
-We chose to work according to the experimental research strategy, seeing as it is a suitable approach to analyze computer systems. To analyze the performance of our implementation we have chosen to observe how _response time_ and _time of completion of a program_ varies with respect to different sets of instructions and the program length. Because of limitations in our implementation in its current state, further described in subsequent chapters, we hypothesize worse performance than if the chip could read instructions directly from a ROM, as intended. However, if the implementation is capable of executing the entire instruction set as expected, we believe that there are many areas of the implementation that can be optimized for better performance with relative ease.
+We chose to work according to the experimental research strategy, seeing as it is a suitable approach to analyze computer systems. To analyze the performance of our implementation we have chosen to observe how _per-instruction-overhead_ and _completion time of a program_ varies with respect to different sets of instructions and the program length. Because of limitations in our implementation in its current state, further described in subsequent chapters, we hypothesize worse performance than if the chip could read instructions directly from a ROM, as intended. However, if the implementation is capable of executing the entire instruction set as expected, we believe that there are many areas of the implementation that can be optimized for better performance with relative ease.
 
 ### Experimental techniques in computer system performance research
 
-The development of computer systems has long been an area heavily driven by the marketplace. In order to be competitive on the market, a computer system has to either provide the highest performance, or the most cost effective computing engines. This means that as developers of computer systems, we need to succesfully "understand and then eliminate the system bottlenecks that prevent us from exploiting the available technologies". To gain a good understanding of how modern computer systems behave, and to localize the source of bottlenecks in a precise manner, experimental techniques are required.[@P1990] In our research we have chosen one of these techniques when designing experiments to gather data and analyze the performance of our implementation - _hardware monitoring_.[@P1990] The reason for chosing only one of these techniques is that the scope of interest for this research is mainly to see how well the embedded hardware functions as a means of wrapping older hardware, and to deduce this we can gain sufficient data by monitoring the timing of hardware signals. Techniques that could be used to further develop the systems are discussed in section [Future work].
+The development of computer systems has long been an area heavily driven by the marketplace. In order to be competitive on the market, a computer system has to either provide the highest performance, or the most cost effective computing engines. This means that as developers of computer systems, we need to succesfully "understand and then eliminate the system bottlenecks that prevent us from exploiting the available technologies". To gain a good understanding of how modern computer systems behave, and to localize the source of bottlenecks in a precise manner, experimental techniques are required.[@P1990] In our research we have chosen one of these techniques when designing experiments to gather data and analyze the performance of our implementation - _hardware monitoring_.[@P1990] The reason for chosing only one of these techniques is that the scope of interest for this research is mainly to see how well the embedded hardware functions as a means of wrapping older hardware, and to deduce this we can gain sufficient data by monitoring the timing of hardware signals.
 
 ## Design and software development
 
@@ -172,15 +178,17 @@ The framework employs four formal events that help make sure that the team can d
 
 ## Evaluation criteria
 
-TODO
+In order to gain an idea of how well the NESizer2 functions as a method of hardware wrapping, and to have some additional guidance in identifying the relevant variables that needed to be controlled in experiments, we established a few points that we wanted to test and evaluate;
 
-* Performance in speed
-	+ How fast is the wrapper method compared to non-wrapped?
-	+ Measure time of completion of programs categorized in types of operations
-* Functionality as a wrapper method
-	+ Same behaviour as non-wrapped?
-	+ Response time
+TODO vore ju najs om man kunde hitta någon referens på att det här är rimliga kriterier att testa för.
 
+**Performance in speed:** We need to know if the wrapping method was significantly slower than the component(s) being wrapped. Since the wrapping would allow the component to be used only at crucial times, and allow a larger portion of programs to be run on a more modern machine, we were mainly focusing on short and simple programs that would for instance utilize memory mapped functionality of the legacy hardware.
+
+**Consistency in usage:** It is important that the method does not introduce any quirks that would have to be considered when implementing it as a wrapper. If certain programs or sequences of instructions behave differently when run via the wrapper compared to when run natively, the method would introduce to much friction to be viable as a wrapper. We decided to test this by grouping instructions by addressing mode into categories of instructions with similar properties, and to test groups of instructions both isolated and mixed together.
+
+**Correctness:** Naturally, the wrapping method should not introduce or be responsible for any erroneous results during usage. We decided to use a digital logic analyzer in order to monitor the behavior of the system during the test programs.
+
+**Bottlenecks and overhead:** For systems where timing is crucial, it is important to determine and understand any overhead or bottlenecks that come with the wrapper in order to determine its utility. Since the NESizer2 method was constructed to send one instruction at a time, we wanted to see how this affected a longer sequence of continuous instructions, and determine if there exists any significant delay between instructions.
 
 # Project Work and Development
 
@@ -280,19 +288,21 @@ In order to measure time according to our criterias, we attempted to set up the 
 
 The implementation was extended in hardware and software to include simple communication with an Arduino M0 Pro board, which was used to measure time. The choice of the Arduino M0 Pro as a hardware timer was the increased resolution of time, and the fact that it ran on a clock with more than double the frequency of the wrapper system, further increasing accuracy of the measurements.
 
-To measure communication timing and cycles between instructions, we used a digital logic analyzer to monitor digital output. The data from the analyzer could then be collected both numerically (in the form of CSV) and as diagrams. On the RP2A03 we chose to monitor all bits of the data bus, as well as the R/W and output clock pins, and on the microcontroller we monitored a signal pin to measure response time.
+To measure communication timing and cycles between instructions, we used a digital logic analyzer to monitor digital output. The data from the analyzer could then be collected both numerically (in the form of CSV) and as diagrams. On the RP2A03 we chose to monitor all bits of the data bus, as well as the R/W and output clock pins.
 
 The experiments phase was conducted according to design, with the exception that any test cases involving memory operations could not be confirmed to produce expected results. The experiments were performed according to the following steps:
 
-1. Validate data output and record response time when all variables are at default values
+1. Validate data output and record per-instruction-overhead when all variables are at default values
 2. Measure time of completion as program increases in length
 3. Measure time of completion as time interval of reset increases
 4. Measure time of completion when program is called with emulated ROM functions
 5. Measure time of completion when program is called without emulated ROM functions
 6. Switch to next category and repeat process until all categories have been tested
 
-For step 1 we used a digital logic analyzer to measure the bit value on the output of the RP2A03, in order to ensure that an expected value was output. (TODO bilder på detta). We also recorded the response time for each instruction type (TODO tabell på detta?) at the same time.
+For step 1 we used a digital logic analyzer to measure the bit value on the output of the RP2A03, in order to ensure that an expected value was output. (TODO bilder på detta). We also recorded the time and number of cycles between instruction for each instruction type at the same time.
+
 For steps 2 through 5 we utilized the Arduino M0 Pro to act as a master controller unit, which we programmed to tell the Atmega328P to start executing programs on the RP2A03 on our command, and at the same time measure the time it took for the Atmega328P to execute. Three different test programs were written for each controller device (Arduino M0 Pro and Atmega328P), each following the same pattern:
+
 The Arduino waits for the Atmega328P to signal that it has completed its setup routine. The Atmega328P then waits for a start signal from the Arduino, which is sent upon the press of a hardware button. When the button is pressed, the Arduino sends a *go* signal to the Atmega328P and starts a timer. It then waits for the Atmega328P to signal that it has finished it execution, where upon the Arduino will stop it's timer and save the results. When the test program has finished, the Arduino outputs all the measured times. (TODO For the full test program implementations, see appendix kanske typ eller nåt?)
 
 TODO Eventuellt fylla ut?
@@ -301,7 +311,7 @@ TODO Eventuellt fylla ut?
 
 This chapter details the results of all tests that were performed on the system. The tests were performed as outlined in the subchapter [Experiments phase], and the test results have been labeled
 
-1. Data validation and Response time
+1. Data validation and per-instruction-overhead
 2. Increasing number of instructions
 3. Increasing frequency of resets
 4. Using ROM-Emulation functions
@@ -313,17 +323,19 @@ Firstly all tests are presented and compared across categories, followed by a co
 
 ## Comparison: Test cases
 
-Test cases 1 through 5 are shown in figures \ref{data-validation}, \ref{increasing-instructions}, \ref{increasing-interrupt-timeout} and \ref{emurom-func} respectively. Categories are compared to each other in each figure where applicable.
+Test cases 1 through 5 are shown in figures \ref{data-validation}, \ref{increasing-instructions}, \ref{increasing-interrupt-timeout} and \ref{emurom-func} respectively. Categories are compared to each other in each figure where applicable. Table \ref{cycles-per-instruction} shows the average number of cycles per instruction for the Immediate, Zero Page and Absolute categories, as measured by the total execution time of a 5000 instruction program.
 
-![.\label{data-validation}](./img/data_validation.jpg)
+TODO tabell cycles-per-instructions med average antal cykler per instruktion mätt på 5000 instruktioner, kläm även in teoretisk normal data och procentuell diff kanske?
 
-![.\label{increasing-instructions}](./img/increasing_instructions.pdf)
+![Validated and not validated instruction types, as well as their respective communication overhead.\label{data-validation}](./img/data_validation.jpg)
 
-![.\label{increasing-interrupt-timeout}](./img/increasing_interrupt_timeout.pdf)
+![Execution time for each instruction type as a function of number of instructions.\label{increasing-instructions}](./img/increasing_instructions.pdf)
 
-![.\label{emurom-func}](./img/emuromfunc.pdf)
+![Execution time of 1000 instructions for each instruction type when increasing the frequency of interrupts.\label{increasing-interrupt-timeout}](./img/increasing_interrupt_timeout.pdf)
 
-As shown in figure \ref{data-validation}, data could only be partially validated for categories _Zero Page_ and _Absolute_. They are categorized as partially validated because the instructions sent from the master unit and the execution time on the slave unit behaves as expected, but the data output after execution is not correct. As shown in table \ref{mem-error}, the `LDA (0xA5)` instruction loads the value `0x04` from Zero Page address `0x24`, however trying to store the accumulator at another memory address strangely enough outputs `0x24` from the accumulator instead.
+![Comparison of each instruction types execution time of 1000 instructions with ROM functions, as well as without ROM functions.\label{emurom-func}](./img/emuromfunc.pdf)
+
+As shown in figure \ref{data-validation}, data could not be validated for categories _Zero Page_ and _Absolute_, and subsequently not _Mixed_. The instructions sent from the master unit and the execution time on the slave unit behaves as expected, but the data output after execution is not correct. As shown in table \ref{mem-error}, the `LDA (0xA5)` instruction loads the value `0x04` from Zero Page address `0x24`, however trying to store the accumulator at another memory address strangely enough outputs `0x24` from the accumulator instead.
 
 Table: Illustrating error in memory operations \label{mem-error}
 
@@ -402,18 +414,29 @@ In attempts to verify that the RP2A03 would execute a basic program, we initiall
 
 ## Experiments & Results
 
+### Data validation & Memory operations
+
 As shown in the [Results] section, a major part of the intended functionality did not produce correct results. Any program or sequence of instructions involving memory operations led to faulty data. Although we were unable to determine the cause of this error, we have established two possible explanations; (i) a bug in the software implementation of memory operations, or (ii) a defect memory unit of the RP2A03. Since this error did not occur for operations involving the ALU, accumulator or system level operations (i.e. disable interrupts etc.), and only for memory operations independent of instruction size, case (i) seems unlikely. We could also confirm that the data on the data bus, and the behavior of the R/W pin, was indicative of the correct instructions being sent at correct timing, which further makes (i) a less likely cause. However, since we did not have access to a replacement RP2A03 unit, or diagnostic tools to investigate the hardware of the unit we used, we were unable to rule out the RP2A03 as the cause either. Fortunately, as this error only affected the actual stored and loaded data and not the machines behavior in terms of cycles per instruction etc., we could still use memory operations in our test programs in order to measure timing.
 
-TODO Skriv om resultaten överlag; förväntat eller ej? intressant beteende eller ej? etc.
+### Minimum communication overhead
 
-TODO skriv om overhead som minimum overhead, och att teoretiskt bör det finnas en risk att en interrupt sker innan vi hinner påbörja en ny sync + instruktion
+We could see a minimum communication overhead, measured as the time between each consecutive instruction in a program, of 4.5 $\mu$s. This time was independent of instruction type and size, and seems to affect each instruction equally. We found that this minimum communication overhead (or possibly main bottleneck of the communication method) was made up of two sets of the idle instruction, running over a total of six RP2A03 CPU cycles. An example of this can be seen in the [Results] section, in Table \ref{xor-accumulator}. Since each instruction sending starts with a synchronization step and ends by placing the idle instruction on the data bus before returning to the calling function, the lowest theoretical overhead is one full idle instruction. However, upon returning to the main program, the master unit will have to load a new instruction and turn of all interrupts before initiating communication again, and we believe that the time it takes for the master unit to perform these steps causes it to initiate communications somewhere during the second idle instruction. Between instructions, the master unit also has to handle timer interrupts and perform periodic resets of the RP2A03 program counter. This will cause longer times between instructions at periodic intervals. We decided not to include this in our results since it occurs relatively infrequently, and is highly dependent on the settings for the timer interrupts.
+
+If it is possible to increase the frequency gap between the master and slave unit, it may be possible to further decrease the minimum communication overhead. This could perhaps be done by using a master unit that runs on a higher frequency in combination with a greater clock divider. Since our implementation requires six whole cycles between each contiguous instruction, it is clearly not suited for systems where timing is critical as of its current state. It is possible that this can be remedied by modifying the communication protocol; given a reset of the slave unit, the system should theoretically be able to continuously send instructions by simply fetching and putting one byte at a time on the data bus, as long as the sequence of instruction fits within a full period without the need for a reset. We can however not confirm this hypothesis, and it is possible that the communication protocol can only guarantee synchronization for shorter bursts of data.
+
+### Running times of test programs
+
+The behavior of the system when increasing the program length was as expected, and we could observe a linear increase with increasing the number of instructions. The Absolute and Mixed category had a longer execution time than the other categories which is to be expected, considering that absolute addressing mode instructions require 4 Bytes. Interestingly, we can observe a difference between Zero Page and Immediate categories, even though the instructions are of the same length. It would have been beneficial to compare against a regular ROM to see if this is normal behavior or not. TODO kläm in en diskussion om skillnaden mellan teoretisk cycles-per-instruction och vårt resultat här.
+
+
+TODO kommer inte på något bra att säga här. Diskutera varför ökad frekvens för interrupts inte påverkar tiden närmvärt, förväntat resultat från ökade instruktioner. Jämför average antal cykler per instruktion från tabell i resultat mot teoretiska värdet.
 
 # Future work
 
 First and foremost, we acknowledge that the proposed method of hardware wrapping presented in this work shows inconclusive results. In order to tell whether this method is at all viable, it is required to (i) investigate whether the "broken" memory operations encountered during the tests was caused by a faulty RP2A03 unit, or if it was because of an error in the proposed implementation, and (ii) compare it against other methods of hardware wrapping on roughly equal level of complexity in implementation. As for case (ii), we had originally intended to compare this implementation against a different method of wrapping, which used a _shared memory_ to communicate between the master and slave unit, however we were unable to complete it because of the aforementioned problematic memory operations. The schematics for the shared memory approach can be found in [TODO rätt appendix här, nämn att man bör använda ett annat minne].
 
-## More
-
-software monitoring glöm ej från ref @P1990
+A natural step from our work would be to expand the functionality further by allowing for a complete instruction set. As discussed in section [TODO vilken sektion pratar vi om det här?], there is no need for branching or jumping instructions, but there are still a large number of instructions left that was outside the scope of our study. When all relevant parts of the instruction set has been implemented, the final step(s) would be to test a real application of the method, and test how well this method works in practice.
 
 # References
+
+# Appendix
