@@ -3,13 +3,30 @@ title: Evaluation of the NESizer2 method as a means of wrapping embedded legacy 
 documentclass: article
 bibliography: bib.bibtex
 toc: true
+number-sections: true
 csl: ieee.csl
 geometry: margin=3cm
 ---
 
 # Abstract
 
-TODO
+Legacy computer systems are systems where several of the main hardware and software components date back several decades. Modernizing these systems is often considered a large monetary and temporal investment with high risk, and to keep maintaining them usually becomes more and more difficult over time, which is why these legacy systems are still being used to this day in many industry sectors. A solution is therefore to try and integrate the legacy system components into modern systems, and there are several ways of achieving this. This bachelor thesis project work aims to analyze one approach known as "wrapping". More specifically it analyzes _NESizer2 Method_, a method which utilizes relatively simple hardware and software interfaces to control the Ricoh RP2A03 processor found in the Nintendo Entertainment System, using an Atmega328 microprocessor. During the design and development phases of the project work a literature study was conducted, and experimental research method was utilized. The testing and experimental phases of the project work was focused on examining how identified key variables behaved when modifying certain parameters in the system. While we were able to produce some valid data, the results proved to be somewhat inconclusive, as certain operations such as memory operations did not work, leading to the conclusion that our circuit contained a faulty component.
+
+## Keywords
+
+Legacy components, modernizing, microcontroller, data injection, Atmega328P, Ricoh 2A03
+
+\newpage
+
+# Sammanfattning
+
+Legacydatorsystem är system där många av de huvudsakliga hårdvaru- och mjukvarukomponenterna är flera decennier gamla. Att modernisera dessa system ses ofta som en stor monetär och tidsmässig investering, och att fortsätta att underhålla dem blir vanligtvis svårare och svårare med tiden. En lösning är därför att försöka att integrera legacy-systemets komponenter i moderna system, och det finns ett flertal tillvägagångssätt att uppnå detta. Detta kandidatexamensarbete ämnar att analysera ett tillvägagångssätt känt som "wrapping". Mer specifikt analyseras _NESizer2-metoden_, en metod som utnyttjar relativt enkla hårdvaru- och mjukvarugränssnitt till att kontrollera Ricoh 2A03-processorn som finns i Nintendo Entertainment System, med hjälp av en Atmega328 mikroprocessor. Under design- och utvecklingsfaserna av projektarbetet utfördes en litteraturstudie, och experimentiell forskningsmetod användes. Test- och experimentfaserna av projektarbetet fokuserade på att undersöka hur identifierade nyckelvariabled betedde säg då man modifierade vissa parametrar i systemet. Även om vi lyckades producera en del riktig data visade sig resultaten vara ofullständiga, då vissa operationer såsom minnesoperationer inte fungerade, vilket ledde till slutsatsen att vår circuit innehöll en defekt komponent.
+
+## Nyckelord
+
+Legacy components, modernizing, microcontroller, data injection, Atmega328P, Ricoh 2A03
+
+\newpage
 
 # Introduction
 
@@ -17,7 +34,7 @@ When integrating legacy information system components into a modern system, one 
 
 ## Background
 
-Computer based information systems are an invaluable asset for modern enterprises and corporations. The use of information systems can range from data storage, analysis and organization, to communication systems such as mail servers. With continued updating and upgrading of these systems they become increasingly complex, and as technology evolves the existing technology of the systems are quickly rendered obsolete, and "eventually, the existing information systems become too fragile to modify and too important to discard" [@ComellaDorda2000], and as such it can be considered a legacy system. [@seacord2003] At this point the legacy systems must be modernized, or migrated into a more modern system to remain viable.
+Computer based information systems are an invaluable asset for modern enterprises and corporations. The use of information systems can range from data storage, analysis and organization, to communication systems such as mail servers. With continued updating and upgrading of these systems they become increasingly complex, and as technology evolves the existing technology of the systems are quickly rendered obsolete, and "_eventually, the existing information systems become too fragile to modify and too important to discard_" [@ComellaDorda2000], and as such it can be considered a legacy system. [@seacord2003] At this point the legacy systems must be modernized, or migrated into a more modern system to remain viable.
 
 When incorporating legacy information systems into modern systems, there are usually three popular approaches: redevelopment, wrapping and migration.[@Bisbal1999, p.2-4] While redeveloping an entire system is usually the best option in the long run, it is also the most expensive and risky. Therefore, migration is usually a more popular method, as it provides an interface to control the legacy components, while retaining its data and functionality. However, migrating systems to a modern platform can lead to unexpected behaviour, with a notable example being NASA’s Ariane 5 flight 501.[@Dowson1997;@Ariane-Board-Report]
 
@@ -60,13 +77,13 @@ We found that experimental research was most suited to the nature of our researc
 
 ## Stakeholders
 
-TODO är detta ens tillräckligt?
-
 As previously mentioned, wrapping could provide an alternative for businesses to keep their legacy systems alive, meaning it could save a company a substantial economic and temporal investment. As such, our main stakeholders are businesses and corporations where the need to maintain old systems exists.
+
+Another stakeholder, or rather a target audience, are electronic enthusiasts who design and create embedded systems of their own in hobby projects. Using ourselves as an example, the idea for this project sprung from our interest in constructing a music device that incorporated the Ricoh RP2A03 microprocessor, used in the Nintendo Entertainment System (more details on this in the [Trackers and the Chiptunes scene] section).
 
 ## Delimitations
 
-The scope of this report is limited to the design and performance analysis of the NESizer2 method when it has been expanded to handle key parts of the 6502 instruction set, on a RP2A03 microprocessor. Performance evaluation has been limited to speed of execution across the implemented instruction set, as well as the overhead as measured in time between consecutive instructions. The details of the implementation and evaluation criteria can be found in subsequent sections.
+The scope of this report is limited to the design and performance analysis of the NESizer2 method when it has been expanded to handle key parts of the 6502 instruction set, on a RP2A03 microprocessor. We chose to limit the instruction set by identifying groups of instructions that have similar characteristics, to ease implmentation and testing, and to be able to better draw conclusions on the overall performance of the system. Performance evaluation has been limited to speed of execution across the implemented instruction set, as well as the overhead as measured in time between consecutive instructions. The details of the implementation and evaluation criteria can be found in subsequent sections.
 
 For a better indication of how well the communication method studied in our research can be adopted for other microchips/hardware and for a better picture of the behaviour of these communication methods on other systems, it would have been beneficial to implement them for two or more devices with different architectures. We have not tested intended use case performance of the RP2A03, i.e. having it read program instructions from a regular ROM, and as such we were unable to make a tested comparison of execution speed.
 
@@ -89,36 +106,31 @@ We wanted to, as a hobby project, develop a prototype for a portable music track
 
 We realized that our need to control the Ricoh chip in this fashion could also be applicable to other legacy systems that are in need of upgrades, and where emulation is not a viable option.
 
-## MOS Technology 6502 architecture and the Ricoh RP2A03
-
-TODO Behöver vi ha överrubriken om vi ändå delar in delkapitlena som 6502 och RP2A03? Känns lite överflödix
-
-### MOS Technology 6502
+## MOS Technology 6502
 The MOS Technology 6502 microprocessor and architecture was introduced on the market in 1975. It gained almost instant popularity due to its competative performance for a cheaper price than its competitors.[@IEEE-HoF-6502]
 
 The 6502 microprocessor contains instruction families and addressing modes to control every part of the architecture. Other than instructions which target basic CPU functionality (such as controlling program counter, reading status register etc.), there are groups of instructions to perform operations with the accumulator and memory. Included in these groups are immediate, zero page and absolute addressing.
 
-Immediate addressing utilizes a 2-byte instruction format, where the first byte is the opcode specifying the operation and the address mode. The second byte takes a constant, hexadecimal value known to the programmer. Immediate instructions are commonly used when comparing variables to known values, as it does not require the programmer to first store the value in memory and load it upon comparison (TODO kanske lägga till ; the programmer only has to specify the value directly in the code). It requires a minimum execution time of 2 cycles (`OPCODE` + `VALUE`).
+Immediate addressing utilizes a 2-byte instruction format, where the first byte is the opcode specifying the operation and the address mode. The second byte takes a constant, hexadecimal value known to the programmer. Immediate instructions are commonly used when comparing variables to known values, as it does not require the programmer to first store the value in memory and then load it upon comparison; they would only have to specify the immediate value in the source code. It requires a minimum execution time of 2 cycles (`OPCODE` + `VALUE`).
 
-Another 2-byte instruction address mode is zero page addressing. Along with the opcode, it takes a second byte which contains the effective address in page zero of the memory. Effectively, this means that zero page instructions can be used for quick accesses to memory locations in the range of `0x0000`-`0x00FF`. Zero page instructions are often used when working with intermediate values in larger calculations, to shorten the total execution time. (TODO kanske??)
+Another 2-byte instruction address mode is zero page addressing. Along with the opcode, it takes a second byte which contains the effective address in page zero of the memory. Effectively, this means that zero page instructions can be used for quick accesses to memory locations in the range of `0x0000`-`0x00FF`. Zero page instructions are often used when working with intermediate values in larger calculations, to shorten the total execution time.
 
 Absolute addressing mode takes 3 bytes in its instruction format: `OPCODE` + `ADDRESS_LOW_BITS` + `ADDRESS_HIGH_BITS`. Since this gives the programmer access to the full 16-bit range of memory (`0x0000`-`0xFFFF`), it's considered the most normal addressing mode..
 
 A full, detailed explanation of all of the available addressing modes can be found in the MC6500 Microcomputer Family Programming Manual.[@6502ProgManual] This research will utilize the three aforementioned addressing modes of the 6502 microprocessor. See [Delimitations] for further details on the choice of instruction families.
 
-### Ricoh 2A03
-The microprocessor that was used in the Nintendo Entertainment System was a Ricoh RP2A03 chip. [TODO fix @NintendoPatent] The RP2A03 is a proprietary chip based on the MOS Technology 6502 microprocessor architecture, with the difference that it has an added Audio Processing Unit (APU), and it does not support _decimal mode_[^decimal-mode] that would normally be available on a 6502 architecture.[@IEEE-HoF-6502]
+## Ricoh 2A03
+The microprocessor that was used in the Nintendo Entertainment System was a Ricoh RP2A03 chip. The RP2A03 is a proprietary chip based on the MOS Technology 6502 microprocessor architecture, with the difference that it has an added Audio Processing Unit (APU), and it does not support _decimal mode_[^decimal-mode] that would normally be available on a 6502 architecture. [@IEEE-HoF-6502]
 
 ## ATmega328P
 
 The ATMega328P is an 8-bit, low-power CMOS microcontroller based on the AVR RISC architecture, with a throughput of up to 1 MIPS per MHz.[@ATMega328_Datasheet] It is an easy-to-program, multi-purpose microcontroller that is included on the Arduino Uno and Nano microcontroller boards. It contains 32 KBytes ISP flash memory with true read-while-write operation, 1 KByte of EEPROM and 2 KByte of internal SRAM. It's 23 GPIO pins with programmable peripheral interfaces including SPI, I^2^C and USART makes it an excellent light-weight microcontroller for relatively small scale projects.
 
 ## Related work
-TODO
 
-* NESizer2
-* Shared memory, injection-grejen
-* Andra artiklar vi hittade tidigare
+Since the topic of this research is to test the NESizer2 method as a way of implementing hardware wrapping, the NESizer2 project should be considered closely related to this project. [@NESizer2_GitHub] We have used and modified key parts of the communication protocol and expanded it to allow for general usage (i.e. enabled it to handle any instruction that targets the Accumulator, ALU or Memory, and that is within the Immediate, Zero Page and Absolute addressing modes), but other parts of the NESizer2 project may be of interest for enthusiasts and hobbyists that are interested in this kind of hardware wrapping.
+
+During the literature study, we also encountered an article describing work on injecting instructions directly to the program memory of an older generation CPU. [@inter-cpu-comm] Although our implementation does not inject instructions into a units program memory, the concept of injection is closely related. It is possible that the techniques described in that article could be used as an alternative method of hardware wrapping.
 
 # Development and methodology
 
@@ -148,7 +160,7 @@ The agile software development model has spawned a number of frameworks to uphol
 
 ### Scrum
 
-As previously mentioned, Scrum is one of many frameworks that TODO applies/upholds/maintains(?) the Manifesto for Agile Software Development. The creators Jeff Sutherland and Ken Schwaber define Scrum as the following[@ScrumGuide, p. 3]:
+As previously mentioned, Scrum is one of many frameworks that implements the Manifesto for Agile Software Development. The creators Jeff Sutherland and Ken Schwaber define Scrum as the following[@ScrumGuide, p. 3]:
 
 > _"Scrum (n): A framework within which people can address
 > complex adaptive problems, while productively and creatively
@@ -178,9 +190,7 @@ The framework employs four formal events that help make sure that the team can d
 
 ## Evaluation criteria
 
-In order to gain an idea of how well the NESizer2 functions as a method of hardware wrapping, and to have some additional guidance in identifying the relevant variables that needed to be controlled in experiments, we established a few points that we wanted to test and evaluate;
-
-TODO vore ju najs om man kunde hitta någon referens på att det här är rimliga kriterier att testa för.
+In order to gain an idea of how well the NESizer2 functions as a method of hardware wrapping, and to have some additional guidance in identifying the relevant variables that needed to be tested in experiments, we established a few points that we wanted to test and evaluate;
 
 **Performance in speed:** We need to know if the wrapping method was significantly slower than the component(s) being wrapped. Since the wrapping would allow the component to be used only at crucial times, and allow a larger portion of programs to be run on a more modern machine, we were mainly focusing on short and simple programs that would for instance utilize memory mapped functionality of the legacy hardware.
 
@@ -196,7 +206,9 @@ This section details the project work, including literature studies and the hard
 
 ## Literature study
 
-The project work started with a literature study, to gain knowledge on related work and theoretical background knowledge in the field of modernizing legacy hardware and legacy hardware used in modern applications. The search was performed using mainly the following databases of scientific publications: (i) IEEE Xplore, (ii) ACM Digital Library and (iii) Google Scholar. Additional searching tools used was simple internet searching tools such as _Google_, which could often provide ideas for additional keywords used when further searching in the databases. The results from this literature study was searched for using keywords: modernization/modernizing, legacy, hardware, microprocessor, computer. Based on the results of this search we further defined our keywords to target specific methods that seemed relevant, in order to find references on related previous work. The keywords used in this search was: legacy, microcontroller, microprocessor, master, slave, injection, wrapping, shared memory. The results from both searches was selected with title, abstract and publication year taken into consideration. Most of the related work was found to be older than 10 years, but considering that the articles mentioned methods of controlling legacy hardware, and that the problem of upgrading/modernizing hardware is generally a problem for machines older than 10-20 years, we found them relevant to the research.
+The project work started with a literature study, to gain knowledge on related work and theoretical background knowledge in the field of modernizing legacy hardware and legacy hardware used in modern applications. The search was performed using mainly the following databases of scientific publications: (i) IEEE Xplore, (ii) ACM Digital Library and (iii) Google Scholar. Additional searching tools used was simple internet searching tools such as _Google_, which could often provide ideas for additional keywords used when further searching in the databases. The results from this literature study was searched for using keywords: modernization/modernizing, legacy, hardware, microprocessor, computer. Based on the results of this search we further defined our keywords to target specific methods that seemed relevant, in order to find references on related previous work. The keywords used in this search was: legacy, microcontroller, microprocessor, master, slave, injection, wrapping, shared memory. The results from both searches was selected with title, abstract and publication year taken into consideration. Most of the related work was found to be older than 10 years, but considering that the articles mentioned methods of controlling legacy hardware, and that the problem of upgrading/modernizing hardware is generally a problem for machines older than 10-20 years, we found them relevant to the research. Figure \ref{literature-study} shows a simple illustration of the iterative process of the literature study.
+
+![Illustrating the iterative process of the literature study. \label{literature-study}](./img/literature_study.svg)
 
 Another literature study was conducted in order to gain further knowledge on experimental research, how it is used in performance comparison and evaluation, and general information on scientific methodology and how it is used in research. The keywords used in this search was: experimental, research, methodology, computer, system, performance. The search was conducted over the same databases mentioned above, and evaluated and selected using the same process. Anne Håkansson's article _Portal of Research Methods and Methodologies for Research Projects and Degree Projects_[@Hakansson_Portal] mentions the book _Introduction to Research in Education_[@IntroToResearch] as a source, and it has proved to be of great help when trying to understand what experimental research means, and how it can be used as a research strategy/methodology.
 
@@ -237,7 +249,7 @@ Sprint #	Goal								Deliverables
 
 ### Sprint 1, Research and design phase
 
-The research and design phase included research the NESizer2 software and hardware implementation. This research was made in order to pinpoint the parts from NESizer2 that we would need, and what modifications had to be done to it. We found that we could use the assembly routines (which was at the heart of the communication with the RP2A03) together with a simple 8-bit databus through an 8-bit latch to control flow of instructions, as a foundation for our implementation. This is detailed in the circuit diagram found in Appendix A.
+The research and design phase included research the NESizer2 software and hardware implementation. This research was made in order to pinpoint the parts from NESizer2 that we would need, and what modifications had to be done to it. We found that we could use the assembly routines (which was at the heart of the communication with the RP2A03) together with a simple 8-bit databus through an 8-bit latch to control flow of instructions, as a foundation for our implementation. This is detailed in the circuit diagram found in [Appendix A].
 
 We also made research on the RP2A03 microprocessor, but since the RP2A03 is a proprietary chip, owned by Nintendo, there was not much official information available. However, a community of NES enthusiasts has, through reverse engineering, gathered much information on the processor on their forums and wiki-site _Nesdev Wiki_.[@NesdevWiki] Through these channels we were able to learn that the chip differs little from the MOS Technology 6502 architecture, and as such we could learn much about the chip through official 6502 hardware and software development guides.
 
@@ -290,7 +302,7 @@ The implementation was extended in hardware and software to include simple commu
 
 To measure communication timing and cycles between instructions, we used a digital logic analyzer to monitor digital output. The data from the analyzer could then be collected both numerically (in the form of CSV) and as diagrams. On the RP2A03 we chose to monitor all bits of the data bus, as well as the R/W and output clock pins.
 
-The experiments phase was conducted according to design, with the exception that any test cases involving memory operations could not be confirmed to produce expected results. The experiments were performed according to the following steps:
+The experiments phase was conducted according to design, with the exception that any test cases involving memory operations could not be confirmed to produce expected results. The experiments were performed according to the following steps, and further illustrated in figure \ref{block_test}:
 
 1. Validate data output and record per-instruction-overhead when all variables are at default values
 2. Measure time of completion as program increases in length
@@ -299,13 +311,13 @@ The experiments phase was conducted according to design, with the exception that
 5. Measure time of completion when program is called without emulated ROM functions
 6. Switch to next category and repeat process until all categories have been tested
 
-For step 1 we used a digital logic analyzer to measure the bit value on the output of the RP2A03, in order to ensure that an expected value was output. (TODO bilder på detta). We also recorded the time and number of cycles between instruction for each instruction type at the same time.
+![Block diagram illustrating the iterative testing process.\label{block_test}](./img/testing_block_diagram.pdf)
+
+For step 1 we used a digital logic analyzer to measure the bit value on the output of the RP2A03, in order to ensure that an expected value was output. We also recorded the time and number of cycles between instruction for each instruction type at the same time.
 
 For steps 2 through 5 we utilized the Arduino M0 Pro to act as a master controller unit, which we programmed to tell the Atmega328P to start executing programs on the RP2A03 on our command, and at the same time measure the time it took for the Atmega328P to execute. Three different test programs were written for each controller device (Arduino M0 Pro and Atmega328P), each following the same pattern:
 
-The Arduino waits for the Atmega328P to signal that it has completed its setup routine. The Atmega328P then waits for a start signal from the Arduino, which is sent upon the press of a hardware button. When the button is pressed, the Arduino sends a *go* signal to the Atmega328P and starts a timer. It then waits for the Atmega328P to signal that it has finished it execution, where upon the Arduino will stop it's timer and save the results. When the test program has finished, the Arduino outputs all the measured times. (TODO For the full test program implementations, see appendix kanske typ eller nåt?)
-
-TODO Eventuellt fylla ut?
+The Arduino waits for the Atmega328P to signal that it has completed its setup routine. The Atmega328P then waits for a start signal from the Arduino, which is sent upon the press of a hardware button. When the button is pressed, the Arduino sends a _go_ signal to the Atmega328P and starts a timer. It then waits for the Atmega328P to signal that it has finished it execution, where upon the Arduino will stop it's timer and save the results. When the test program has finished, the Arduino outputs all the measured times.
 
 # Results
 
@@ -319,13 +331,11 @@ This chapter details the results of all tests that were performed on the system.
 
 , respectively.
 
-Firstly all tests are presented and compared across categories, followed by a comparison of tests for each separate category. In the category _Mixed_, only three test cases were applicable and relevant, and as such the _Mixed_ category will not show in all comparisons. (TODO speca vilka test som detta gäller, här eller i subkapitlena?)
+Firstly all tests are presented and compared across categories, followed by a comparison of tests for each separate category. The _Mixed_ category was not applicable in test case 5, since the task of reading mixed instructions and placing them correctly in the data structures used for communication would effectively result in the exact steps taken by the ROM-emulation functions.
 
 ## Comparison: Test cases
 
-Test cases 1 through 5 are shown in figures \ref{data-validation}, \ref{increasing-instructions}, \ref{increasing-interrupt-timeout} and \ref{emurom-func} respectively. Categories are compared to each other in each figure where applicable. Table \ref{cycles-per-instruction} shows the average number of cycles per instruction for the Immediate, Zero Page and Absolute categories, as measured by the total execution time of a 5000 instruction program.
-
-TODO tabell cycles-per-instructions med average antal cykler per instruktion mätt på 5000 instruktioner, kläm även in teoretisk normal data och procentuell diff kanske?
+Test cases 1 through 5 are shown in figures \ref{data-validation}, \ref{increasing-instructions}, \ref{increasing-interrupt-timeout} and \ref{emurom-func} respectively. Categories are compared to each other in each figure where applicable. Table \ref{cycles-per-instruction} details the number of cycles needed per instruction in each category, together with a comparison against the number of cycles needed in an unwrapped system. See [Appendix B] for tables of raw test result data.
 
 ![Validated and not validated instruction types, as well as their respective communication overhead.\label{data-validation}](./img/data_validation.jpg)
 
@@ -334,6 +344,14 @@ TODO tabell cycles-per-instructions med average antal cykler per instruktion mä
 ![Execution time of 1000 instructions for each instruction type when increasing the frequency of interrupts.\label{increasing-interrupt-timeout}](./img/increasing_interrupt_timeout.pdf)
 
 ![Comparison of each instruction types execution time of 1000 instructions with ROM functions, as well as without ROM functions.\label{emurom-func}](./img/emuromfunc.pdf)
+
+Table: Performance measured in Cycles per Instruction \label{cycles-per-instruction}
+
+Category    Wrapped     Unwrapped   Difference
+--------    -------     ---------   ----------
+Immediate   8           2           400%
+Zero Page   8           2           400%
+Absolute    9           3           300%
 
 As shown in figure \ref{data-validation}, data could not be validated for categories _Zero Page_ and _Absolute_, and subsequently not _Mixed_. The instructions sent from the master unit and the execution time on the slave unit behaves as expected, but the data output after execution is not correct. As shown in table \ref{mem-error}, the `LDA (0xA5)` instruction loads the value `0x04` from Zero Page address `0x24`, however trying to store the accumulator at another memory address strangely enough outputs `0x24` from the accumulator instead.
 
@@ -390,6 +408,8 @@ This chapter will present a summary of our thoughts on the project work and expe
 
 Since experimental research is based on identifying and testing the underlying variables that make up the entire system, much of the project was designed with these variables and how to structure experiments in mind. We found that experimental research was a good fit for this type of problem, however we believe that the process of identifying the variables requires a better theoretical understanding of the target system and the experimental approach than we had at the time of design and implementation. We would suggest a more thorough study of both experimental research philosophy and approach, as well as the system that should be analyzed, before designing an experimental research study of this kind.
 
+When analyzing our results, we evaluated them against our evaluation criteria to draw conclusions. We feel that our conclusions are true, however in hindsight we realize that we should have applied a proven, more rigid framework or methodology in order to avoid potential bias.
+
 ### Scrum in this project
 
 We had initially planned to implement additional wrapping methods, in order to compare the performance between the different methods of wrapping, but due to technical issues and time limitation we were unable to implement them fully. However, this affected our choice of working method; we believed initially that _Scrum_ could give us a good overview of the implementation work across the different wrapping methods, each with their own requirements and tasks. When we realized that it was no longer feasible to continue development of the additional wrapping methods, Scrum was not as effective anymore, since we started to focus more on either the same tasks or closely related tasks. This also meant since that we could continuously plan and discuss the iterative process, we no longer had much use for sprint and daily meetings. For projects of this limited scope, we believe that there may not be a need for more involved frameworks such as _Scrum_.
@@ -420,23 +440,22 @@ As shown in the [Results] section, a major part of the intended functionality di
 
 ### Minimum communication overhead
 
-We could see a minimum communication overhead, measured as the time between each consecutive instruction in a program, of 4.5 $\mu$s. This time was independent of instruction type and size, and seems to affect each instruction equally. We found that this minimum communication overhead (or possibly main bottleneck of the communication method) was made up of two sets of the idle instruction, running over a total of six RP2A03 CPU cycles. An example of this can be seen in the [Results] section, in Table \ref{xor-accumulator}. Since each instruction sending starts with a synchronization step and ends by placing the idle instruction on the data bus before returning to the calling function, the lowest theoretical overhead is one full idle instruction. However, upon returning to the main program, the master unit will have to load a new instruction and turn of all interrupts before initiating communication again, and we believe that the time it takes for the master unit to perform these steps causes it to initiate communications somewhere during the second idle instruction. Between instructions, the master unit also has to handle timer interrupts and perform periodic resets of the RP2A03 program counter. This will cause longer times between instructions at periodic intervals. We decided not to include this in our results since it occurs relatively infrequently, and is highly dependent on the settings for the timer interrupts.
+We could see a minimum communication overhead, measured as the time between each consecutive instruction in a program, of 4.5 $\mu$s. This time was independent of instruction type and size, and seems to affect each instruction equally. We found that this minimum communication overhead (or possibly main bottleneck of the communication method) was made up of two sets of the idle instruction, running over a total of six RP2A03 CPU cycles. An example of this can be seen in the [Results] section, in Table \ref{xor-accumulator}. Since each instruction sending starts with a synchronization step and ends by placing the idle instruction on the data bus before returning to the calling function, the lowest theoretical overhead is one full idle instruction. The resulting performance hit can be seen in table \ref{cycles-per-instruction} which shows as much as 400% difference at least.
+
+However, upon returning to the main program, the master unit will have to load a new instruction and turn of all interrupts before initiating communication again, and we believe that the time it takes for the master unit to perform these steps causes it to initiate communications somewhere during the second idle instruction. Between instructions, the master unit also has to handle timer interrupts and perform periodic resets of the RP2A03 program counter. This will cause longer times between instructions at periodic intervals. We decided not to include this in our results since it occurs relatively infrequently, and is highly dependent on the settings for the timer interrupts.
 
 If it is possible to increase the frequency gap between the master and slave unit, it may be possible to further decrease the minimum communication overhead. This could perhaps be done by using a master unit that runs on a higher frequency in combination with a greater clock divider. Since our implementation requires six whole cycles between each contiguous instruction, it is clearly not suited for systems where timing is critical as of its current state. It is possible that this can be remedied by modifying the communication protocol; given a reset of the slave unit, the system should theoretically be able to continuously send instructions by simply fetching and putting one byte at a time on the data bus, as long as the sequence of instruction fits within a full period without the need for a reset. We can however not confirm this hypothesis, and it is possible that the communication protocol can only guarantee synchronization for shorter bursts of data.
 
 ### Running times of test programs
 
-The behavior of the system when increasing the program length was as expected, and we could observe a linear increase with increasing the number of instructions. The Absolute and Mixed category had a longer execution time than the other categories which is to be expected, considering that absolute addressing mode instructions require 4 Bytes. Interestingly, we can observe a difference between Zero Page and Immediate categories, even though the instructions are of the same length. It would have been beneficial to compare against a regular ROM to see if this is normal behavior or not. TODO kläm in en diskussion om skillnaden mellan teoretisk cycles-per-instruction och vårt resultat här.
+The behavior of the system when increasing the program length was as expected, and we could observe a linear increase with increasing the number of instructions. The Absolute and Mixed category had a longer execution time than the other categories which is to be expected, considering that absolute addressing mode instructions require 4 Bytes. Interestingly, we can observe a difference between Zero Page and Immediate categories, even though the instructions are of the same length. It would have been beneficial to compare against a regular ROM to see if this is normal behavior or not.
 
-
-TODO kommer inte på något bra att säga här. Diskutera varför ökad frekvens för interrupts inte påverkar tiden närmvärt, förväntat resultat från ökade instruktioner. Jämför average antal cykler per instruktion från tabell i resultat mot teoretiska värdet.
+As for increasing the frequency of the timer interrupts, that are needed to reset the program counter of the slave unit, it produced hardly any noticeable difference. This means that the settings for the timer could be set to trigger more often, in order to further ensure a safety margin of not accidentally interpreting internal memory data as instruction data, without a significant performance hit.
 
 # Future work
 
-First and foremost, we acknowledge that the proposed method of hardware wrapping presented in this work shows inconclusive results. In order to tell whether this method is at all viable, it is required to (i) investigate whether the "broken" memory operations encountered during the tests was caused by a faulty RP2A03 unit, or if it was because of an error in the proposed implementation, and (ii) compare it against other methods of hardware wrapping on roughly equal level of complexity in implementation. As for case (ii), we had originally intended to compare this implementation against a different method of wrapping, which used a _shared memory_ to communicate between the master and slave unit, however we were unable to complete it because of the aforementioned problematic memory operations. The schematics for the shared memory approach can be found in [TODO rätt appendix här, nämn att man bör använda ett annat minne].
+First and foremost, we acknowledge that the proposed method of hardware wrapping presented in this work shows inconclusive results. In order to tell whether this method is at all viable, it is required to (i) investigate whether the "broken" memory operations encountered during the tests was caused by a faulty RP2A03 unit, or if it was because of an error in the proposed implementation, and (ii) compare it against other methods of hardware wrapping on roughly equal level of complexity in implementation. As for case (ii), we had originally intended to compare this implementation against a different method of wrapping, which used a _shared memory_ to communicate between the master and slave unit, however we were unable to complete it because of the aforementioned problematic memory operations. The schematics for the shared memory approach can be found in [Appendix A].
 
-A natural step from our work would be to expand the functionality further by allowing for a complete instruction set. As discussed in section [TODO vilken sektion pratar vi om det här?], there is no need for branching or jumping instructions, but there are still a large number of instructions left that was outside the scope of our study. When all relevant parts of the instruction set has been implemented, the final step(s) would be to test a real application of the method, and test how well this method works in practice.
+A natural step from our work would be to expand the functionality further by allowing for a complete instruction set. As discussed in section [Sprint 5, Entire instruction set], there is no need for branching or jumping instructions, but there are still a large number of instructions left that was outside the scope of our study. When all relevant parts of the instruction set has been implemented, the final step(s) would be to test a real application of the method, and test how well this method works in practice.
 
 # References
-
-# Appendix
