@@ -4,7 +4,6 @@ documentclass: article
 bibliography: bib.bibtex
 toc: true
 number-sections: true
-abstract: abstract.md
 csl: ieee.csl
 geometry: margin=3cm
 ---
@@ -100,7 +99,8 @@ Absolute addressing mode takes 3 bytes in its instruction format: `OPCODE` + `AD
 
 A full, detailed explanation of all of the available addressing modes can be found in the MC6500 Microcomputer Family Programming Manual.[@6502ProgManual] This research will utilize the three aforementioned addressing modes of the 6502 microprocessor. See [Delimitations] for further details on the choice of instruction families.
 
-## Ricoh 2A03
+## Ricoh RP2A03
+
 The microprocessor that was used in the Nintendo Entertainment System was a Ricoh RP2A03 chip. The RP2A03 is a proprietary chip based on the MOS Technology 6502 microprocessor architecture, with the difference that it has an added Audio Processing Unit (APU), and it does not support _decimal mode_[^decimal-mode] that would normally be available on a 6502 architecture. [@IEEE-HoF-6502]
 
 ## ATmega328P
@@ -379,6 +379,8 @@ This chapter will present a summary of our thoughts on the project work and expe
 
 ## Project work
 
+This section presents a discussion on the project work, including thoughts on techniques and methodology used during the research as well as thoughts on the tools we used when designing and testing the implementation of the NESizer2 method.
+
 ### Research Methodology
 
 Since experimental research is based on identifying and testing the underlying variables that make up the entire system, much of the project was designed with these variables and how to structure experiments in mind. We found that experimental research was a good fit for this type of problem, however we believe that the process of identifying the variables requires a better theoretical understanding of the target system and the experimental approach than we had at the time of design and implementation. We would suggest a more thorough study of both experimental research philosophy and approach, as well as the system that should be analyzed, before designing an experimental research study of this kind.
@@ -408,6 +410,8 @@ We found, also during the research stage, that a popular programmer for AVR micr
 In attempts to verify that the RP2A03 would execute a basic program, we initially used an oscilloscope to monitor the R/W pin to see if it behaved according to the input instructions, which we were successful in doing. However we could not find any good way of validating our input and output data. After consulting with our supervisor, we were provided with a digital logic analyzer. This helped us immensely in moving forward with the project, as we could validate that our inputs produced expected outputs, and we would recommend any reproducing persons to use one as well.
 
 ## Experiments & Results
+
+This sections provides a discussion on the experiments and the measured results. We will present a discussion on the invalid memory operations, the communication overhead and general performance, and will try to provide an analysis of the measured results.
 
 ### Data validation & Memory operations
 
