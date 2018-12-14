@@ -4,33 +4,14 @@ documentclass: article
 bibliography: bib.bibtex
 toc: true
 number-sections: true
+abstract: abstract.md
 csl: ieee.csl
 geometry: margin=3cm
 ---
 
-# Abstract
-
-Legacy computer systems are systems where several of the main hardware and software components date back several decades. Modernizing these systems is often considered a large monetary and temporal investment with high risk, and to keep maintaining them usually becomes more and more difficult over time, which is why these legacy systems are still being used to this day in many industry sectors. A solution is therefore to try and integrate the legacy system components into modern systems, and there are several ways of achieving this. This bachelor thesis project work aims to analyze one approach known as "wrapping". More specifically it analyzes _NESizer2 Method_, a method which utilizes relatively simple hardware and software interfaces to control the Ricoh RP2A03 processor found in the Nintendo Entertainment System, using an Atmega328 microprocessor. During the design and development phases of the project work a literature study was conducted, and experimental research method was utilized. The testing and experimental phases of the project work was focused on examining how identified key variables behaved when modifying certain parameters in the system. While we were able to produce some valid data, the results proved to be somewhat inconclusive, as certain operations such as memory operations did not work, leading to the conclusion that our circuit contained a faulty component.
-
-## Keywords
-
-Legacy components, modernizing, microcontroller, data injection, Atmega328P, Ricoh 2A03
-
-\newpage
-
-# Sammanfattning
-
-Legacydatorsystem är system där många av de huvudsakliga hårdvaru- och mjukvarukomponenterna är flera decennier gamla. Att modernisera dessa system ses ofta som en stor monetär och tidsmässig investering, och att fortsätta att underhålla dem blir vanligtvis svårare och svårare med tiden. En lösning är därför att försöka att integrera legacy-systemets komponenter i moderna system, och det finns ett flertal tillvägagångssätt att uppnå detta. Detta kandidatexamensarbete ämnar att analysera ett tillvägagångssätt känt som "wrapping". Mer specifikt analyseras _NESizer2-metoden_, en metod som utnyttjar relativt enkla hårdvaru- och mjukvarugränssnitt till att kontrollera Ricoh 2A03-processorn som finns i Nintendo Entertainment System, med hjälp av en Atmega328 mikroprocessor. Under design- och utvecklingsfaserna av projektarbetet utfördes en litteraturstudie, och experimentiell forskningsmetod användes. Test- och experimentfaserna av projektarbetet fokuserade på att undersöka hur identifierade nyckelvariabled betedde säg då man modifierade vissa parametrar i systemet. Även om vi lyckades producera en del riktig data visade sig resultaten vara ofullständiga, då vissa operationer såsom minnesoperationer inte fungerade, vilket ledde till slutsatsen att vår circuit innehöll en defekt komponent.
-
-## Nyckelord
-
-Legacy components, modernizing, microcontroller, data injection, Atmega328P, Ricoh 2A03
-
-\newpage
-
 # Introduction
 
-When integrating legacy information system components into a modern system, one of several usual approaches is to create an interface for the modern system to control or communicate with the legacy component. This approach is known as wrapping.[@Bisbal1999;@Sneed2000] Wrapping as a concept could be adapted for legacy hardware in embedded systems, to enable the original and proven functionality of the outdated system, by providing an interface to control the legacy components. There are few documented examples of migration of legacy systems that include the incorporation of the system including the hardware platform, and the few examples that exist are often designed with a specific functionality in mind. The NESizer2 project details a method wherein a modern microcontroller is used to wrap certain functionalities of the microprocessor used in a Nintendo Entertainment System, by dynamically injecting instructions to the microprocessor like an emulated ROM.[@NESizer2_GitHub] This thesis will evaluate how this method could be expanded upon to allow for a general use case of the legacy component, and to evaluate how well the method performs as a means of wrapping.
+When integrating legacy information system components into a modern system, one of several usual approaches is to create an interface for the modern system to control or communicate with the legacy component. This approach is known as wrapping.[@Bisbal1999; @Sneed2000] Wrapping as a concept could be adapted for legacy hardware in embedded systems, to enable the original and proven functionality of the outdated system, by providing an interface to control the legacy components. There are few documented examples of migration of legacy systems that include the incorporation of the system including the hardware platform, and the few examples that exist are often designed with a specific functionality in mind. The NESizer2 project details a method wherein a modern microcontroller is used to wrap certain functionalities of the microprocessor used in a Nintendo Entertainment System, by dynamically injecting instructions to the microprocessor like an emulated ROM.[@NESizer2_GitHub] This thesis will evaluate how this method could be expanded upon to allow for a general use case of the legacy component, and to evaluate how well the method performs as a means of wrapping.
 
 ## Background
 
@@ -39,21 +20,21 @@ Computer based information systems are an invaluable asset for modern enterprise
 When incorporating legacy information systems into modern systems, there are usually three popular approaches: redevelopment, wrapping and migration.[@Bisbal1999, p.2-4] While redeveloping an entire system is usually the best option in the long run, it is also the most expensive and risky. Therefore, migration is usually a more popular method, as it provides an interface to control the legacy components, while retaining its data and functionality. However, migrating systems to a modern platform can lead to unexpected behaviour, with a notable example being NASA’s Ariane 5 flight 501.[@Dowson1997;@Ariane-Board-Report]
 
 When redevelopment and migration is too risky or expensive, wrapping offers a cost-effective option with less risk. It surrounds existing data, systems and interfaces with new interfaces, giving the legacy components a "new and improved" look [@Bisbal1999, p. 3], and lets organizations reuse trusted components in a new, more up-to-date manner.
-While these methodologies and frameworks usually focus on legacy software systems, they are very much applicable to hardware systems and components as well.
+While these methods usually focus on legacy software systems, they are very much applicable to hardware systems and components as well.
 
-One way of wrapping a legacy hardware component is detailed in the hobby project NESizer2 by _Johan Fjeldtvedt_.[@NESizer2_GitHub] The project is a MIDI controlled synthesizer, using the original _Audio Processing Unit_ (APU) found embedded in a RP2A03 microprocessor - the microprocessor used in the Nintendo Entertainment System. In his method he uses a modern microcontroller to handle the normal functionality of a MIDI-controller aswell as controlling the RP2A03 by dynamically injecting instructions into the microprocessor when the APU is needed.
+One way of wrapping a legacy hardware component is detailed in the hobby project NESizer2 by _Johan Fjeldtvedt_.[@NESizer2_GitHub] The project is a MIDI controlled synthesizer, using the original _Audio Processing Unit_ (APU) found embedded in the RP2A03 microprocessor, the microprocessor used in the Nintendo Entertainment System based on the MOS Technology 6502 architecture. In his method he uses a modern microcontroller to handle the normal functionality of a MIDI-controller aswell as controlling the RP2A03 by dynamically injecting instructions into the microprocessor when the APU is needed.
 
 ## Problem
 
 To address the issues of unexpected behaviour in an otherwise proven, well functioning system, the solution could be to keep only the crucial legacy components including their hardware platforms, and provide an interface for a modern system to control them - creating a wrapper for both hardware and software. While there exists implementations of similar approaches, they are often designed with a specific functionality of the legacy component in mind, and as such does not provide a method of controlling the component for a general use case. This poses the question;
 
-Could these specific implementations be generalized into methods of controlling a legacy component, without any specific use case in mind? If so, how well do they perform as a means of modernization?
+_Could these specific implementations be generalized into methods of controlling a legacy component, without any specific use case in mind? If so, how well do they perform as a means of modernization?_
 
 To try and answer these questions, we will investigate the method used in the NESizer2 project, hereafter referred to as _The NESizer2 method_, to see if it can be expanded upon to be used as a _wrapper_ for the RP2A03 microprocessor. The method is considered a wrapper if it can allow a general use case of the microcontroller - specifically if it can successfully utilize the entire instruction set of the processor, thereby allowing any RP2A03 program to be run through the wrapper.
 
 ## Purpose
 
-The purpose of this report is to investigate how the NESizer2 method performs as a means of modernization, by repurposing the method to handle the entire instruction set of the RP2A03/6502 microprocessor, and measuring its performance in speed of execution aswell as investigating the complexity of implementing the method.
+The purpose of this report is to investigate how the NESizer2 method performs as a means of modernization, by repurposing the method to handle the entire instruction set of the RP2A03 microprocessor, and measuring its performance in speed of execution as well as other key parameters.
 
 The purpose of the work is to provide some insight to how well a relatively simple method of wrapping an outdated microprocessor can be expanded upon to function as method of modernizing a legacy embedded system. Although our work is very basic and does not cover the entirety of how to wrap a whole legacy system, we hope our findings can be used as a future reference for others interested in modernizing embedded hardware.
 
@@ -63,9 +44,9 @@ The goal with the work is to provide insight into how an existing method of cont
 
 ### Social benefits, ethics and sustainability
 
-If it is possible to wrap entire embedded legacy systems with relatively easy means, it could provide an alternative for businesses that are dependent on legacy embedded components to upgrade their systems without having to invest in, what most likely would be, expensive migrations, and with minimized risk - as wrapping would keep the legacy components intact. We also hope that our work can contribute to other research that aims towards a more sustainable solution than discarding still functioning computer systems, which is becoming an increasing threat to our environment.[@SVTC_PoisonPCs_ToxicTVs]
+If it is possible to wrap entire embedded legacy systems with relatively easy means, it could provide an alternative for businesses that are dependent on legacy embedded components to upgrade their systems without having to invest in, what most likely would be, expensive modernizations, and with minimized risk - as wrapping would keep the legacy components intact. We also hope that our work can contribute to other research that aims towards a more sustainable solution than discarding still functioning computer systems, which is becoming an increasing threat to our environment.[@SVTC_PoisonPCs_ToxicTVs]
 
-We acknowledge that our research could contribute to the continued use of legacy hardware. While the process of discarding obsolete hardware etc. for new parts can have a negative impact on the environment, it is also important to note that upgrading hardware could prove to be a better solution, as much research and development is aimed towards lower power consumption and with a more up-to-date view on sustainable engineering.
+We acknowledge that our research could contribute to the continued use of legacy hardware. While the process of discarding obsolete hardware etc. for new parts can have a negative impact on the environment, it is also important to note that upgrading hardware could prove to be a better solution, as much research and development into computer hardware is aimed towards lower power consumption and with a more up-to-date view on sustainable engineering.
 
 ## Methodology
 
@@ -73,7 +54,7 @@ In order to expand our knowledge and theoretical background in the field of rese
 
 A literature study was also conducted to decide on a suitable scientific method under which to conduct the research. The scientific method acts as a framework or guidance for the researcher to conduct their research in a well defined and systematic way, based on the works and experiences of researchers before them, and it is crucial to a research in order to ensure quality and correctness of gathered results and analysis.
 
-We found that experimental research was most suited to the nature of our research. The experimental approach allows for observing how a system's behavior changes as one variable is manipulated while other variables are kept stable [@IntroToResearch], and as such it is suitable for analyzing performance of a system.[@Hakansson_Portal]
+We found that experimental research was most suited to the nature of our research. The experimental approach allows for observing how a system's behavior changes as one variable is manipulated while other variables are kept stable [@IntroToResearch], and as such it is suitable for analyzing performance of a system.[@Hakansson_Portal] Details on experimental research is found under the section [Experimental research].
 
 ## Stakeholders
 
@@ -138,9 +119,9 @@ This chapter gives an introduction to experimental research and how it can be us
 
 ## Experimental research
 
-During the research, a research method was applied to facilitate the process of analyzing and evaluating our implementation. A literature study was conducted in order to find an appropriate research method and strategy. The research methodology was chosen with the research question in mind; how to analyze and evaluate a system performance. The two main categories of research methodology are _quantitative_ and _qualitative_ research, which are separated by their founding philosophical assumptions. The qualitative research methodology assumes that observations, and importantly the conclusions drawn from them, are by their nature connected and dependent on prior knowledge and skill of the researcher and that the same observations might lead to different conclusions depending on the researcher. Qualitative research is mainly inductive in its nature, and the researcher will use their observations to infer _possible_ hypotheses based on observations. Quantitative research, on the other hand, stems from positivism; the philosophical stand point that all things are governed by principles or laws (e.g. natural) and as such it is possible for researchers to observe these laws to draw conclusions in their research.[@IntroToResearch, p. 23] Contrary to qualitative research, a quantitative approach is generally deductive, and is often aimed to confirm or deny a hypotheses that has been stated beforehand.[@Hakansson_Portal;@IntroToResearch]
+During the research, a research method was applied to facilitate the process of analyzing and evaluating our implementation. A literature study was conducted in order to find an appropriate research method and strategy. The research methodology was chosen with the research question in mind; how to analyze and evaluate a system performance. The two main categories of research methodology are _quantitative_ and _qualitative_ research, which are separated by their founding philosophical assumptions. The qualitative research methodology assumes that observations, and importantly the conclusions drawn from them, are by their nature connected and dependent on prior knowledge and skill of the researcher and that the same observations might lead to different conclusions depending on the researcher. Qualitative research is mainly inductive in its nature, and the researcher will use their observations to infer _possible_ hypotheses based on observations. Quantitative research, on the other hand, stems from positivism; the philosophical stand point that all things are governed by principles or laws (e.g. natural) and as such it is possible for researchers to observe these laws to draw conclusions in their research.[@IntroToResearch, p. 23] Contrary to qualitative research, a quantitative approach is generally deductive, and is often aimed to confirm or deny a hypotheses that has been stated beforehand.[@Hakansson_Portal; @IntroToResearch]
 
-One example of quantitative research is _experimental research_. Experimental research is a strategy where the researchers try to control all variables that can affect the outcome of an observation. By methodically manipulate the state of one variable at a time, while keeping other variables stable, it is possible to understand how different variables affect the phenomenon that is to be researched.[@Hakansson_Portal;@IntroToResearch, p. 26] As its main method of data collection, experimental research relies on experiments that are performed in this fashion. The gathered data can then be analyzed and used as a basis for conclusion to confirm or deny the stated hypotheses. In computer systems this method can be used to isolate the behaviour of the system for a certain input or event, and can be a useful method to analyze system performance.[@Hakansson_Portal]
+One example of quantitative research is _experimental research_, which is a strategy where the researchers try to control all variables that can affect the outcome of an observation. By methodically manipulating the state of one variable at a time, while keeping other variables stable, it is possible to understand how different variables affect the phenomenon that is to be researched.[@Hakansson_Portal; @IntroToResearch, p. 26] As its main method of data collection, experimental research relies on experiments that are performed in this fashion. The gathered data can then be analyzed and used as a basis for conclusion to confirm or deny the stated hypotheses. In computer systems this method can be used to isolate the behaviour of the system for a certain input or event, and can be a useful method to analyze system performance.[@Hakansson_Portal]
 
 We chose to work according to the experimental research strategy, seeing as it is a suitable approach to analyze computer systems. To analyze the performance of our implementation we have chosen to observe how _per-instruction-overhead_ and _completion time of a program_ varies with respect to different sets of instructions and the program length. Because of limitations in our implementation in its current state, further described in subsequent chapters, we hypothesize worse performance than if the chip could read instructions directly from a ROM, as intended. However, if the implementation is capable of executing the entire instruction set as expected, we believe that there are many areas of the implementation that can be optimized for better performance with relative ease.
 
@@ -150,7 +131,7 @@ The development of computer systems has long been an area heavily driven by the 
 
 ## Design and software development
 
-This section provides a brief introduction to agile development and Scrum. These development frameworks was used during the research work to facilitate the design and development process of the research.
+This section provides a brief introduction to agile development and Scrum. These development frameworks were used during the project work to facilitate the design and development process of the research.
 
 ### Agile development
 
@@ -160,7 +141,7 @@ The agile software development model has spawned a number of frameworks to uphol
 
 ### Scrum
 
-As previously mentioned, Scrum is one of many frameworks that implements the Manifesto for Agile Software Development. The creators Jeff Sutherland and Ken Schwaber define Scrum as the following[@ScrumGuide, p. 3]:
+As previously mentioned, Scrum is one of many frameworks that implements the Manifesto for Agile Software Development. The creators Jeff Sutherland and Ken Schwaber define Scrum as the following [@ScrumGuide, p. 3]:
 
 > _"Scrum (n): A framework within which people can address
 > complex adaptive problems, while productively and creatively
@@ -170,23 +151,21 @@ Scrum utilizes an iterative, incremental approach to manage risks, and to dynami
 
 Each member of the Scrum team is assigned a role. These roles include product owner, developers and Scrum master. Each role have a specific set of tasks to fulfill.
 
-* Scrum Master
-  - Responsible for ensuring that Scrum is understood and enacted [@ScrumGuide, p. 6] by making sure that the each member of the team follows the Scrum theory, practice, and rules.
-* Product Owner
-  - Responsible for maximizing the value of the product and the work of the development team[@ScrumGuide, p. 5], and of managing the so called "Product Backlog", which contains items/tasks/requirements(?) that are to be completed in order for the product to meet the definition of done.
-* Developer
-  - Professionals who do the development work by delivering potentially releasable software at the end of each sprint.[@ScrumGuide, p. 6]
+**Scrum Master:** Responsible for ensuring that Scrum is understood and enacted [@ScrumGuide, p. 6] by making sure that the each member of the team follows the Scrum theory, practice, and rules.
+
+**Product Owner:** Responsible for maximizing the value of the product and the work of the development team[@ScrumGuide, p. 5], and of managing the so called "Product Backlog", which contains items/tasks/requirements(?) that are to be completed in order for the product to meet the definition of done.
+
+**Developer:** Professionals who do the development work by delivering potentially releasable software at the end of each sprint.[@ScrumGuide, p. 6]
 
 The framework employs four formal events that help make sure that the team can deliver at the end of each sprint. These events are known as Sprint Planning, Daily Scrum, Sprint Review and Sprint Retrospective.[@ScrumGuide, p. 7]
 
-* Sprint Planning
-  - The Scrum team collaboratively decides on what can be delivered at the end of the sprint by moving tasks from the Product Backlog to a Sprint.[@ScrumKniberg, p. 24] A Sprint Goal is then created, which is a goal set by the team that can be reached by implementing the items in the Sprint backlog.
-* Daily Scrum
-  - A short meeting, usually around 15 minutes, where the team discusses the work that they will do on that day. This is done in order to synchronize team members, improve communication and improve the teams knowledge.
-* Sprint Review
-  - Helt at the end of each sprint, where the Scrum team and possible stakeholders collaborate and discuss what was done in the sprint. The attendees inspect the Product Backlog and any changes that was made, decide on what could be done in the next sprint in order to optimize value. The meeting is held with the intention of generating feedback.
-* Sprint Retrospective
-  - Held after the Sprint Review and before the next Sprint Planning meeting. It is held in order to inspect how the last Sprint went with regards to the team members, their relationships, the process and tools. The team tries to identify what went well, and what can be improved, with the aim to create a plan that improves performance in the next sprint.
+**Sprint Planning:** The Scrum team collaboratively decides on what can be delivered at the end of the sprint by moving tasks from the Product Backlog to a Sprint.[@ScrumKniberg, p. 24] A Sprint Goal is then created, which is a goal set by the team that can be reached by implementing the items in the Sprint backlog.
+
+**Daily Scrum:** A short meeting, usually around 15 minutes, where the team discusses the work that they will do on that day. This is done in order to synchronize team members, improve communication and improve the teams knowledge.
+
+**Sprint Review**: Held at the end of each sprint, where the Scrum team and possible stakeholders collaborate and discuss what was done in the sprint. The attendees inspect the Product Backlog and any changes that was made, decide on what could be done in the next sprint in order to optimize value. The meeting is held with the intention of generating feedback.
+
+**Sprint Retrospective:** Held after the Sprint Review and before the next Sprint Planning meeting. It is held in order to inspect how the last Sprint went with regards to the team members, their relationships, the process and tools. The team tries to identify what went well, and what can be improved, with the aim to create a plan that improves performance in the next sprint.
 
 ## Evaluation criteria
 
@@ -194,7 +173,7 @@ In order to gain an idea of how well the NESizer2 functions as a method of hardw
 
 **Performance in speed:** We need to know if the wrapping method was significantly slower than the component(s) being wrapped. Since the wrapping would allow the component to be used only at crucial times, and allow a larger portion of programs to be run on a more modern machine, we were mainly focusing on short and simple programs that would for instance utilize memory mapped functionality of the legacy hardware.
 
-**Consistency in usage:** It is important that the method does not introduce any quirks that would have to be considered when implementing it as a wrapper. If certain programs or sequences of instructions behave differently when run via the wrapper compared to when run natively, the method would introduce to much friction to be viable as a wrapper. We decided to test this by grouping instructions by addressing mode into categories of instructions with similar properties, and to test groups of instructions both isolated and mixed together.
+**Consistency in usage:** It is important that the method does not introduce any quirks that would have to be considered when implementing it as a wrapper. If certain programs or sequences of instructions behave differently when run via the wrapper compared to when run natively, the method would introduce too much friction to be viable as a wrapper. We decided to test this by grouping instructions by addressing mode into categories of instructions with similar properties, and to test groups of instructions both isolated and mixed together.
 
 **Correctness:** Naturally, the wrapping method should not introduce or be responsible for any erroneous results during usage. We decided to use a digital logic analyzer in order to monitor the behavior of the system during the test programs.
 
@@ -206,11 +185,11 @@ This section details the project work, including literature studies and the hard
 
 ## Literature study
 
-The project work started with a literature study, to gain knowledge on related work and theoretical background knowledge in the field of modernizing legacy hardware and legacy hardware used in modern applications. The search was performed using mainly the following databases of scientific publications: (i) IEEE Xplore, (ii) ACM Digital Library and (iii) Google Scholar. Additional searching tools used was simple internet searching tools such as _Google_, which could often provide ideas for additional keywords used when further searching in the databases. The results from this literature study was searched for using keywords: modernization/modernizing, legacy, hardware, microprocessor, computer. Based on the results of this search we further defined our keywords to target specific methods that seemed relevant, in order to find references on related previous work. The keywords used in this search was: legacy, microcontroller, microprocessor, master, slave, injection, wrapping, shared memory. The results from both searches was selected with title, abstract and publication year taken into consideration. Most of the related work was found to be older than 10 years, but considering that the articles mentioned methods of controlling legacy hardware, and that the problem of upgrading/modernizing hardware is generally a problem for machines older than 10-20 years, we found them relevant to the research. Figure \ref{literature-study} shows a simple illustration of the iterative process of the literature study.
+The project work started with a literature study, to gain knowledge on related work and theoretical background knowledge in the field of modernizing legacy hardware and legacy hardware used in modern applications. The search was performed using mainly the following databases of scientific publications: (i) IEEE Xplore, (ii) ACM Digital Library and (iii) Google Scholar. Additional searching tools used was simple internet searching tools such as _Google_, which could often provide ideas for additional keywords used when further searching in the databases. The results from this literature study was searched for using keywords the modernization/modernizing, legacy, hardware, microprocessor, computer. Based on the results of this search we further defined our keywords to target specific methods that seemed relevant, in order to find references on related previous work. The keywords used in this search was _legacy_, _microcontroller_, _microprocessor_, _master_, _slave_, _injection_, _wrapping_, _shared memory_. The results from both searches was selected with title, abstract and publication year taken into consideration. Most of the related work was found to be older than 10 years, but considering that the articles mentioned methods of controlling legacy hardware, and that the problem of upgrading/modernizing hardware is generally a problem for machines older than 10-20 years, we found them relevant to the research. Figure \ref{literature-study} shows a simple illustration of the iterative process of the literature study.
 
-![Illustrating the iterative process of the literature study. \label{literature-study}](./img/literature_study.svg)
+![Illustrating the iterative process of the literature study. \label{literature-study}](./img/literature_study.pdf)
 
-Another literature study was conducted in order to gain further knowledge on experimental research, how it is used in performance comparison and evaluation, and general information on scientific methodology and how it is used in research. The keywords used in this search was: experimental, research, methodology, computer, system, performance. The search was conducted over the same databases mentioned above, and evaluated and selected using the same process. Anne Håkansson's article _Portal of Research Methods and Methodologies for Research Projects and Degree Projects_[@Hakansson_Portal] mentions the book _Introduction to Research in Education_[@IntroToResearch] as a source, and it has proved to be of great help when trying to understand what experimental research means, and how it can be used as a research strategy/methodology.
+Another literature study was conducted in order to gain further knowledge on experimental research, how it is used in performance comparison and evaluation, and general information on scientific methodology and how it is used in research. The keywords used in this search were _experimental_, _research_, _methodology_, _computer_, _system_, _performance_. The search was conducted over the same databases mentioned above, and evaluated and selected using the same process. Anne Håkansson's article _Portal of Research Methods and Methodologies for Research Projects and Degree Projects_[@Hakansson_Portal] mentions the book _Introduction to Research in Education_[@IntroToResearch] as a source, and it has proved to be of great help when trying to understand what experimental research means, and how it can be used as a research strategy/methodology.
 
 ## Designing experiments
 
@@ -261,11 +240,7 @@ The first part of the sprint was aimed at basic testing of components. Testing t
 
 After component testing was concluded, the next step was building a simple circuit of components that, together with basic software and a simple test program, could confirm that basic communication between the microcontroller and RP2A03 was working as intended. The results were inconsistent and erroneous, and the build had to be debugged, which resulted in the sprint "overflowing" to the next sprint.
 
-We finally realized that the problem was due to a misunderstanding in how the latch was used in NESizer2, and a simple edit to the circuitry resulted in consistent expected results. This confirmed that communication between the chips worked at a basic level. Figure \ref{misplaced_latch} and \ref{misplaced_latch} illustrates the misbehaving circuit and the corrected circuit, respectively.
-
-![The circuit with the misplaced LE pin on the 74LS373 latch .\label{misplaced_latch}](./img/emulated_rom/emulated_rom_ver10.png)
-
-![The circuit with the corrected LE pin on the 74LS373 latch.\label{corrected_latch}](./img/emulated_rom/emulated_rom_ver20.png)
+We finally realized that the problem was due to a misunderstanding in how the latch was used in NESizer2, and a simple edit to the circuitry resulted in consistent expected results. This confirmed that communication between the chips worked at a basic level. Figure \ref{misplaced_latch} and \ref{corrected_latch} in [Appendix A] illustrates the misbehaving circuit and the corrected circuit, respectively.
 
 ### Sprint 4, Sending instructions
 
@@ -296,7 +271,7 @@ The sprint, and some continuous work during the experiments phase, was concluded
 
 ## Experiments phase
 
-In order to measure time according to our criterias, we attempted to set up the SPI peripheral on the Atmega328P. Unfortunately the programmer we used did not support two-say SPI communication, which forced us to further extend the implementation with a second microcontroller unit.
+In order to measure time according to our criterias, we attempted to set up the SPI peripheral on the Atmega328P. Unfortunately, the programmer we used did not support two-say SPI communication, which forced us to further extend the implementation with a second microcontroller unit.
 
 The implementation was extended in hardware and software to include simple communication with an Arduino M0 Pro board, which was used to measure time. The choice of the Arduino M0 Pro as a hardware timer was the increased resolution of time, and the fact that it ran on a clock with more than double the frequency of the wrapper system, further increasing accuracy of the measurements.
 
@@ -311,7 +286,7 @@ The experiments phase was conducted according to design, with the exception that
 5. Measure time of completion when program is called without emulated ROM functions
 6. Switch to next category and repeat process until all categories have been tested
 
-![Block diagram illustrating the iterative testing process.\label{block_test}](./img/testing_block_diagram.pdf)
+![Block diagram illustrating the iterative testing process.\label{block_test}](./img/testing_block_diagram.pdf){ width=80% height=80% }
 
 For step 1 we used a digital logic analyzer to measure the bit value on the output of the RP2A03, in order to ensure that an expected value was output. We also recorded the time and number of cycles between instruction for each instruction type at the same time.
 
@@ -331,7 +306,7 @@ This chapter details the results of all tests that were performed on the system.
 
 , respectively.
 
-Firstly all tests are presented and compared across categories, followed by a comparison of tests for each separate category. The _Mixed_ category was not applicable in test case 5, since the task of reading mixed instructions and placing them correctly in the data structures used for communication would effectively result in the exact steps taken by the ROM-emulation functions.
+Firstly, all tests are presented and compared across categories, followed by a comparison of tests for each separate category. The _Mixed_ category was not applicable in test case 5, since the task of reading mixed instructions and placing them correctly in the data structures used for communication would effectively result in the exact steps taken by the ROM-emulation functions.
 
 ## Comparison: Test cases
 
@@ -459,3 +434,7 @@ First and foremost, we acknowledge that the proposed method of hardware wrapping
 A natural step from our work would be to expand the functionality further by allowing for a complete instruction set. As discussed in section [Sprint 5, Entire instruction set], there is no need for branching or jumping instructions, but there are still a large number of instructions left that was outside the scope of our study. When all relevant parts of the instruction set has been implemented, the final step(s) would be to test a real application of the method, and test how well this method works in practice.
 
 # References
+
+<div id="refs"></div>
+
+\newpage
