@@ -2,7 +2,6 @@
 
 * Modify according to needs (Bengan)
   - Figures from Appendix A embedded in text
-  - Reference citation formatting ([x] before period)
   - Add page breaks before ToC and new chapters (left aligned)
 	+ "Keep in mind that it has to look good in a two-page print, meaning that you might need to add blank pages here and there."
 * Deliver second draft
