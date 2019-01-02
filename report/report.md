@@ -1,12 +1,13 @@
 ---
-title: Evaluation of the NESizer2 method as a means of wrapping embedded legacy systems
 documentclass: article
 bibliography: bib.bibtex
 toc: true
-number-sections: true
+numbersections: true
 csl: ieee.csl
 geometry: margin=3cm
 ---
+
+\newpage
 
 # Introduction
 
@@ -71,6 +72,8 @@ For a better indication of how well the communication method studied in our rese
 
 This report will firstly provide some background theory on legacy hardware and its use in a modern context, as well as an introduction to the hardware that has been used in this research. The research methodology used is presented in the following section together with other techniques and frameworks used to facilitate the research and development work. It is followed by a description of the project work, including the initial literature study and research phases, development phases and finally experiments and testing phases, followed by a section presenting the results from experiments. The last chapters will discuss the project work and the results from experiments, provide conclusions from the research work, and finally present ideas and thoughts about future work.
 
+\newpage
+
 # Background theory/Technical background
 
 This chapter provides an introduction of what legacy hardware means, and also discusses how legacy hardware is used in modern systems and particularly how old hardware is still used to create and produce retro-sounding music. It also introduces a hobby project that sparked the idea for this research. The second part of this chapter discusses some earlier work related to the research problem, and work that was used as a basis for the communication methods designed for this research.
@@ -112,6 +115,8 @@ The ATMega328P is an 8-bit, low-power CMOS microcontroller based on the AVR RISC
 Since the topic of this research is to test the NESizer2 method as a way of implementing hardware wrapping, the NESizer2 project should be considered closely related to this project. [@NESizer2_GitHub] We have used and modified key parts of the communication protocol and expanded it to allow for general usage (i.e. enabled it to handle any instruction that targets the Accumulator, ALU or Memory, and that is within the Immediate, Zero Page and Absolute addressing modes), but other parts of the NESizer2 project may be of interest for enthusiasts and hobbyists that are interested in this kind of hardware wrapping.
 
 During the literature study, we also encountered an article describing work on injecting instructions directly to the program memory of an older generation CPU. [@inter-cpu-comm] Although our implementation does not inject instructions into a units program memory, the concept of injection is closely related. It is possible that the techniques described in that article could be used as an alternative method of hardware wrapping.
+
+\newpage
 
 # Development and methodology
 
@@ -294,6 +299,8 @@ For steps 2 through 5 we utilized the Arduino M0 Pro to act as a master controll
 
 The Arduino waits for the Atmega328P to signal that it has completed its setup routine. The Atmega328P then waits for a start signal from the Arduino, which is sent upon the press of a hardware button. When the button is pressed, the Arduino sends a _go_ signal to the Atmega328P and starts a timer. It then waits for the Atmega328P to signal that it has finished it execution, where upon the Arduino will stop it's timer and save the results. When the test program has finished, the Arduino outputs all the measured times.
 
+\newpage
+
 # Results
 
 This chapter details the results of all tests that were performed on the system. The tests were performed as outlined in the subchapter [Experiments phase], and the test results have been labeled
@@ -373,6 +380,8 @@ Data bus	Comment
 `0x85`		Zero Page `STA` Operand, Zero Page Address `0x85`
 `0xFE`		Result of `EOR` in accumulator to be stored in memory
 
+\newpage
+
 # Discussion & conclusions
 
 This chapter will present a summary of our thoughts on the project work and experiments. Firstly we present thoughts on our choice of methods, how effectively we perceived them to be in practice for this particular study, and thoughts on our choice of tools and technology, and the project work in general. Secondly we will discuss the experiments and measured results, and finally present selected conclusions.
@@ -431,11 +440,15 @@ The behavior of the system when increasing the program length was as expected, a
 
 As for increasing the frequency of the timer interrupts, that are needed to reset the program counter of the slave unit, it produced hardly any noticeable difference. This means that the settings for the timer could be set to trigger more often, in order to further ensure a safety margin of not accidentally interpreting internal memory data as instruction data, without a significant performance hit.
 
+\newpage
+
 # Future work
 
 First and foremost, we acknowledge that the proposed method of hardware wrapping presented in this work shows inconclusive results. In order to tell whether this method is at all viable, it is required to (i) investigate whether the "broken" memory operations encountered during the tests was caused by a faulty RP2A03 unit, or if it was because of an error in the proposed implementation, and (ii) compare it against other methods of hardware wrapping on roughly equal level of complexity in implementation. As for case (ii), we had originally intended to compare this implementation against a different method of wrapping, which used a _shared memory_ to communicate between the master and slave unit, however we were unable to complete it because of the aforementioned problematic memory operations. The schematics for the shared memory approach can be found in [Appendix A].
 
 A natural step from our work would be to expand the functionality further by allowing for a complete instruction set. As discussed in section [Sprint 5, Entire instruction set], there is no need for branching or jumping instructions, but there are still a large number of instructions left that was outside the scope of our study. When all relevant parts of the instruction set has been implemented, the final step(s) would be to test a real application of the method, and test how well this method works in practice.
+
+\newpage
 
 # References
 
