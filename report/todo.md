@@ -1,32 +1,20 @@
 # TODO
 
-* Finish first draft
-  - Review footnotes
-  - Review references (elias done)
-	+ "note: ..." not in rendered reference list
-  - Figure sizes, figure and table text formatting
-  - Thoroughly check for spelling mistakes
-    + Goal and Purpose basically say the same thing
-	+ "We wanted to, as a hobby project..." feels malplacerat under section 2.2. Move it, and flesh out?
-	+ Write more about 2a03?
-	+ - || - Atmega328P?
-	+ Flesh out 3.2 Design and Software Development?
-  - svf -> pdf/png/anything else that works
-  - title page and abstract before toc
-	+ worst case we can merge separate pdfs with a different tool
-
-* Deliver first draft
-
 * Modify according to needs (Bengan)
-  - Additions
-    + Figures/Data?
-      - Pictures of logic analyzer results
+  - Figures from Appendix A embedded in text
+  - Reference citation formatting ([x] before period)
+  - Add page breaks before ToC and new chapters (left aligned)
+	+ "Keep in mind that it has to look good in a two-page print, meaning that you might need to add blank pages here and there."
 * Deliver second draft
-* Presentation ppt
-  - Images to include
-    + Cable harve
-	+ Logic analyzer
-	+ Result graphs
+* Create presentation
+  - Write presentation contents
+  - Create ppt
+	- Images to include
+      + Cable harve
+	  + Logic analyzer
+	  + Result graphs
+  - Practice presentation
+* Do presentation
 * Modify according to needs (Opponering)
 * Deliver final
 * Bränn ardiuno
