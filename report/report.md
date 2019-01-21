@@ -7,6 +7,9 @@ csl: ieee.csl
 geometry: margin=3cm
 header-includes: |
 	\usepackage{graphicx}
+	\usepackage{longtable}
+	\usepackage{booktabs}
+	\usepackage{hyperref}
 ---
 
 \newpage
@@ -225,18 +228,30 @@ When planning the project work we decided to use agile development and the frame
 
 The sprint goals were then set to reflect stages of iteratively increasing implemented functionality in the method, and stories and tasks for that specific sprint were then chosen to reflect the sprint goal. For each sprint we also defined a set of one or more deliverables that should represent the result of that sprint. A detailed description of the work concluded in each sprint during the implementation process will be given below, and a summary of the sprint goals and deliverables can be seen in Table \ref{sprint-overview}.
 
-Table: Overview of sprints and deliverables \label{sprint-overview}
-
-Sprint #	Goal								Deliverables
-----------	------------						--------------------
-1			Research and Design phase done		Research and design documents
-												for hardware and software
-2-3			Basic communication working			Components, circuitry, and basic
-												software needed for communication
-4			Sending instructions				Hardware for debugging, Software
-												for sending instructions
-5			Entire instruction set working		Software supporting entire instruction set
-
+\begin{longtable}[]{@{}lll@{}}
+\caption{Overview of sprints and deliverables}
+\label{sprint-overview}\tabularnewline
+\toprule
+Sprint \# & Goal & Deliverables\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+Sprint \# & Goal & Deliverables\tabularnewline
+\midrule
+\endhead
+1 & Research and Design phase done & Research and design
+documents\tabularnewline
+& & for hardware and software\tabularnewline
+2-3 & Basic communication working & Components, circuitry, and
+basic\tabularnewline
+& & software needed for communication\tabularnewline
+4 & Sending instructions & Hardware for debugging,
+Software\tabularnewline
+& & for sending instructions\tabularnewline
+5 & Entire instruction set working & Software supporting entire
+instruction set\tabularnewline
+\bottomrule
+\end{longtable}
 
 ### Sprint 1, Research and design phase
 
@@ -244,7 +259,7 @@ The research and design phase included research the NESizer2 software and hardwa
 
 \begin{figure}
 	\centering
-		\includegraphics[width=0.8\textwidth]{./img/emulated_rom/emulated_rom_block_diagram.png}
+		\includegraphics[width=0.3\textwidth]{./img/emulated_rom/emulated_rom_block_diagram.png}
 	\caption{Block diagram of the hardware components and the communication channels of the analyzed implementation.}
 	\label{block_emulated_rom_text}
 \end{figure}
@@ -281,14 +296,24 @@ Hardware work included implementing simple debugging and diagnostics that could 
 
 The NESizer2 uses high(er) level functions for instructing the RP2A03 to play a note, or to modify the sound, etc., with the help of hardcoded assembly instructions that performed set memory operations. We wanted to extend these assembly routines to allow for any instruction to be sent, and to build our own higher level C functions that could be used in a C program for the microcontroller used in the implementation. This was achieved by categorizing the 6502 instruction set (which is the instruction set used by the RP2A03) into instruction families that use the same number of operands. At this stage we chose to focus on three main families; (i) Immediate operations, (ii) Absolute addressing memory operations, and (iii) Zero Page addressing memory operations. A summary of the characteristics of these families can be found in Table \ref{instruction_chars}.
 
-Table: Instruction families and their characteristics \label{instruction_chars}
-
-Instruction family		Size of instruction [B]			# Cycles / instruction		R/W Cycle sequence
-----------------------  --------------------------- 	--------------------------	----------------------
-Immediate				2								2							R, R
-Absolute				3								4							R, R, R, R/W
-Zero page				2								3							R, R, R/W
-
+\begin{longtable}[]{@{}llll@{}}
+\caption{Instruction families and their characteristics}
+\label{instruction_chars}\tabularnewline
+\toprule
+Instruction family & Size of instruction {[}B{]} & \# Cycles /
+instruction & R/W Cycle sequence\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+Instruction family & Size of instruction {[}B{]} & \# Cycles /
+instruction & R/W Cycle sequence\tabularnewline
+\midrule
+\endhead
+Immediate & 2 & 2 & R, R\tabularnewline
+Absolute & 3 & 4 & R, R, R, R/W\tabularnewline
+Zero page & 2 & 3 & R, R, R/W\tabularnewline
+\bottomrule
+\end{longtable}
 
 These characteristics was then used to redesign the assembly routines and to build the functions mentioned above. When implemented it was possible to send any opcode[^opcode] together with any operand, handled properly by the assembly routines.
 
@@ -380,58 +405,112 @@ Test cases 1 through 5 are shown in figures \ref{data-validation}, \ref{increasi
 	\label{emurom-func}
 \end{figure}
 
-Table: Performance measured in Cycles per Instruction \label{cycles-per-instruction}
-
-Category    Wrapped     Unwrapped   Difference
---------    -------     ---------   ----------
-Immediate   8           2           400%
-Zero Page   8           2           400%
-Absolute    9           3           300%
+\begin{longtable}[]{@{}llll@{}}
+\caption{Performance measured in Cycles per Instruction}
+\label{cycles-per-instruction}\tabularnewline
+\toprule
+Category & Wrapped & Unwrapped & Difference\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+Category & Wrapped & Unwrapped & Difference\tabularnewline
+\midrule
+\endhead
+Immediate & 8 & 2 & 400\%\tabularnewline
+Zero Page & 8 & 2 & 400\%\tabularnewline
+Absolute & 9 & 3 & 300\%\tabularnewline
+\bottomrule
+\end{longtable}
 
 As shown in figure \ref{data-validation}, data could not be validated for categories _Zero Page_ and _Absolute_, and subsequently not _Mixed_. The instructions sent from the master unit and the execution time on the slave unit behaves as expected, but the data output after execution is not correct. As shown in table \ref{mem-error}, the `LDA (0xA5)` instruction loads the value `0x04` from Zero Page address `0x24`, however trying to store the accumulator at another memory address strangely enough outputs `0x24` from the accumulator instead.
 
-Table: Illustrating error in memory operations \label{mem-error}
-
-Data bus	Comment
---------	-------
-`0xA5`		Zero Page `LDA` instruction Opcode
-`0x24`		Zero Page `LDA` Operand, Zero Page Address `0x24`
-`0x04`		Returned value `0x04` from memory
-`0x85`		"Idle" Zero Page `STA` instruction
-`0x85`		"Idle" Zero Page `STA` instruction
-`0x85`		"Idle" Zero Page `STA` instruction
-`0x85`		"Idle" Zero Page `STA` instruction
-`0x85`		"Idle" Zero Page `STA` instruction
-`0x85`		"Idle" Zero Page `STA` instruction
-`0x85`		Zero Page `STA` instruction Opcode
-`0x06`		Zero Page `STA` Operand, Zero Page Address `0x06`
-`0x24`		Value on accumulator to be written to memory (Expected `0x04`)
+\begin{longtable}[]{@{}ll@{}}
+\caption{Illustrating error in memory operations}
+\label{mem-error}\tabularnewline
+\toprule
+Data bus & Comment\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+Data bus & Comment\tabularnewline
+\midrule
+\endhead
+\texttt{0xA5} & Zero Page \texttt{LDA} instruction Opcode\tabularnewline
+\texttt{0x24} & Zero Page \texttt{LDA} Operand, Zero Page Address
+\texttt{0x24}\tabularnewline
+\texttt{0x04} & Returned value \texttt{0x04} from memory\tabularnewline
+\texttt{0x85} & ``Idle'' Zero Page \texttt{STA}
+instruction\tabularnewline
+\texttt{0x85} & ``Idle'' Zero Page \texttt{STA}
+instruction\tabularnewline
+\texttt{0x85} & ``Idle'' Zero Page \texttt{STA}
+instruction\tabularnewline
+\texttt{0x85} & ``Idle'' Zero Page \texttt{STA}
+instruction\tabularnewline
+\texttt{0x85} & ``Idle'' Zero Page \texttt{STA}
+instruction\tabularnewline
+\texttt{0x85} & ``Idle'' Zero Page \texttt{STA}
+instruction\tabularnewline
+\texttt{0x85} & Zero Page \texttt{STA} instruction Opcode\tabularnewline
+\texttt{0x06} & Zero Page \texttt{STA} Operand, Zero Page Address
+\texttt{0x06}\tabularnewline
+\texttt{0x24} & Value on accumulator to be written to memory (Expected
+\texttt{0x04})\tabularnewline
+\bottomrule
+\end{longtable}
 
 When not performing memory operations, i.e. accumulator writes and ALU operations, all data was validated as expected, even when performing sequences of connected operations. Table \ref{xor-accumulator} shows a short sequence of instructions storing a value in the accumulator and performing an _Exclusive OR_ (`EOR`) operation on it.
 
-Table: Illustrating a sequence of two accumulator operations \label{xor-accumulator}
+\newpage
 
-Data bus	Comment
---------	-------
-`0xA9`		Immediate `LDA` instruction Opcode
-`0x01`		Immediate `LDA` Operand, Immediate value `0x01`
-`0x85`		"Idle" Zero Page `STA` instruction
-`0x85`		"Idle" Zero Page `STA` instruction
-`0x85`		"Idle" Zero Page `STA` instruction
-`0x85`		"Idle" Zero Page `STA` instruction
-`0x85`		"Idle" Zero Page `STA` instruction
-`0x85`		"Idle" Zero Page `STA` instruction
-`0x49`		Immediate `EOR` instruction Opcode
-`0xFF`		Immediate `EOR` Operand, Immediate value `0xFF`
-`0x85`		"Idle" Zero Page `STA` instruction
-`0x85`		"Idle" Zero Page `STA` instruction
-`0x85`		"Idle" Zero Page `STA` instruction
-`0x85`		"Idle" Zero Page `STA` instruction
-`0x85`		"Idle" Zero Page `STA` instruction
-`0x85`		"Idle" Zero Page `STA` instruction
-`0x85`		Zero Page `STA` instruction Opcode
-`0x85`		Zero Page `STA` Operand, Zero Page Address `0x85`
-`0xFE`		Result of `EOR` in accumulator to be stored in memory
+\begin{longtable}[]{@{}ll@{}}
+\caption{Illustrating a sequence of two accumulator operations}
+\label{xor-accumulator}\tabularnewline
+\toprule
+Data bus & Comment\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+Data bus & Comment\tabularnewline
+\midrule
+\endhead
+\texttt{0xA9} & Immediate \texttt{LDA} instruction Opcode\tabularnewline
+\texttt{0x01} & Immediate \texttt{LDA} Operand, Immediate value
+\texttt{0x01}\tabularnewline
+\texttt{0x85} & ``Idle'' Zero Page \texttt{STA}
+instruction\tabularnewline
+\texttt{0x85} & ``Idle'' Zero Page \texttt{STA}
+instruction\tabularnewline
+\texttt{0x85} & ``Idle'' Zero Page \texttt{STA}
+instruction\tabularnewline
+\texttt{0x85} & ``Idle'' Zero Page \texttt{STA}
+instruction\tabularnewline
+\texttt{0x85} & ``Idle'' Zero Page \texttt{STA}
+instruction\tabularnewline
+\texttt{0x85} & ``Idle'' Zero Page \texttt{STA}
+instruction\tabularnewline
+\texttt{0x49} & Immediate \texttt{EOR} instruction Opcode\tabularnewline
+\texttt{0xFF} & Immediate \texttt{EOR} Operand, Immediate value
+\texttt{0xFF}\tabularnewline
+\texttt{0x85} & ``Idle'' Zero Page \texttt{STA}
+instruction\tabularnewline
+\texttt{0x85} & ``Idle'' Zero Page \texttt{STA}
+instruction\tabularnewline
+\texttt{0x85} & ``Idle'' Zero Page \texttt{STA}
+instruction\tabularnewline
+\texttt{0x85} & ``Idle'' Zero Page \texttt{STA}
+instruction\tabularnewline
+\texttt{0x85} & ``Idle'' Zero Page \texttt{STA}
+instruction\tabularnewline
+\texttt{0x85} & ``Idle'' Zero Page \texttt{STA}
+instruction\tabularnewline
+\texttt{0x85} & Zero Page \texttt{STA} instruction Opcode\tabularnewline
+\texttt{0x85} & Zero Page \texttt{STA} Operand, Zero Page Address
+\texttt{0x85}\tabularnewline
+\texttt{0xFE} & Result of \texttt{EOR} in accumulator to be stored in
+memory\tabularnewline
+\bottomrule
+\end{longtable}
 
 \newpage
 
