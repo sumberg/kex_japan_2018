@@ -1,6 +1,10 @@
-\newpage
+---
+geometry: margin=3cm
+header-includes: |
+	\usepackage{hyperref}
+---
 
 # Appendix
 
 For the full source code, please see \newline
-[https://github.com/sumberg/kex_japan_2018](https://github.com/sumberg/kex_japan_2018)
+\url{https://github.com/sumberg/kex_japan_2018}
