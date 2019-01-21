@@ -259,7 +259,7 @@ The research and design phase included research the NESizer2 software and hardwa
 
 \begin{figure}
 	\centering
-		\includegraphics[width=0.3\textwidth]{./img/emulated_rom/emulated_rom_block_diagram.png}
+		\includegraphics[width=1.0\textwidth]{./img/emulated_rom/emulated_rom_block_diagram.png}
 	\caption{Block diagram of the hardware components and the communication channels of the analyzed implementation.}
 	\label{block_emulated_rom_text}
 \end{figure}

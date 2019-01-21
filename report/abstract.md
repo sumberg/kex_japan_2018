@@ -18,3 +18,11 @@ Legacy computer systems are systems where several of the main hardware and softw
 Legacydatorsystem är system där många av de huvudsakliga hårdvaru- och mjukvarukomponenterna är flera decennier gamla. Att modernisera dessa system ses ofta som en stor monetär och tidsmässig investering, och att fortsätta att underhålla dem blir vanligtvis svårare och svårare med tiden. En lösning är därför att försöka att integrera legacy-systemets komponenter i moderna system, och det finns ett flertal tillvägagångssätt att uppnå detta. Detta kandidatexamensarbete ämnar att analysera ett tillvägagångssätt känt som "wrapping". Mer specifikt analyseras _NESizer2-metoden_, en metod som utnyttjar relativt enkla hårdvaru- och mjukvarugränssnitt till att kontrollera Ricoh 2A03-processorn som finns i Nintendo Entertainment System, med hjälp av en Atmega328 mikroprocessor. Under design- och utvecklingsfaserna av projektarbetet utfördes en litteraturstudie, och experimentiell forskningsmetod användes. Test- och experimentfaserna av projektarbetet fokuserade på att undersöka hur identifierade nyckelvariabled betedde säg då man modifierade vissa parametrar i systemet. Även om vi lyckades producera en del riktig data visade sig resultaten vara ofullständiga, då vissa operationer såsom minnesoperationer inte fungerade, vilket ledde till slutsatsen att vår circuit innehöll en defekt komponent.
 
 **Keywords:** Legacy components, modernizing, microcontroller, data injection, Atmega328P, Ricoh 2A03
+
+\newpage
+
+\centering
+\vspace*{\fill}
+_This page is intentionally left blank_
+\vspace*{\fill}
+\vspace{-4cm}
