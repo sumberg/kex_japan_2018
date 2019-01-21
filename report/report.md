@@ -192,7 +192,12 @@ This section details the project work, including literature studies and the hard
 
 The project work started with a literature study, to gain knowledge on related work and theoretical background knowledge in the field of modernizing legacy hardware and legacy hardware used in modern applications. The search was performed using mainly the following databases of scientific publications: (i) IEEE Xplore, (ii) ACM Digital Library and (iii) Google Scholar. Additional searching tools used was simple internet searching tools such as _Google_, which could often provide ideas for additional keywords used when further searching in the databases. The results from this literature study was searched for using keywords the modernization/modernizing, legacy, hardware, microprocessor, computer. Based on the results of this search we further defined our keywords to target specific methods that seemed relevant, in order to find references on related previous work. The keywords used in this search was _legacy_, _microcontroller_, _microprocessor_, _master_, _slave_, _injection_, _wrapping_, _shared memory_. The results from both searches was selected with title, abstract and publication year taken into consideration. Most of the related work was found to be older than 10 years, but considering that the articles mentioned methods of controlling legacy hardware, and that the problem of upgrading/modernizing hardware is generally a problem for machines older than 10-20 years, we found them relevant to the research. Figure \ref{literature-study} shows a simple illustration of the iterative process of the literature study.
 
-![Illustrating the iterative process of the literature study. \label{literature-study}](./img/literature_study.pdf)
+\begin{figure}
+	\centering
+		\includegraphics[width=0.8\textwidth]{./img/literature_study.pdf}
+	\caption{Illustrating the iterative process of the literature study.}
+	\label{literature-study}
+\end{figure}
 
 Another literature study was conducted in order to gain further knowledge on experimental research, how it is used in performance comparison and evaluation, and general information on scientific methodology and how it is used in research. The keywords used in this search were _experimental_, _research_, _methodology_, _computer_, _system_, _performance_. The search was conducted over the same databases mentioned above, and evaluated and selected using the same process. Anne Håkansson's article _Portal of Research Methods and Methodologies for Research Projects and Degree Projects_ [@Hakansson_Portal] mentions the book _Introduction to Research in Education_ [@IntroToResearch] as a source, and it has proved to be of great help when trying to understand what experimental research means, and how it can be used as a research strategy/methodology.
 
@@ -235,7 +240,12 @@ Sprint #	Goal								Deliverables
 
 The research and design phase included research the NESizer2 software and hardware implementation. This research was made in order to pinpoint the parts from NESizer2 that we would need, and what modifications had to be done to it. We found that we could use the assembly routines (which was at the heart of the communication with the RP2A03) together with a simple 8-bit databus through an 8-bit latch to control flow of instructions, as a foundation for our implementation. This is detailed in the circuit diagram found in figure \ref{block_emulated_rom_text}.
 
-![Block diagram of the hardware components and the communication channels of the analyzed implementation.\label{block_emulated_rom_text}](./img/emulated_rom/emulated_rom_block_diagram.png){width=50% height=50%}
+\begin{figure}
+	\centering
+		\includegraphics[width=0.8\textwidth]{./img/emulated_rom/emulated_rom_block_diagram.png}
+	\caption{Block diagram of the hardware components and the communication channels of the analyzed implementation.}
+	\label{block_emulated_rom_text}
+\end{figure}
 
 We also made research on the RP2A03 microprocessor, but since the RP2A03 is a proprietary chip, owned by Nintendo, there was not much official information available. However, a community of NES enthusiasts has, through reverse engineering, gathered much information on the processor on their forums and wiki-site _Nesdev Wiki_ [@NesdevWiki]. Through these channels we were able to learn that the chip differs little from the MOS Technology 6502 architecture, and as such we could learn much about the chip through official 6502 hardware and software development guides.
 
@@ -249,9 +259,19 @@ After component testing was concluded, the next step was building a simple circu
 
 We finally realized that the problem was due to a misunderstanding in how the latch was used in NESizer2, and a simple edit to the circuitry resulted in consistent expected results. This confirmed that communication between the chips worked at a basic level. Figure \ref{misplaced_latch_text} and \ref{corrected_latch_text} illustrates the misbehaving circuit and the corrected circuit, respectively.
 
-![The first iteration of the circuit, with the misplaced LE pin on the 74LS373 latch .\label{misplaced_latch_text}](./img/emulated_rom/emulated_rom_ver10.png)
+\begin{figure}
+	\centering
+		\includegraphics[width=0.8\textwidth]{./img/emulated_rom/emulated_rom_ver10.png}
+	\caption{The first iteration of the circuit, with the misplaced LE pin on the 74LS373 latch.}
+	\label{misplaced_latch_text}
+\end{figure}
 
-![The second iteration of the circuit, with the corrected LE pin on the 74LS373 latch.\label{corrected_latch_text}](./img/emulated_rom/emulated_rom_ver20.png){width=80% height=80%}
+\begin{figure}
+	\centering
+		\includegraphics[width=0.8\textwidth]{./img/emulated_rom/emulated_rom_ver20.png}
+	\caption{The second iteration of the circuit, with the corrected LE pin on the 74LS373 latch.}
+	\label{corrected_latch_text}
+\end{figure}
 
 ### Sprint 4, Sending instructions
 
@@ -297,7 +317,12 @@ The experiments phase was conducted according to design, with the exception that
 5. Measure time of completion when program is called without emulated ROM functions
 6. Switch to next category and repeat process until all categories have been tested
 
-![Block diagram illustrating the iterative testing process.\label{block_test}](./img/testing_block_diagram.pdf){ width=80% height=80% }
+\begin{figure}
+	\centering
+		\includegraphics[width=0.8\textwidth]{./img/testing_block_diagram.pdf}
+	\caption{Block diagram illustrating the iterative testing process.}
+	\label{block_test}
+\end{figure}
 
 For step 1 we used a digital logic analyzer to measure the bit value on the output of the RP2A03, in order to ensure that an expected value was output. We also recorded the time and number of cycles between instruction for each instruction type at the same time.
 
