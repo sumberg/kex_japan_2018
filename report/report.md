@@ -5,6 +5,8 @@ toc: true
 numbersections: true
 csl: ieee.csl
 geometry: margin=3cm
+header-includes: |
+	\usepackage{graphicx}
 ---
 
 \newpage
@@ -350,13 +352,33 @@ Firstly, all tests are presented and compared across categories, followed by a c
 
 Test cases 1 through 5 are shown in figures \ref{data-validation}, \ref{increasing-instructions}, \ref{increasing-interrupt-timeout} and \ref{emurom-func} respectively. Categories are compared to each other in each figure where applicable. Table \ref{cycles-per-instruction} details the number of cycles needed per instruction in each category, together with a comparison against the number of cycles needed in an unwrapped system. See [Appendix B] for tables of raw test result data.
 
-![Validated and not validated instruction types, as well as their respective communication overhead.\label{data-validation}](./img/data_validation.jpg)
+\begin{figure}
+	\centering
+		\includegraphics[width=0.8\textwidth]{./img/data_validation.jpg}
+	\caption{Validated and not validated instruction types, as well as their respective communication overhead.}
+	\label{data-validation}
+\end{figure}
 
-![Execution time for each instruction type as a function of number of instructions.\label{increasing-instructions}](./img/increasing_instructions.pdf)
+\begin{figure}
+	\centering
+		\includegraphics[width=0.8\textwidth]{./img/increasing_instructions.pdf}
+	\caption{Execution time for each instruction type as a function of number of instructions.}
+	\label{increasing-instructions}
+\end{figure}
 
-![Execution time of 1000 instructions for each instruction type when increasing the frequency of interrupts.\label{increasing-interrupt-timeout}](./img/increasing_interrupt_timeout.pdf)
+\begin{figure}
+	\centering
+		\includegraphics[width=0.8\textwidth]{./img/increasing_interrupt_timeout.pdf}
+	\caption{Execution time of 1000 instructions for each instruction type when increasing the frequency of interrupts.}
+	\label{increasing-interrupt-timeout}
+\end{figure}
 
-![Comparison of each instruction types execution time of 1000 instructions with ROM functions, as well as without ROM functions.\label{emurom-func}](./img/emuromfunc.pdf)
+\begin{figure}
+	\centering
+		\includegraphics[width=0.8\textwidth]{./img/emuromfunc.pdf}
+	\caption{Comparison of each instruction types execution time of 1000 instructions with ROM functions, as well as without ROM functions.}
+	\label{emurom-func}
+\end{figure}
 
 Table: Performance measured in Cycles per Instruction \label{cycles-per-instruction}
 
