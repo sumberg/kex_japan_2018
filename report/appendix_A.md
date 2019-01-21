@@ -4,6 +4,8 @@ header-includes: |
 	\usepackage{hyperref}
 ---
 
+\pagenumbering{roman}
+
 # Appendix
 
 For the full source code, please see \newline
