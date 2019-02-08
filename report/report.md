@@ -78,6 +78,10 @@ For a better indication of how well the communication method studied in our rese
 This report will firstly provide some background theory on legacy hardware and its use in a modern context, as well as an introduction to the hardware that has been used in this research. The research methodology used is presented in the following section together with other techniques and frameworks used to facilitate the research and development work. It is followed by a description of the project work, including the initial literature study and research phases, development phases and finally experiments and testing phases, followed by a section presenting the results from experiments. The last chapters will discuss the project work and the results from experiments, provide conclusions from the research work, and finally present ideas and thoughts about future work.
 
 \newpage
+
+\vspace*{\fill}
+\vspace{-4cm}
+
 \newpage
 
 # Background
@@ -192,6 +196,14 @@ In order to gain an idea of how well the NESizer2 functions as a method of hardw
 **Correctness:** Naturally, the wrapping method should not introduce or be responsible for any erroneous results during usage. We decided to use a digital logic analyzer in order to monitor the behavior of the system during the test programs.
 
 **Bottlenecks and overhead:** For systems where timing is crucial, it is important to determine and understand any overhead or bottlenecks that come with the wrapper in order to determine its utility. Since the NESizer2 method was constructed to send one instruction at a time, we wanted to see how this affected a longer sequence of continuous instructions, and determine if there exists any significant delay between instructions.
+
+\newpage
+
+\vspace*{\fill}
+\vspace{-4cm}
+
+\newpage
+
 
 # Project Work and Development
 
@@ -578,11 +590,21 @@ As for increasing the frequency of the timer interrupts, that are needed to rese
 
 \newpage
 
+\vspace*{\fill}
+\vspace{-4cm}
+
+\newpage
+
 # Future work
 
 First and foremost, we acknowledge that the proposed method of hardware wrapping presented in this work shows inconclusive results. In order to tell whether this method is at all viable, it is required to (i) investigate whether the "broken" memory operations encountered during the tests was caused by a faulty RP2A03 unit, or if it was because of an error in the proposed implementation, and (ii) compare it against other methods of hardware wrapping on roughly equal level of complexity in implementation. As for case (ii), we had originally intended to compare this implementation against a different method of wrapping, which used a _shared memory_ to communicate between the master and slave unit, however we were unable to complete it because of the aforementioned problematic memory operations.
 
 A natural step from our work would be to expand the functionality further by allowing for a complete instruction set. As discussed in section _\ref{sprint5} Sprint 5, Entire instruction set_, there is no need for branching or jumping instructions, but there are still a large number of instructions left that was outside the scope of our study. When all relevant parts of the instruction set has been implemented, the final step(s) would be to test a real application of the method, and test how well this method works in practice.
+
+\newpage
+
+\vspace*{\fill}
+\vspace{-4cm}
 
 \newpage
 
