@@ -81,7 +81,7 @@ This report will firstly provide some background theory on legacy hardware and i
 
 This chapter provides an introduction of what legacy hardware means, and also discusses how legacy hardware is used in modern systems and particularly how old hardware is still used to create and produce retro-sounding music. It also introduces a hobby project that sparked the idea for this research, as well as the main components used in this project work. The second part of this chapter discusses some earlier work related to the research problem, and work that was used as a basis for the communication methods designed for this research.
 
-## Defining _legacy_
+## Defining legacy
 Legacy is a term used in computing to mean "of, relating to, or being a previous or outdated computer system" [@Webster_legacy]. This could, for example, be computer systems or components that might have had a widespread usage or been considered a standard in the past, but are no longer manufactured or maintained by the producer.
 
 ## Modernization
@@ -128,6 +128,11 @@ The ATMega328P is an 8-bit, low-power CMOS microcontroller based on the AVR RISC
 Since the topic of this research is to test the NESizer2 method as a way of implementing hardware wrapping, the NESizer2 project should be considered closely related to this project [@NESizer2_GitHub]. We have used and modified key parts of the communication protocol and expanded it to allow for general usage (i.e. enabled it to handle any instruction that targets the Accumulator, ALU[^ALU] or Memory, and that is within the Immediate, Zero Page and Absolute addressing modes), but other parts of the NESizer2 project may be of interest for enthusiasts and hobbyists that are interested in this kind of hardware wrapping.
 
 During the literature study, we also encountered an article describing work on injecting instructions directly to the program memory of an older generation CPU [@inter-cpu-comm]. Although our implementation does not inject instructions into a units program memory, the concept of injection is closely related. It is possible that the techniques described in that article could be used as an alternative method of hardware wrapping.
+
+\newpage
+
+\vspace*{\fill}
+\vspace{-4cm}
 
 \newpage
 
@@ -204,12 +209,6 @@ In order to gain an idea of how well the NESizer2 functions as a method of hardw
 **Bottlenecks and overhead:** For systems where timing is crucial, it is important to determine and understand any overhead or bottlenecks that come with the wrapper in order to determine its utility. Since the NESizer2 method was constructed to send one instruction at a time, we wanted to see how this affected a longer sequence of continuous instructions, and determine if there exists any significant delay between instructions.
 
 \newpage
-
-\vspace*{\fill}
-\vspace{-4cm}
-
-\newpage
-
 
 # Project Work and Development
 
