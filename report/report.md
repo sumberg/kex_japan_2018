@@ -10,8 +10,8 @@ header-includes: |
 	\usepackage{longtable}
 	\usepackage{booktabs}
 	\usepackage{hyperref}
----
 
+---
 \newpage
 
 # Introduction
@@ -22,12 +22,7 @@ When integrating information systems developed several decades ago, known as leg
 
 Computer based information systems are an invaluable asset for modern enterprises and corporations. The use of information systems can range from data storage, analysis and organization, to communication systems such as mail servers. With continued updating and upgrading of these systems they become increasingly complex, and as technology evolves the existing technology of the systems are quickly rendered obsolete, and "_eventually, the existing information systems become too fragile to modify and too important to discard_" [@ComellaDorda2000], and as such it can be considered a legacy system [@seacord2003]. At this point the legacy systems must be modernized, or incorporated into a more modern system to remain viable.
 
-When incorporating legacy information systems into modern systems, there are usually three popular approaches: redevelopment, wrapping and migration [@Bisbal1999, p.2-4]. While redeveloping an entire system is usually the best option in the long run, it is also the most expensive and risky. Therefore, migration is usually a more popular method, as the system and its components are moved from their native environment to a new one, providing an interface to control the legacy components while retaining its data and functionality. However, migrating systems to a modern platform can lead to unexpected behaviour, with a notable example being NASA’s Ariane 5 flight 501 [@Dowson1997; @Ariane-Board-Report].
-
-When redevelopment and migration is too risky or expensive, wrapping offers a cost-effective option with less risk. Instead of rebuilding the system from the ground up, or moving the system to a new environment, it surrounds existing data, systems and interfaces with new interfaces, giving the legacy components a "new and improved" look [@Bisbal1999, p. 3], and lets organizations reuse trusted components in a new, more up-to-date manner.
-While these methods usually focus on legacy software systems, they are very much applicable to hardware systems and components as well.
-
-One way of wrapping a legacy hardware component is detailed in the hobby project NESizer2 by _Johan Fjeldtvedt_ [@NESizer2_GitHub]. The project is a MIDI controlled synthesizer, using the original _Audio Processing Unit_ (APU) found embedded in the RP2A03 microprocessor, the microprocessor used in the Nintendo Entertainment System based on the MOS Technology 6502 architecture. In his method he uses a modern microcontroller to handle the normal functionality of a MIDI-controller aswell as controlling the RP2A03 by dynamically injecting instructions into the microprocessor when the APU is needed.
+When incorporating legacy information systems into modern systems, there are usually three popular approaches: redevelopment, wrapping and migration [@Bisbal1999, p.2-4]. Unlike redevelopment and migration, wrapping maintains the original system as is, and simply creates an interface for the modern system to communicate with it. One way of wrapping a legacy hardware component is detailed in the hobby project NESizer2 by _Johan Fjeldtvedt_ [@NESizer2_GitHub]. The project is a MIDI controlled synthesizer, using the original _Audio Processing Unit_ (APU) found embedded in the RP2A03 microprocessor, the microprocessor used in the Nintendo Entertainment System based on the MOS Technology 6502 architecture. In his method he uses a modern microcontroller to handle the normal functionality of a MIDI-controller aswell as controlling the RP2A03 by dynamically injecting instructions into the microprocessor when the APU is needed.
 
 ## Problem
 
@@ -65,13 +60,11 @@ We found that experimental research was most suited to the nature of our researc
 
 As previously mentioned, wrapping could provide an alternative for businesses to keep their legacy systems alive, meaning it could save a company a substantial economic and temporal investment. As such, our main stakeholders are businesses and corporations where the need to maintain old systems exists.
 
-Another stakeholder, or rather a target audience, are electronic enthusiasts who design and create embedded systems of their own in hobby projects. Using ourselves as an example, the idea for this project sprung from our interest in constructing a music device that incorporated the Ricoh RP2A03 microprocessor, used in the Nintendo Entertainment System (more details on this in section _\ref{trackers_chiptune} Trackers and the Chiptunes scene_).
+Another stakeholder, or rather a target audience, are electronic enthusiasts who design and create embedded systems of their own in hobby projects. Using ourselves as an example, the idea for this project sprung from our interest in constructing a music device that incorporated the Ricoh RP2A03 microprocessor, used in the Nintendo Entertainment System (more details on this in section \ref{trackers_chiptune} _Trackers and the Chiptunes scene_).
 
 ## Delimitations\label{delimitations}
 
-The scope of this report is limited to the design and performance analysis of the NESizer2 method when it has been expanded to handle key parts of the 6502 instruction set, on a RP2A03 microprocessor. We chose to limit the instruction set by identifying groups of instructions that have similar characteristics, to ease implmentation and testing, and to be able to better draw conclusions on the overall performance of the system. Performance evaluation has been limited to speed of execution across the implemented instruction set, as well as the overhead as measured in time between consecutive instructions. The details of the implementation and evaluation criteria can be found in subsequent sections.
-
-For a better indication of how well the communication method studied in our research can be adopted for other microchips/hardware and for a better picture of the behaviour of these communication methods on other systems, it would have been beneficial to implement them for two or more devices with different architectures. We have not tested intended use case performance of the RP2A03, i.e. having it read program instructions from a regular ROM, and as such we were unable to make a tested comparison of execution speed.
+The scope of this report is limited to the design and performance analysis of the NESizer2 method when it has been expanded to handle key parts of the 6502 instruction set, on a RP2A03 microprocessor. We chose to limit the instruction set by identifying groups of instructions that have similar characteristics, to ease implmentation and testing, and to be able to better draw conclusions on the overall performance of the system. Performance evaluation has been limited to speed of execution across the implemented instruction set, as well as the overhead as measured in time between consecutive instructions. The details of the implementation and evaluation criteria can be found in section \ref{development-and-methodology} _Development and methodology_.
 
 ## Disposition
 
@@ -91,6 +84,13 @@ This chapter provides an introduction of what legacy hardware means, and also di
 ## Defining _legacy_
 Legacy is a term used in computing to mean "of, relating to, or being a previous or outdated computer system" [@Webster_legacy]. This could, for example, be computer systems or components that might have had a widespread usage or been considered a standard in the past, but are no longer manufactured or maintained by the producer.
 
+## Modernization
+Methods for incorporating legacy information systems into modern systems, also known as _modernizing_, usually fall into three categories: redevelopment, wrapping and migration. While redeveloping an entire system is usually the best option in the long run, it is also the most expensive and risky. Therefore, migration tends to be a more popular method [@Bisbal1999, p.2-4], as the system and its components are moved from their native environment to a new one, providing an interface to control the legacy components while retaining its data and functionality. However, migrating systems to a modern platform can lead to unexpected behaviour, with a notable example being NASA’s Ariane 5 flight 501 [@Dowson1997; @Ariane-Board-Report].
+
+When redevelopment and migration is too risky or expensive, wrapping offers a cost-effective option with less risk. Instead of rebuilding the system from the ground up, or moving the system to a new environment, it surrounds existing data, systems and interfaces with new interfaces, giving the legacy components a "new and improved" look [@Bisbal1999, p. 3], and lets organizations reuse trusted components in a new, more up-to-date manner.
+
+While all of these methods tend to focus on legacy software systems, it is natural to draw parallels to legacy hardware systems. For instance, redevelopment would simply mean redeveloping the hardware system with modern components, wrapping could be to use modern hardware to interface with the old system, to name a few.
+
 ## Trackers and the Chiptunes scene\label{trackers_chiptune}
 
 In the mid 1980’s, a type of music sequencer commonly referred to as a "tracker" appeared on the personal computing markets. Today, a community colloquially named the "chiptune scene" consisting of musicians and retro enthusiasts fascinated with the characteristic sounds of the old video game consoles, create and perform their own music with these trackers. While many artists use software that can emulate the sounds of these machines on modern systems, it is often considered high status to create the music directly on the old hardware. An often recurring example representative of the scene is the tracker software LSDj [@LSDj], written for the Nintendo Game Boy. Its portable nature makes it an ideal option for artists, being able to carry their "instrument" anywhere with ease.
@@ -104,7 +104,7 @@ The MOS Technology 6502 microprocessor and architecture was introduced on the ma
 
 The 6502 microprocessor contains instruction families and addressing modes to control every part of the architecture. Other than instructions which target basic CPU functionality (such as controlling program counter, reading status register etc.), there are groups of instructions to perform operations with the accumulator and memory. Included in these groups are immediate, zero page and absolute addressing.
 
-A full, detailed explanation of all of the available addressing modes can be found in the MC6500 Microcomputer Family Programming Manual [@6502ProgManual]. This research will utilize the three aforementioned addressing modes of the 6502 microprocessor. See section _\ref{delimitations} Delimitations_ for further details on the choice of instruction families.
+A full, detailed explanation of all of the available addressing modes can be found in the MC6500 Microcomputer Family Programming Manual [@6502ProgManual]. This research will utilize the three addressing modes of the 6502 microprocessor mentioned below. See section \ref{delimitations} _Delimitations_ for further details on the choice of instruction families.
 
 ### Immediate addressing
 Immediate addressing utilizes a 2-byte instruction format, where the first byte is the opcode[^opcode] specifying the operation and the address mode. The second byte takes a constant, hexadecimal value known to the programmer. Immediate instructions are commonly used when comparing variables to known values, as it does not require the programmer to first store the value in memory and then load it upon comparison; they would only have to specify the immediate value in the source code. It requires a minimum execution time of 2 cycles (`OPCODE` + `VALUE`).
@@ -113,7 +113,7 @@ Immediate addressing utilizes a 2-byte instruction format, where the first byte 
 Another 2-byte instruction address mode is zero page addressing. Along with the opcode, it takes a second byte which contains the effective address in page zero of the memory. Effectively, this means that zero page instructions can be used for quick accesses to memory locations in the range of `0x0000`-`0x00FF`. Zero page instructions are often used when working with intermediate values in larger calculations, to shorten the total execution time.
 
 ### Absolute addressing
-Absolute addressing mode takes 3 bytes in its instruction format: `OPCODE` + `ADDRESS_LOW_BITS` + `ADDRESS_HIGH_BITS`. Since this gives the programmer access to the full 16-bit range of memory (`0x0000`-`0xFFFF`), it's considered the most normal addressing mode..
+Absolute addressing mode takes 3 bytes in its instruction format: `OPCODE` + `ADDRESS_LOW_BITS` + `ADDRESS_HIGH_BITS`. Since this gives the programmer access to the full 16-bit range of memory (`0x0000`-`0xFFFF`), it's considered the most normal addressing mode.
 
 ## Ricoh RP2A03
 
@@ -131,7 +131,7 @@ During the literature study, we also encountered an article describing work on i
 
 \newpage
 
-# Development and methodology
+# Development and methodology\label{development-and-methodology}
 
 This chapter gives an introduction to experimental research and how it can be used in system performance comparison and analysis, followed by a theoretical background to agile development, and more specifically the framework used to facilitate this project work.
 
@@ -139,9 +139,15 @@ This chapter gives an introduction to experimental research and how it can be us
 
 During the research, a research method was applied to facilitate the process of analyzing and evaluating our implementation. A literature study was conducted in order to find an appropriate research method and strategy. The research methodology was chosen with the research question in mind; how to analyze and evaluate a system performance. The two main categories of research methodology are _quantitative_ and _qualitative_ research, which are separated by their founding philosophical assumptions. The qualitative research methodology assumes that observations, and importantly the conclusions drawn from them, are by their nature connected and dependent on prior knowledge and skill of the researcher and that the same observations might lead to different conclusions depending on the researcher. Qualitative research is mainly inductive in its nature, and the researcher will use their observations to infer _possible_ hypotheses based on observations. Quantitative research, on the other hand, stems from positivism; the philosophical stand point that all things are governed by principles or laws (e.g. natural) and as such it is possible for researchers to observe these laws to draw conclusions in their research [@IntroToResearch, p. 23]. Contrary to qualitative research, a quantitative approach is generally deductive, and is often aimed to confirm or deny a hypotheses that has been stated beforehand.[@Hakansson_Portal; @IntroToResearch]
 
-One example of quantitative research is _experimental research_, which is a strategy where the researchers try to control all variables that can affect the outcome of an observation. By methodically manipulating the state of one variable at a time, while keeping other variables stable, it is possible to understand how different variables affect the phenomenon that is to be researched [@Hakansson_Portal; @IntroToResearch, p. 26]. As its main method of data collection, experimental research relies on experiments that are performed in this fashion. The gathered data can then be analyzed and used as a basis for conclusion to confirm or deny the stated hypotheses. In computer systems this method can be used to isolate the behaviour of the system for a certain input or event, and can be a useful method to analyze system performance [@Hakansson_Portal].
+One example of quantitative research is _experimental research_, which is a strategy where the researchers try to control all variables that can affect the outcome of an observation. By methodically manipulating the state of one variable at a time, while keeping other variables stable, it is possible to understand how different variables affect the phenomenon that is to be researched [@Hakansson_Portal; @IntroToResearch, p. 26]. The variables that are manipulated and observed are known within the experimental research methodology as _independent_ and _significant_ variables. [@IntroToResearch] defines them as following:
 
-We chose to work according to the experimental research strategy, seeing as it is a suitable approach to analyze computer systems. To analyze the performance of our implementation we have chosen to observe how _per-instruction-overhead_ and _completion time of a program_ varies with respect to different sets of instructions and the program length. Because of limitations in our implementation in its current state, further described in subsequent chapters, we hypothesize worse performance than if the chip could read instructions directly from a ROM, as intended. However, if the implementation is capable of executing the entire instruction set as expected, we believe that there are many areas of the implementation that can be optimized for better performance with relative ease.
+>1. _"If two situations are equal in every respect except for a variable that is added to or deleted from one of the situations, any difference appearing between the two situations can be attributed to that variable. This statement is called **the law of the single independent variable**."_
+
+>2. _"If two situations are not equal, but it can be demonstrated that none of the variables  except the independent variable is  significant in producing the phenomenon under investigation, or if significant variables other than the independent variable are  made equal, then any difference occurring between the two situations after introducing a new variable (independent variable) to one of the systems can be attributed to the new variable. This statement is called **the law of the single significant variable**."_
+
+As its main method of data collection, experimental research relies on experiments that are performed in this fashion. The gathered data can then be analyzed and used as a basis for conclusion to confirm or deny the stated hypotheses. In computer systems this method can be used to isolate the behaviour of the system for a certain input or event, and can be a useful method to analyze system performance [@Hakansson_Portal].
+
+We chose to work according to the experimental research strategy, seeing as it is a suitable approach to analyze computer systems. To analyze the performance of our implementation we have chosen to observe how _per-instruction-overhead_ and _completion time of a program_ varies with respect to different sets of instructions and the program length. We hypothesize worse performance than if the chip could read instructions directly from a ROM. However, if the implementation is capable of executing the entire instruction set as expected, we believe that there are many areas of the implementation that can be optimized for better performance with relative ease.
 
 ### Experimental techniques in computer system performance research
 
@@ -220,7 +226,7 @@ The project work started with a literature study, to gain knowledge on related w
 	\label{literature-study}
 \end{figure}
 
-Another literature study was conducted in order to gain further knowledge on experimental research, how it is used in performance comparison and evaluation, and general information on scientific methodology and how it is used in research. The keywords used in this search were _experimental_, _research_, _methodology_, _computer_, _system_, _performance_. The search was conducted over the same databases mentioned above, and evaluated and selected using the same process. Anne Håkansson's article _Portal of Research Methods and Methodologies for Research Projects and Degree Projects_ [@Hakansson_Portal] mentions the book _Introduction to Research in Education_ [@IntroToResearch] as a source, and it has proved to be of great help when trying to understand what experimental research means, and how it can be used as a research strategy/methodology.
+Another literature study was conducted in order to gain further knowledge on experimental research, how it is used in performance comparison and evaluation, and general information on scientific methodology and how it is used in research. The keywords used in this search were _experimental_, _research_, _methodology_, _computer_, _system_, _performance_. The search was conducted over the same databases mentioned above, and evaluated and selected using the same process. The two main sources for our research methodology were _Portal of Research Methods and Methodologies for Research Projects and Degree Projects_ [@Hakansson_Portal], and _Introduction to Research in Education_ [@IntroToResearch]. Both texts proved to be of great help when trying to understand what experimental research means, and how it can be used as a research strategy/methodology.
 
 ## Designing experiments
 
@@ -236,7 +242,7 @@ For each category we then designed an experiment that would test the performance
 
 To address the evaluation criteria _behaviour_, we included a data validation test to each experiment. The data validation is simply to verify that all test programs produced the expected output at each RP2A03 write cycle.
 
-The outline of the experiments are further detailed in section \ref{experiments_phase}.
+The outline of the experiments are further detailed in section \ref{experiments_phase} _Experiments phase_.
 
 ## Hardware and Software implementation process
 
@@ -271,7 +277,7 @@ instruction set\tabularnewline
 
 ### Sprint 1, Research and design phase
 
-The research and design phase included research the NESizer2 software and hardware implementation. This research was made in order to pinpoint the parts from NESizer2 that we would need, and what modifications had to be done to it. We found that we could use the assembly routines (which was at the heart of the communication with the RP2A03) together with a simple 8-bit databus through an 8-bit latch to control flow of instructions, as a foundation for our implementation. This is detailed in the circuit diagram found in figure \ref{block_emulated_rom_text}.
+The research and design phase included research the NESizer2 software and hardware implementation. This research was made in order to pinpoint the parts from NESizer2 that we would need, and what modifications had to be done to it. We found that we could use the assembly routines (which was at the heart of the communication with the RP2A03) together with a simple 8-bit databus through an 8-bit latch to control flow of instructions, as a foundation for our implementation. This is detailed in the circuit diagram found in Figure \ref{block_emulated_rom_text}.
 
 \begin{figure}
 	\centering
@@ -339,7 +345,7 @@ The first part of this sprint focused on further extending the functionality of 
 
 When analyzing the 6502 instruction set further, we concluded that we were not interested in implementing support for branching instructions that conditionally jumps the program counter. This is because the RP2A03 reads instructions directly from the microcontroller, and as such branching has no real effect.
 
-The second part of the sprint was aimed at thoroughly testing the entire instruction set, making sure that all instructions produced expected results. While all operations that used the accumulator register (immediate loads, ALU operations, etc.) worked consistently and as expected, we noticed that seemingly _none of the memory operations worked_. This is further detailed and discussed in sections _\ref{results} Results_ and _\ref{discussion_conclusion} Discussion & Conclusion_.
+The second part of the sprint was aimed at thoroughly testing the entire instruction set, making sure that all instructions produced expected results. While all operations that used the accumulator register (immediate loads, ALU operations, etc.) worked consistently and as expected, we noticed that seemingly _none of the memory operations worked_. This is further detailed and discussed in sections \ref{results} _Results_ and \ref{discussion_conclusion} _Discussion & Conclusion_.
 
 The sprint, and some continuous work during the experiments phase, was concluded without managing to resolve this issue.
 
@@ -351,7 +357,7 @@ The implementation was extended in hardware and software to include simple commu
 
 To measure communication timing and cycles between instructions, we used a digital logic analyzer to monitor digital output. The data from the analyzer could then be collected both numerically (in the form of CSV) and as diagrams. On the RP2A03 we chose to monitor all bits of the data bus, as well as the R/W and output clock pins.
 
-The experiments phase was conducted according to design, with the exception that any test cases involving memory operations could not be confirmed to produce expected results. The experiments were performed according to the following steps, and further illustrated in figure \ref{block_test}:
+The experiments phase was conducted according to design, with the exception that any test cases involving memory operations could not be confirmed to produce expected results. The experiments were performed according to the following steps, and further illustrated in Figure \ref{block_test}:
 
 1. Validate data output and record per-instruction-overhead when all variables are at default values
 2. Measure time of completion as program increases in length
@@ -377,7 +383,7 @@ The Arduino waits for the Atmega328P to signal that it has completed its setup r
 
 # Results\label{results}
 
-This chapter details the results of all tests that were performed on the system. The tests were performed as outlined in the subchapter _\ref{experiments_phase} Experiments phase_, and the test results have been labeled
+This chapter details the results of all tests that were performed on the system. The tests were performed as outlined in the subchapter \ref{experiments_phase} _Experiments phase_, and the test results have been labeled
 
 1. Data validation and per-instruction-overhead
 2. Increasing number of instructions
@@ -438,7 +444,7 @@ Absolute & 9 & 3 & 300\%\tabularnewline
 \bottomrule
 \end{longtable}
 
-As shown in figure \ref{data-validation}, data could not be validated for categories _Zero Page_ and _Absolute_, and subsequently not _Mixed_. The instructions sent from the master unit and the execution time on the slave unit behaves as expected, but the data output after execution is not correct. As shown in table \ref{mem-error}, the `LDA`[^LDA] `(0xA5)` instruction loads the value `0x04` from Zero Page address `0x24`, however trying to store the accumulator at another memory address (`STA`[^STA]) strangely enough outputs `0x24` from the accumulator instead.
+As shown in Figure \ref{data-validation}, data could not be validated for categories _Zero Page_ and _Absolute_, and subsequently not _Mixed_. The instructions sent from the master unit and the execution time on the slave unit behaves as expected, but the data output after execution is not correct. As shown in Table \ref{mem-error}, the `LDA`[^LDA] `(0xA5)` instruction loads the value `0x04` from Zero Page address `0x24`, however trying to store the accumulator at another memory address (`STA`[^STA]) strangely enough outputs `0x24` from the accumulator instead.
 
 \begin{longtable}[]{@{}ll@{}}
 \caption{Illustrating error in memory operations}
@@ -542,7 +548,7 @@ This section presents a discussion on the project work, including thoughts on te
 
 Since experimental research is based on identifying and testing the underlying variables that make up the entire system, much of the project was designed with these variables and how to structure experiments in mind. We found that experimental research was a good fit for this type of problem, however we believe that the process of identifying the variables requires a better theoretical understanding of the target system and the experimental approach than we had at the time of design and implementation. We would suggest a more thorough study of both experimental research philosophy and approach, as well as the system that should be analyzed, before designing an experimental research study of this kind.
 
-When analyzing our results, we evaluated them against our evaluation criteria to draw conclusions. We feel that our conclusions are true, however in hindsight we realize that we should have applied a proven, more rigid framework or methodology in order to avoid potential bias.
+When analyzing our results, we evaluated them against our evaluation criteria to draw conclusions. The criteria were chosen based on what we believed to be the most crucial parts to monitor in order for the method to be viable. We feel that our conclusions are true, however in hindsight we realize that we should have applied a proven, more rigid framework or methodology in order to avoid potential bias. Another benefit could have been that we might have established more, or entirely different, evaluation criteria.
 
 ### Scrum in this project
 
@@ -572,11 +578,11 @@ This sections provides a discussion on the experiments and the measured results.
 
 ### Data validation & Memory operations
 
-As shown in section _\ref{results} Results_, a major part of the intended functionality did not produce correct results. Any program or sequence of instructions involving memory operations led to faulty data. Although we were unable to determine the cause of this error, we have established two possible explanations; (i) a bug in the software implementation of memory operations, or (ii) a defect memory unit of the RP2A03. Since this error did not occur for operations involving the ALU, accumulator or system level operations (i.e. disable interrupts etc.), and only for memory operations independent of instruction size, case (i) seems unlikely. We could also confirm that the data on the data bus, and the behavior of the R/W pin, was indicative of the correct instructions being sent at correct timing, which further makes (i) a less likely cause. However, since we did not have access to a replacement RP2A03 unit, or diagnostic tools to investigate the hardware of the unit we used, we were unable to rule out the RP2A03 as the cause either. Fortunately, as this error only affected the actual stored and loaded data and not the machines behavior in terms of cycles per instruction etc., we could still use memory operations in our test programs in order to measure timing.
+As shown in section \ref{results} _Results_, a major part of the intended functionality did not produce correct results. Any program or sequence of instructions involving memory operations led to faulty data. Although we were unable to determine the cause of this error, we have established two possible explanations; (i) a bug in the software implementation of memory operations, or (ii) a defect memory unit of the RP2A03. Since this error did not occur for operations involving the ALU, accumulator or system level operations (i.e. disable interrupts etc.), and only for memory operations independent of instruction size, case (i) seems unlikely. We could also confirm that the data on the data bus, and the behavior of the R/W pin, was indicative of the correct instructions being sent at correct timing, which further makes (i) a less likely cause. However, since we did not have access to a replacement RP2A03 unit, or diagnostic tools to investigate the hardware of the unit we used, we were unable to rule out the RP2A03 as the cause either. Fortunately, as this error only affected the actual stored and loaded data and not the machines behavior in terms of cycles per instruction etc., we could still use memory operations in our test programs in order to measure timing.
 
 ### Minimum communication overhead
 
-We could see a minimum communication overhead, measured as the time between each consecutive instruction in a program, of 4.5 $\mu$s. This time was independent of instruction type and size, and seems to affect each instruction equally. We found that this minimum communication overhead (or possibly main bottleneck of the communication method) was made up of two sets of the idle instruction, running over a total of six RP2A03 CPU cycles. An example of this can be seen in section \ref{results} Results, in Table \ref{xor-accumulator}. Since each instruction sending starts with a synchronization step and ends by placing the idle instruction on the data bus before returning to the calling function, the lowest theoretical overhead is one full idle instruction. The resulting performance hit can be seen in table \ref{cycles-per-instruction} which shows as much as 400% difference at least.
+We could see a minimum communication overhead, measured as the time between each consecutive instruction in a program, of 4.5 $\mu$s. This time was independent of instruction type and size, and seems to affect each instruction equally. We found that this minimum communication overhead (or possibly main bottleneck of the communication method) was made up of two sets of the idle instruction, running over a total of six RP2A03 CPU cycles. An example of this can be seen in section \ref{results} Results, in Table \ref{xor-accumulator}. Since each instruction sending starts with a synchronization step and ends by placing the idle instruction on the data bus before returning to the calling function, the lowest theoretical overhead is one full idle instruction. The resulting performance hit can be seen in Table \ref{cycles-per-instruction} which shows as much as 400% difference at least.
 
 However, upon returning to the main program, the master unit will have to load a new instruction and turn of all interrupts before initiating communication again, and we believe that the time it takes for the master unit to perform these steps causes it to initiate communications somewhere during the second idle instruction. Between instructions, the master unit also has to handle timer interrupts and perform periodic resets of the RP2A03 program counter. This will cause longer times between instructions at periodic intervals. We decided not to include this in our results since it occurs relatively infrequently, and is highly dependent on the settings for the timer interrupts.
 
@@ -599,7 +605,7 @@ As for increasing the frequency of the timer interrupts, that are needed to rese
 
 First and foremost, we acknowledge that the proposed method of hardware wrapping presented in this work shows inconclusive results. In order to tell whether this method is at all viable, it is required to (i) investigate whether the "broken" memory operations encountered during the tests was caused by a faulty RP2A03 unit, or if it was because of an error in the proposed implementation, and (ii) compare it against other methods of hardware wrapping on roughly equal level of complexity in implementation. As for case (ii), we had originally intended to compare this implementation against a different method of wrapping, which used a _shared memory_ to communicate between the master and slave unit, however we were unable to complete it because of the aforementioned problematic memory operations.
 
-A natural step from our work would be to expand the functionality further by allowing for a complete instruction set. As discussed in section _\ref{sprint5} Sprint 5, Entire instruction set_, there is no need for branching or jumping instructions, but there are still a large number of instructions left that was outside the scope of our study. When all relevant parts of the instruction set has been implemented, the final step(s) would be to test a real application of the method, and test how well this method works in practice.
+A natural step from our work would be to expand the functionality further by allowing for a complete instruction set. As discussed in section \ref{sprint5} Sprint 5, _Entire instruction set_, there is no need for branching or jumping instructions, but there are still a large number of instructions left that was outside the scope of our study. When all relevant parts of the instruction set has been implemented, the final step(s) would be to test a real application of the method, and test how well this method works in practice.
 
 \newpage
 
